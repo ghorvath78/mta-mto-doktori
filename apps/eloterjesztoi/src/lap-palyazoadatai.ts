@@ -46,7 +46,7 @@ export const palyazoAdatai: PageDescriptor = {
                     isArray: true,
                     arrayAddLabel: "Új munkahely hozzáadása",
                     noPersist: true,
-                    valueSource: "Kérelmezői|A kérelmező főbb adatai|Aktuális munkahelyek|Aktuális munkahely",
+                    valueSource: "Kérelmezői|A kérelmező főbb adatai|Aktuális munkahelyek|Aktuális munkahelyek",
                     fields: [
                         {
                             key: "Intézmény",

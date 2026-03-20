@@ -32,30 +32,34 @@ export const eloterjesztoiFormData = createAtomsFromDescriptor(formName, eloterj
 
 // ha a kategória változik, frissítjük az elvárásokat tartalmazó mezőket
 store.sub(
-    eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Kategória"],
+    eloterjesztoiFormData[
+        "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+    ],
     onCategoryChange
 );
 
 function onCategoryChange() {
     const category = store.get(
-        eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Kategória"]
+        eloterjesztoiFormData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ]
     )[0];
     if (category) {
         store.set(
             eloterjesztoiFormData[
-                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Q küszöbszám"
+                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Q küszöbszám"
             ],
             [String(getMinPaperQ(category))]
         );
         store.set(
             eloterjesztoiFormData[
-                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|I küszöbszám"
+                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|I küszöbszám"
             ],
             [String(getMinTotalI(category))]
         );
         store.set(
             eloterjesztoiFormData[
-                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Tud. köz. szempontok"
+                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Tud. köz. szempontok"
             ],
             [String(getMinCommunityCount())]
         );
@@ -74,19 +78,22 @@ export const eloterjesztoiFormInfo: FormInfo = {
 
 // ezt kell meghívni, miután betöltötték a kérelmezői adatlapot, hogy az ottaniaknak megfelelően frissüljenek a form mezői
 export async function afterLoadApplicantData(data: Record<string, unknown>) {
-    atomsFromJSON(data, eloterjesztoiFormData, "Kérelmezői", true);
+    atomsFromJSON(data, eloterjesztoiFormData, "", true);
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     const committee = getByPath(
         data,
-        "A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság"
+        "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság"
     ) as string | undefined;
     const category = getCategory(committee || "");
     store.set(
-        eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Kategória"],
+        eloterjesztoiFormData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ],
         [category]
     );
-    const sciMetrics = JSON.parse(getByPath(data, "Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") as string);
-    console.log("Loaded scientometrics:", eloterjesztoiFormData);
+    const sciMetrics = JSON.parse(
+        getByPath(data, "Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") as string
+    );
     store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|Független idézők száma"], [sciMetrics[9][0] || "0"]);
     store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|I-szám"], [sciMetrics[10][0] || "0"]);
     store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|WoS idézők száma"], [sciMetrics[11][0] || "0"]);

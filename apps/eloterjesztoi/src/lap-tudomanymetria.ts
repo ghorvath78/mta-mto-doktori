@@ -13,7 +13,7 @@ export const tudomanymetria: PageDescriptor = {
             key: "A kérelmezőre vonatkozó minimumkövetelmények",
             groups: [
                 {
-                    key: "Minimumkövetelmények",
+                    key: "A kérelmezőre vonatkozó minimumkövetelmények",
                     fields: [
                         {
                             key: "Kategória",
@@ -268,7 +268,7 @@ export const tudomanymetria: PageDescriptor = {
             },
             groups: [
                 {
-                    key: "Publikációs teljesítmény",
+                    key: "Publikációs teljesítmény értékelése",
                     fields: [
                         {
                             key: "Szöveges értékelés",

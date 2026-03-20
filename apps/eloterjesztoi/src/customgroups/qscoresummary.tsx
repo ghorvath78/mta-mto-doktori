@@ -6,7 +6,9 @@ import { cD, invertedText } from "@repo/form-engine";
 export const QScoreSummary = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
     const achievementQ = useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám"] || []);
     const category = useAtomValue(
-        formData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Kategória"] || [""]
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ] || [""]
     )[0];
     const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
     const data = JSON.parse(rawData[0] || "[]");

@@ -239,6 +239,13 @@ export function atomsFromJSON(json: Record<string, unknown>, formData: FormData,
     }
 
     function setAtom(atomKey: string, value: string[]) {
+        // If atomKey has only 4 parts, the section and group keys were merged;
+        // expand by duplicating the section key (index 2) to restore the 5-part format.
+        const keyParts = atomKey.split("|");
+        if (keyParts.length === 4) {
+            keyParts.splice(2, 0, keyParts[2]);
+            atomKey = keyParts.join("|");
+        }
         const fullKey = prefix ? prefix + "|" + atomKey : atomKey;
         if (formData[fullKey]) {
             store.set(formData[fullKey], value);

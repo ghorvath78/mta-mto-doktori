@@ -145,7 +145,7 @@ export const MTMTCitationInput = ({
                         )}
                     </div>
                 )}
-                {readonly && value[index] && <>{description}</>}
+                {readonly && value[index] && <>{loading ? <span className="w-3/4 px-2 italic text-gray-500">Betöltés alatt...</span> : description}</>}
                 {readonly && !value[index] && <div className="w-3/4 px-2 italic text-gray-500">Nincs megadva</div>}
             </div>
             {!readonly && value[index] && choices.length > 0 && (

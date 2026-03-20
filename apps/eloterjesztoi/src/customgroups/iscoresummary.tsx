@@ -5,7 +5,9 @@ import { useAtomValue } from "jotai";
 
 export const IScoreSummary = ({ formData }: { field: FieldDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
     const category = useAtomValue(
-        formData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Kategória"] || [""]
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ] || [""]
     )[0];
     const iScore = parseInt(useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|I-szám"] || [0])[0]);
     const minIScore = getMinTotalI(category);

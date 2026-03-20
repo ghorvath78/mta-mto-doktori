@@ -21,8 +21,9 @@ const activityRequirementSectionKeys = [
 
 export const PublicActivitySummary = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
     const minimumRequired = useAtomValue(
-        formData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Tud. köz. szempontok"] ||
-            emptyAtom
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Tud. köz. szempontok"
+        ] || emptyAtom
     )[0];
 
     const actualCountAtom = useMemo(

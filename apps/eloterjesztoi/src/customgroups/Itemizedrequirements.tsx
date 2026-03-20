@@ -6,7 +6,9 @@ import { cD, invertedText } from "@repo/form-engine";
 export const ItemizedRequirements = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
     const achievementQ = useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám"] || []);
     const category = useAtomValue(
-        formData["Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Minimumkövetelmények|Kategória"] || [""]
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ] || [""]
     )[0];
     const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
     const data = JSON.parse(rawData[0] || "[]");
@@ -28,7 +30,7 @@ export const ItemizedRequirements = ({ formData }: { group: GroupDescriptor; for
     const asIfPapers = cD(data[14][0] || 0);
     const phdStudents = cD(
         useAtomValue(
-            formData["Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktorandusz száma"] || [0]
+            formData["Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma"] || [0]
         )[0]
     );
     const minSaIfPhdSum = 2;

@@ -19,9 +19,8 @@ export const ApplicationPdfUploader = () => {
                 alert("Nem található érvényes kérelmezői adatlap a PDF-ben.");
                 return { status: "error", error: "Nem található érvényes kérelmezői adatlap a PDF-ben." };
             }
-            console.log("JSON content extracted from PDF:", content);
             const parsedContent = JSON.parse(content);
-            const mtmtId = String(getByPath(parsedContent, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|MTMT azonosító") || "");
+            const mtmtId = String(getByPath(parsedContent, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || "");
             if (mtmtId) {
                 setDialogText("Pubikációk és hivatkozások betöltése");
                 await loadMTMTPublications(mtmtId);
