@@ -299,6 +299,10 @@ export function getByPath(obj: unknown, path: string): unknown {
             const remainingPath = parts.slice(i).join("|");
             return current.map((item) => getByPath(item, remainingPath));
         }
+        // Skip redundant group key at position 3 when section (2) == group (3)
+        if (i === 2 && parts[2] === parts[3]) {
+            continue;
+        }
         current = current[parts[i]];
     }
     return current;

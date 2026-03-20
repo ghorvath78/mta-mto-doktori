@@ -1,6 +1,7 @@
 import {
     atomsFromJSON,
     chooseAndLoadPdf,
+    getByPath,
     loadMTMTCitations,
     loadMTMTPublications,
     loadScientometrics,
@@ -69,11 +70,7 @@ export const beforeLoad = async (json: JsonMap) => {
                 for (const group of section.groups) {
                     for (const field of group.fields) {
                         if (field.type === "mtmtCitation") {
-                            const pubKeys = (
-                                (((json?.["Kérelmezői"] as JsonMap | undefined)?.[value.key] as JsonMap | undefined)?.[section.key] as JsonMap | undefined)?.[
-                                    group.key
-                                ] as JsonMap | undefined
-                            )?.[field.key] as string[] | undefined;
+                            const pubKeys = getByPath(json, String(field?.attribs?.pubKey)) as string[];
                             for (const mtid of pubKeys || []) {
                                 await loadMTMTCitations(mtid);
                             }

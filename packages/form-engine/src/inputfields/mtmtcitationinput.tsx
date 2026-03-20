@@ -35,6 +35,7 @@ export const MTMTCitationInput = ({
         let mounted = true;
         const toLoad = pubMTMT[index];
         if (toLoad !== activePub.current) {
+            console.log("Selected publication changed, loading citations for mtid:", toLoad);
             async function fetchCitations() {
                 if (!toLoad) {
                     // no publication selected, clear choices
@@ -53,9 +54,12 @@ export const MTMTCitationInput = ({
                     if (mounted) {
                         console.log("Loaded citations:", citations);
                         setChoices(citations);
-                        const newValue = [...value];
-                        newValue[index] = "";
-                        setValue(newValue);
+                        // if the current value is not in the new choices, clear it
+                        if (!citations.find((c) => String(c.mtid) === value[index])) {
+                            const newValue = [...value];
+                            newValue[index] = "";
+                            setValue(newValue);
+                        }
                         activePub.current = toLoad;
                         setLoading(false);
                     }
