@@ -1,0 +1,69 @@
+@import "@repo/ui/index.css";
+@import "./satoshi.css";
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+    :root {
+        --font-sans: "Satoshi";
+    }
+}
+
+.mtmt-publication div .pub-end {
+    display: block;
+}
+
+.mtmt-publication div .title {
+    font-style: italic;
+}
+
+@layer components {
+    .form-table {
+        @apply w-full text-base border-collapse text-center;
+    }
+
+    .form-table th + th,
+    .form-table td + td {
+        padding-left: 1em;
+    }
+
+    .form-table thead,
+    .form-table .form-table-head {
+        @apply font-semibold text-left border-b border-primary;
+    }
+
+    .form-table thead th:not(:first-child),
+    .form-table .form-table-head > th:not(:first-child),
+    .form-table .form-table-head > td:not(:first-child) {
+        @apply text-center;
+    }
+
+    .form-table tbody tr:hover {
+        @apply bg-background;
+    }
+
+    .form-table-fcol {
+        @apply text-left;
+    }
+}
+
+.mtmt-publication div .pub-end {
+    display: block;
+}
+
+.mtmt-publication div .title {
+    font-style: italic;
+}
+
+.formlink {
+    color: var(--primary);
+    font-weight: bolder;
+}
+
+.formlink:hover {
+    text-decoration: underline;
+}
