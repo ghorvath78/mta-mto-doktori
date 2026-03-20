@@ -172,7 +172,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
                 }
             ),
             { text: "9. A doktori címet megalapozó tudományos munkásság rövid összefoglalója", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Munkásság összefoglalása|Összefoglaló", "", { nolabel: "true" }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Munkásság összefoglalása|Összefoglaló szövege", "", { nolabel: "true" }),
             { text: "10. Egyéb közlendők", style: "section" },
             await getPdfSection(descriptor, formData, "Kérelmezői|Munkásság összefoglalása|Egyéb közlendők", "", { nolabel: "true" }),
             //{ text: "Melléklet", italics: true, pageBreak: "before" },

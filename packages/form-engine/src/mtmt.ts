@@ -55,7 +55,7 @@ export const loadMTMTPublications = async (mtid: string) => {
             } catch (err) {
                 console.log(`${Date.now()} When loading page ${page}: `, err);
                 errorCounter++;
-                if (errorCounter < 30) await new Promise<void>((resolve) => setTimeout(() => resolve(), 250));
+                if (errorCounter < 10) await new Promise<void>((resolve) => setTimeout(() => resolve(), 250));
                 else throw "Too many errors during MTMT fetch";
             }
         }
@@ -91,7 +91,7 @@ export const loadMTMTCitations = async (mtid: string) => {
             } catch (err) {
                 console.log(`${Date.now()} When loading page ${page}: `, err);
                 errorCounter++;
-                if (errorCounter < 30) await new Promise<void>((resolve) => setTimeout(() => resolve(), 250));
+                if (errorCounter < 10) await new Promise<void>((resolve) => setTimeout(() => resolve(), 250));
                 else throw "Too many errors during MTMT fetch";
             }
         }

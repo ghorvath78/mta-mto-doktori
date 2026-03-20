@@ -88,3 +88,39 @@ export async function readJsonFromPdf(file: File, attachmentName: string): Promi
 
     return "";
 }
+
+export async function chooseAndLoadJSON(): Promise<string> {
+    return await new Promise<string>((resolve) => {
+        const finish = (value: string): void => {
+            resolve(value || "");
+        };
+
+        try {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json,application/json";
+
+            input.oncancel = () => {
+                finish("");
+            };
+
+            input.onchange = async () => {
+                try {
+                    const file = input.files?.[0];
+                    if (!file) {
+                        finish("");
+                        return;
+                    }
+                    const content = await file.text();
+                    finish(content);
+                } catch {
+                    finish("");
+                }
+            };
+
+            input.click();
+        } catch {
+            finish("");
+        }
+    });
+}

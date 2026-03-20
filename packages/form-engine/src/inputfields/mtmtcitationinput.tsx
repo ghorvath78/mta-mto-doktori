@@ -50,7 +50,7 @@ export const MTMTCitationInput = ({
                     return;
                 }
                 try {
-                    const citations = await loadMTMTCitations(toLoad);
+                    const citations = toLoad ? await loadMTMTCitations(toLoad) : [];
                     if (mounted) {
                         console.log("Loaded citations:", citations);
                         setChoices(citations);

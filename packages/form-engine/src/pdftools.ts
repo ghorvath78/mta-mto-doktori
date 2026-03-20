@@ -95,7 +95,7 @@ export const groupToPdfDocDefinition = async (
                 let pub = store.get(mtmtPubListAtom).find((p) => String(p.mtid) === mtmt);
                 if (field.type === "mtmtCitation" && !pub && mtmt) {
                     const pubMTMT = store.get(formData[String(field?.attribs?.pubKey)])[index];
-                    const citations = await loadMTMTCitations(pubMTMT);
+                    const citations = pubMTMT ? await loadMTMTCitations(pubMTMT) : [];
                     pub = citations.find((p) => String(p.mtid) === mtmt);
                 }
                 const el = document.createElement("div");

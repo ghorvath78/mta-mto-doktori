@@ -1,5 +1,6 @@
 import {
     atomsFromJSON,
+    // chooseAndLoadJSON,
     chooseAndLoadPdf,
     getByPath,
     loadMTMTCitations,
@@ -72,7 +73,9 @@ export const beforeLoad = async (json: JsonMap) => {
                         if (field.type === "mtmtCitation") {
                             const pubKeys = getByPath(json, String(field?.attribs?.pubKey)) as string[];
                             for (const mtid of pubKeys || []) {
-                                await loadMTMTCitations(mtid);
+                                if (mtid) {
+                                    await loadMTMTCitations(mtid);
+                                }
                             }
                         }
                     }
@@ -129,6 +132,21 @@ export const kerelmezoiFormInfo: FormInfo = {
                 await afterLoad(formData);
                 setDialogMessage("");
             }
-        }
+        } /*,
+        {
+            label: "Test JSON betöltése",
+            icon: <FileUp />,
+            onClick: async (formData, setDialogMessage: (message: string) => void) => {
+                const content = await chooseAndLoadJSON();
+                if (!content) return;
+                setDialogMessage("Adatlap betöltése");
+                const parsedContent = JSON.parse(content);
+                setDialogMessage("Pubikációk és hivatkozások betöltése");
+                await beforeLoad(parsedContent);
+                atomsFromJSON(parsedContent, formData);
+                await afterLoad(formData);
+                setDialogMessage("");
+            }
+        }*/
     ]
 };
