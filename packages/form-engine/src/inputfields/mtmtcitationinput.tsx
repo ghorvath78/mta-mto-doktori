@@ -1,6 +1,6 @@
 import { Button, Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
 import type { AttribType, FormData } from "../forms";
-import { loadMTMTCitations, mtmtPubListAtom, processMTMTTemplateLinks } from "../mtmt";
+import { getRating, loadMTMTCitations, mtmtPubListAtom, processMTMTTemplateLinks } from "../mtmt";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { Eraser } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -95,13 +95,7 @@ export const MTMTCitationInput = ({
     );
 
     const rating = useMemo(() => {
-        const pub = mtmtPubList.find((c) => String(c.mtid) === value[index]);
-        if (!pub) return null;
-        if (pub["journal"] && pub["ratings"]) {
-            const sjr = pub["ratings"].find((r) => r["otype"] === "SjrRating");
-            if (sjr) return sjr["ranking"];
-        }
-        return null;
+        return getRating(mtmtPubList, value[index]);
     }, [mtmtPubList, value, index]);
 
     const description = (

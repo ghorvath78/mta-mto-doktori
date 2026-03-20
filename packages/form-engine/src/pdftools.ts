@@ -1,7 +1,10 @@
+import pdfMake from "pdfmake/build/pdfmake";
 import { store } from "./atoms";
-import type { FormData, FormDescriptor, GroupDescriptor } from "./forms";
-import type { Content, TableCell } from "pdfmake/interfaces";
+import { type FormData, type FormDescriptor, type GroupDescriptor } from "./forms";
+import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 import { getRanking, loadMTMTCitations, mtmtPubListAtom, mtmtScientometricsAtom } from "./mtmt";
+import { saveAs } from "file-saver";
+import { PDFDocument } from "pdf-lib";
 
 type Options = { [key: string]: string | { [key: string]: string } };
 
@@ -467,3 +470,35 @@ export const getScientometricsPdfSection = (): Content[] => {
     content.push(table1);
     return content;
 };
+
+export function savePdfWithFormData(docDefinition: TDocumentDefinitions, fileName: string, jsonsToEmbed: { [filename: string]: string }) {
+    const fonts = {
+        Roboto: {
+            normal: "https://fonts.cdnfonts.com/s/85546/Satoshi-Regular.woff",
+            bold: "https://fonts.cdnfonts.com/s/85546/Satoshi-Bold.woff",
+            italics: "https://fonts.cdnfonts.com/s/85546/Satoshi-Italic.woff",
+            bolditalics: "https://fonts.cdnfonts.com/s/85546/Satoshi-BoldItalic.woff"
+        }
+    };
+
+    pdfMake.createPdf(docDefinition, undefined, fonts).getBuffer(async (buffer: Uint8Array<ArrayBufferLike>) => {
+        // add multiple embedded files to the PDF
+        let finalPdf = buffer;
+        for (const [filename, jsonString] of Object.entries(jsonsToEmbed)) {
+            finalPdf = await attachJsonToPdf(finalPdf, jsonString, filename);
+        }
+        const uint8 = Uint8Array.from(finalPdf);
+        const blob = new Blob([uint8], { type: "application/pdf" });
+        saveAs(blob, fileName);
+    });
+}
+
+async function attachJsonToPdf(pdfBytes: Uint8Array, jsonString: string, embeddedFileName: string): Promise<Uint8Array> {
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const jsonBytes: Uint8Array = new TextEncoder().encode(jsonString);
+    await pdfDoc.attach(jsonBytes, embeddedFileName, {
+        mimeType: "application/json",
+        description: "Custom metadata"
+    });
+    return pdfDoc.save();
+}

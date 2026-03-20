@@ -176,3 +176,43 @@ export const loadScientometrics = async () => {
         }
     }
 };
+
+export const getPubRating = (pubItem: PubItem): string | null => {
+    if (pubItem.journal && pubItem.ratings) {
+        const sjr = pubItem.ratings.find((r) => r.otype === "SjrRating");
+        if (sjr) return sjr.ranking;
+    }
+    return null;
+};
+
+export const getRating = (mtmtPubList: PubItem[], mtid: string): string | null => {
+    const pub = mtmtPubList.find((c) => String(c.mtid) === mtid);
+    return pub ? getPubRating(pub) : null;
+};
+
+export type PubItemSummary = {
+    template: string;
+    rating: string | null;
+};
+
+export const getPubItemSummary = (mtids: string[]): PubItemSummary[] => {
+    const mtmtPubList = store.get(mtmtPubListAtom) || [];
+    const summary = mtids
+        .map((id) => {
+            // search in publication list
+            const pub = mtmtPubList.find((c) => String(c.mtid) === id);
+            if (pub) {
+                return { template: pub.template, rating: getRating(mtmtPubList, id) };
+            }
+            // search in citation cache
+            for (const cachedCitations of Object.values(citationCache)) {
+                const cite = cachedCitations.find((c) => String(c.mtid) === id);
+                if (cite) {
+                    return { template: cite.template, rating: getPubRating(cite) };
+                }
+            }
+            return null;
+        })
+        .filter((item): item is PubItemSummary => item !== null);
+    return summary;
+};

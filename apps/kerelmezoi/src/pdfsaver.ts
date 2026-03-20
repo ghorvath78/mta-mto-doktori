@@ -1,21 +1,21 @@
-import { atomsToJSON, getPdfSection, getScientometricsPdfSection, store, type FormData, type FormDescriptor } from "@repo/form-engine";
-import pdfMake from "pdfmake/build/pdfmake";
+import {
+    atomsToJSON,
+    getPdfSection,
+    getPubItemSummary,
+    getScientometricsPdfSection,
+    loadMTMTCitations,
+    mtmtPubListAtom,
+    savePdfWithFormData,
+    store,
+    type FormData,
+    type FormDescriptor,
+    type PubItemSummary
+} from "@repo/form-engine";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
-import { PDFDocument } from "pdf-lib";
-import { saveAs } from "file-saver";
 
 declare const BUILD_DATE: string;
 
 export const savePDF = async (descriptor: FormDescriptor, formData: FormData) => {
-    const fonts = {
-        Roboto: {
-            normal: "https://fonts.cdnfonts.com/s/85546/Satoshi-Regular.woff",
-            bold: "https://fonts.cdnfonts.com/s/85546/Satoshi-Bold.woff",
-            italics: "https://fonts.cdnfonts.com/s/85546/Satoshi-Italic.woff",
-            bolditalics: "https://fonts.cdnfonts.com/s/85546/Satoshi-BoldItalic.woff"
-        }
-    };
-
     const doktoriMuSection = [];
     const formaKey = "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája";
     if (store.get(formData[formaKey])[0] === "monográfia vagy könyv") {
@@ -267,22 +267,68 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
         }
     };
 
-    pdfMake.createPdf(docDefinition, undefined, fonts).getBuffer(async (buffer) => {
-        const finalPdf = await attachJsonToPdf(buffer, JSON.stringify(atomsToJSON(formData), null, 4));
-        const uint8 = Uint8Array.from(finalPdf);
-        const blob = new Blob([uint8], { type: "application/pdf" });
-        saveAs(blob, "adatlap.pdf");
-        // const url = URL.createObjectURL(blob);
-        // window.open(url);
+    const mtmtData = await collectMTMTDataToSave(descriptor, formData);
+
+    savePdfWithFormData(docDefinition, "adatlap.pdf", {
+        "kerelmezo_form.json": JSON.stringify(atomsToJSON(formData), null, 4),
+        "kerelmezo_mtmt.json": JSON.stringify(mtmtData, null, 4)
     });
 };
 
-async function attachJsonToPdf(pdfBytes: Uint8Array, jsonString: string): Promise<Uint8Array> {
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    const jsonBytes: Uint8Array = new TextEncoder().encode(jsonString);
-    await pdfDoc.attach(jsonBytes, "kerelmezo_formdata.json", {
-        mimeType: "application/json",
-        description: "Custom metadata"
-    });
-    return pdfDoc.save();
+async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormData): Promise<object> {
+    const mtmtCache: { [mtid: string]: PubItemSummary } = {};
+    const mtids = new Set<string>();
+    const citationParentMtids = new Set<string>();
+
+    for (const page of Object.values(descriptor)) {
+        for (const section of page.sections) {
+            for (const group of section.groups) {
+                const groupLengthKey = `Kérelmezői|${page.key}|${section.key}|${group.key}|_length`;
+                const groupLength = group.isArray ? Number.parseInt(store.get(formData[groupLengthKey])?.[0] ?? "0", 10) || 0 : 1;
+
+                for (const field of group.fields) {
+                    if (field.type !== "mtmtPub" && field.type !== "mtmtCitation") {
+                        continue;
+                    }
+
+                    const fieldKey = `Kérelmezői|${page.key}|${section.key}|${group.key}|${field.key}`;
+                    const values = store.get(formData[fieldKey]) ?? [];
+
+                    for (let index = 0; index < groupLength; index++) {
+                        const mtid = values[index];
+                        if (mtid) {
+                            mtids.add(mtid);
+                        }
+
+                        if (field.type !== "mtmtCitation" || !field.attribs?.pubKey) {
+                            continue;
+                        }
+
+                        const parentValues = store.get(formData[String(field.attribs.pubKey)]) ?? [];
+                        const parentMtid = parentValues[index]?.trim();
+                        if (parentMtid) {
+                            citationParentMtids.add(parentMtid);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    await Promise.all(Array.from(citationParentMtids, (mtid) => loadMTMTCitations(mtid)));
+
+    for (const mtid of mtids) {
+        const summary = getPubItemSummary([mtid])[0];
+        if (summary) {
+            mtmtCache[mtid] = summary;
+        }
+    }
+
+    const pubList = store.get(mtmtPubListAtom) ?? [];
+    const allPubMTMTs: string[] = pubList.map((pub) => String(pub.mtid));
+
+    return {
+        "Adatlapon szereplő publikációk": mtmtCache,
+        "A pályázó összes publikációja a beadáskor": allPubMTMTs
+    };
 }
