@@ -14,11 +14,18 @@ type PubItem = {
     independentCitationCount?: number;
 };
 
+export type PubItemSummary = {
+    template: string;
+    rating: string | null;
+};
+
 export const activeMTMTUserIdAtom = atom<string>("");
 export const mtmtPubListAtom = atom<PubItem[]>([]);
 export const mtmtPubListStatusAtom = atom<"uninitialized" | "loading" | "error" | "done">("uninitialized");
 export const mtmtScientometricsAtom = atom<(number | string)[][]>([]);
 export const mtmtScientometricsStatusAtom = atom<"uninitialized" | "loading" | "error" | "done">("uninitialized");
+
+export const mtmtPubSummaryCacheAtom = atom<{ [mtid: string]: PubItemSummary }>({});
 
 export const getMTMTObject = async (object: string, params: string | null = null): Promise<{ [key: string]: unknown }> => {
     const paramStr = params ? params : "";
@@ -190,29 +197,28 @@ export const getRating = (mtmtPubList: PubItem[], mtid: string): string | null =
     return pub ? getPubRating(pub) : null;
 };
 
-export type PubItemSummary = {
-    template: string;
-    rating: string | null;
-};
-
-export const getPubItemSummary = (mtids: string[]): PubItemSummary[] => {
+export const savePubItemSummary = (mtids: string[]): Record<string, PubItemSummary> => {
     const mtmtPubList = store.get(mtmtPubListAtom) || [];
     const summary = mtids
         .map((id) => {
             // search in publication list
             const pub = mtmtPubList.find((c) => String(c.mtid) === id);
             if (pub) {
-                return { template: pub.template, rating: getRating(mtmtPubList, id) };
+                return [id, { template: pub.template, rating: getRating(mtmtPubList, id) }];
             }
             // search in citation cache
             for (const cachedCitations of Object.values(citationCache)) {
                 const cite = cachedCitations.find((c) => String(c.mtid) === id);
                 if (cite) {
-                    return { template: cite.template, rating: getPubRating(cite) };
+                    return [id, { template: cite.template, rating: getPubRating(cite) }];
                 }
             }
             return null;
         })
-        .filter((item): item is PubItemSummary => item !== null);
-    return summary;
+        .filter((item): item is [string, PubItemSummary] => !!item);
+    return Object.fromEntries(summary);
+};
+
+export const loadPubItemSummary = (summaries: Record<string, PubItemSummary>) => {
+    store.set(mtmtPubSummaryCacheAtom, { ...summaries });
 };

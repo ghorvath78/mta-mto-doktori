@@ -1,8 +1,8 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@repo/ui";
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
-import { afterLoadApplicantData } from "@/eloterjesztoiform";
-import { getByPath, loadMTMTPublications } from "@repo/form-engine";
+import { loadApplicantData } from "@/eloterjesztoiform";
+import { getByPath, loadMTMTPublications, loadPubItemSummary } from "@repo/form-engine";
 import { readJsonFromPdf } from "@repo/form-engine";
 import { useAtomValue } from "jotai";
 import { UploadIcon } from "lucide-react";
@@ -14,22 +14,35 @@ export const ApplicationPdfUploader = () => {
     const [dialogText, setDialogText] = useState("");
     const dropzone = useDropzone({
         onDropFile: async (file: File) => {
-            const content = await readJsonFromPdf(file, "kerelmezo_formdata.json");
-            if (!content) {
+            const formContent = await readJsonFromPdf(file, "kerelmezo_form.json");
+            if (!formContent) {
                 alert("Nem található érvényes kérelmezői adatlap a PDF-ben.");
                 return { status: "error", error: "Nem található érvényes kérelmezői adatlap a PDF-ben." };
             }
-            const parsedContent = JSON.parse(content);
-            const mtmtId = String(getByPath(parsedContent, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || "");
-            if (mtmtId) {
-                setDialogText("Pubikációk és hivatkozások betöltése");
-                await loadMTMTPublications(mtmtId);
-                setDialogText("");
-            } else {
-                alert("Nem található MTMT azonosító a kérelmezői adatlapon.");
-                return { status: "error", error: "Nem található MTMT azonosító a kérelmezői adatlapon." };
+            const parsedFormContent = JSON.parse(formContent);
+
+            const mtmtContent = await readJsonFromPdf(file, "kerelmezo_mtmt.json");
+            if (!mtmtContent) {
+                alert("Nem található érvényes publikációs adat a kérelmezői PDF-ben.");
+                return { status: "error", error: "Nem található érvényes publikációs adat a kérelmezői a PDF-ben." };
             }
-            await afterLoadApplicantData(parsedContent);
+            const parsedMtmtContent = JSON.parse(mtmtContent);
+            if ("Adatlapon szereplő publikációk" in parsedMtmtContent && "A pályázó összes publikációja a beadáskor" in parsedMtmtContent) {
+                loadPubItemSummary(parsedMtmtContent["Adatlapon szereplő publikációk"] as Record<string, { template: string; rating: string | null }>);
+            } else {
+                const mtmtId = String(
+                    getByPath(parsedFormContent, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || ""
+                );
+                if (mtmtId) {
+                    setDialogText("Pubikációk és hivatkozások betöltése");
+                    await loadMTMTPublications(mtmtId);
+                    setDialogText("");
+                } else {
+                    alert("Nem található MTMT azonosító a kérelmezői adatlapon.");
+                    return { status: "error", error: "Nem található MTMT azonosító a kérelmezői adatlapon." };
+                }
+            }
+            await loadApplicantData(parsedFormContent);
             return {
                 status: "success",
                 result: URL.createObjectURL(file)

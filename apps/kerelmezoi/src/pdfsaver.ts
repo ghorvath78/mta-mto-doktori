@@ -1,15 +1,14 @@
 import {
     atomsToJSON,
     getPdfSection,
-    getPubItemSummary,
     getScientometricsPdfSection,
     loadMTMTCitations,
     mtmtPubListAtom,
     savePdfWithFormData,
+    savePubItemSummary,
     store,
     type FormData,
-    type FormDescriptor,
-    type PubItemSummary
+    type FormDescriptor
 } from "@repo/form-engine";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
 
@@ -276,7 +275,6 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
 };
 
 async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormData): Promise<object> {
-    const mtmtCache: { [mtid: string]: PubItemSummary } = {};
     const mtids = new Set<string>();
     const citationParentMtids = new Set<string>();
 
@@ -317,13 +315,7 @@ async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormD
 
     await Promise.all(Array.from(citationParentMtids, (mtid) => loadMTMTCitations(mtid)));
 
-    for (const mtid of mtids) {
-        const summary = getPubItemSummary([mtid])[0];
-        if (summary) {
-            mtmtCache[mtid] = summary;
-        }
-    }
-
+    const mtmtCache = savePubItemSummary(Array.from(mtids));
     const pubList = store.get(mtmtPubListAtom) ?? [];
     const allPubMTMTs: string[] = pubList.map((pub) => String(pub.mtid));
 

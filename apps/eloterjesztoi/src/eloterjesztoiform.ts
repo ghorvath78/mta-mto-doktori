@@ -1,4 +1,4 @@
-import { store, type FormInfo } from "@repo/form-engine";
+import { mtmtPubSummaryCacheAtom, store, type FormInfo } from "@repo/form-engine";
 import { atomsFromJSON, createAtomsFromDescriptor, getByPath, type FormDescriptor } from "@repo/form-engine";
 import { getCategory, getMinCommunityCount, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { loadMTMTCitations } from "@repo/form-engine";
@@ -77,7 +77,7 @@ export const eloterjesztoiFormInfo: FormInfo = {
 };
 
 // ezt kell meghívni, miután betöltötték a kérelmezői adatlapot, hogy az ottaniaknak megfelelően frissüljenek a form mezői
-export async function afterLoadApplicantData(data: Record<string, unknown>) {
+export async function loadApplicantData(data: Record<string, unknown>) {
     atomsFromJSON(data, eloterjesztoiFormData, "", true);
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     const committee = getByPath(
@@ -100,13 +100,16 @@ export async function afterLoadApplicantData(data: Record<string, unknown>) {
     store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|H-index"], [sciMetrics[12][0] || "0"]);
 
     // load 5 most important citations
+    const summaryCache = store.get(mtmtPubSummaryCacheAtom);
     const citedPapers = getByPath(data, "Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|Hivatkozott közlemény") as
         | string[]
         | undefined;
     if (citedPapers) {
         for (const mtid of citedPapers) {
             if (mtid) {
-                await loadMTMTCitations(mtid);
+                if (!summaryCache[mtid]) {
+                    await loadMTMTCitations(mtid);
+                }
             }
         }
     }

@@ -20,7 +20,7 @@ export const DecisionYesNoInput = ({
     const [value, setValue] = useAtom(formData[fieldKey]);
     const items = ["igen", "nem"];
 
-    const baseClass = "flex items-center space-x-4";
+    const baseClass = "flex items-center gap-x-4";
     const labelClass = "block mb-1 font-medium text-start w-1/4 leading-[0.95em] flex-1 text-primary-foreground";
     return (
         <div className={`${baseClass} ${className}`}>
@@ -41,6 +41,7 @@ export const DecisionYesNoInput = ({
                 <SimpleComboboxInput
                     placeholder="Válasszon"
                     className="bg-primary-foreground"
+                    readOnly={true}
                     inputClassName="w-24 bg-transparent !font-bold !text-primary !text-base"
                 />
                 <SimpleComboboxContent>

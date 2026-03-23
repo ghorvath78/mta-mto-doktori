@@ -1,6 +1,6 @@
 import { Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
 import type { AttribType, FormData } from "../forms";
-import { activeMTMTUserIdAtom, getRanking, getRating, mtmtPubListAtom, processMTMTTemplateLinks } from "../mtmt";
+import { activeMTMTUserIdAtom, getRanking, getRating, mtmtPubListAtom, mtmtPubSummaryCacheAtom, processMTMTTemplateLinks } from "../mtmt";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -33,6 +33,7 @@ export const MTMTPubInput = ({
     const [value, setValue] = useAtom(formData[fieldKey]);
     const [choices, setChoices] = useState<PubChoice[]>([]);
     const mtmtPubList = useAtomValue(mtmtPubListAtom);
+    const mtmtPubSummaryCache = useAtomValue(mtmtPubSummaryCacheAtom);
 
     useEffect(() => {
         let filtered = mtmtPubList;
@@ -63,21 +64,27 @@ export const MTMTPubInput = ({
         return choices.filter((c) => !selectedByOthers.has(String(c.mtid)));
     }, [choices, value, index, attribs?.unique]);
 
+    const cachedSummary = useMemo(() => {
+        const mtid = value[index];
+        if (!mtid) return null;
+        return mtmtPubSummaryCache[mtid] || null;
+    }, [mtmtPubSummaryCache, value, index]);
+
     const template = useCallback(
         (node: HTMLDivElement | null) => {
             // A template-hez az összes choices-ból keressük (a kiválasztott érték megjelenítéséhez)
-            const inner = choices.find((c) => String(c.mtid) === value[index])?.template ?? "";
+            const inner = cachedSummary?.template ?? choices.find((c) => String(c.mtid) === value[index])?.template ?? "";
             if (inner && node) {
                 node.innerHTML = inner;
                 processMTMTTemplateLinks(node);
             }
         },
-        [choices, value, index]
+        [choices, value, index, cachedSummary]
     );
 
     const rating = useMemo(() => {
-        return getRating(mtmtPubList, value[index]);
-    }, [mtmtPubList, value, index]);
+        return cachedSummary?.rating ?? getRating(mtmtPubList, value[index]);
+    }, [mtmtPubList, value, index, cachedSummary]);
 
     const description = (
         <div className="w-3/4 px-2 text-sm mtmt-publication">

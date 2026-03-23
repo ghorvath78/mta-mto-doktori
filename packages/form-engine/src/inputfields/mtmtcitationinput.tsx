@@ -1,6 +1,6 @@
 import { Button, Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
 import type { AttribType, FormData } from "../forms";
-import { getRating, loadMTMTCitations, mtmtPubListAtom, processMTMTTemplateLinks } from "../mtmt";
+import { getRating, loadMTMTCitations, mtmtPubListAtom, mtmtPubSummaryCacheAtom, processMTMTTemplateLinks } from "../mtmt";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { Eraser } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -30,11 +30,13 @@ export const MTMTCitationInput = ({
     const pubMTMT = useAtomValue(attribs?.pubKey ? (formData[String(attribs.pubKey)] ?? emptyConditionAtom) : emptyConditionAtom);
     const [loading, setLoading] = useState(false);
     const activePub = useRef<string>("");
+    const mtmtPubSummaryCache = useAtomValue(mtmtPubSummaryCacheAtom);
 
     useEffect(() => {
         let mounted = true;
         const toLoad = pubMTMT[index];
         if (toLoad !== activePub.current) {
+            if (readonly && mtmtPubSummaryCache[toLoad]) return;
             console.log("Selected publication changed, loading citations for mtid:", toLoad);
             async function fetchCitations() {
                 if (!toLoad) {
@@ -83,20 +85,27 @@ export const MTMTCitationInput = ({
         };
     }, [mtmtPubList, pubMTMT, index, value, setValue]);
 
+    const cachedSummary = useMemo(() => {
+        const mtid = value[index];
+        if (!mtid) return null;
+        return mtmtPubSummaryCache[mtid] || null;
+    }, [mtmtPubSummaryCache, value, index]);
+
     const template = useCallback(
         (node: HTMLDivElement | null) => {
-            const inner = choices.find((c) => String(c.mtid) === value[index])?.template ?? "";
+            // A template-hez az összes choices-ból keressük (a kiválasztott érték megjelenítéséhez)
+            const inner = cachedSummary?.template ?? choices.find((c) => String(c.mtid) === value[index])?.template ?? "";
             if (inner && node) {
                 node.innerHTML = inner;
                 processMTMTTemplateLinks(node);
             }
         },
-        [choices, value, index]
+        [choices, value, index, cachedSummary]
     );
 
     const rating = useMemo(() => {
-        return getRating(mtmtPubList, value[index]);
-    }, [mtmtPubList, value, index]);
+        return cachedSummary?.rating ?? getRating(mtmtPubList, value[index]);
+    }, [mtmtPubList, value, index, cachedSummary]);
 
     const description = (
         <div className="w-3/4 px-2 text-sm mtmt-publication">

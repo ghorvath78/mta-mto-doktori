@@ -122,7 +122,7 @@ export const kerelmezoiFormInfo: FormInfo = {
             label: "Adatlap betöltése",
             icon: <FileUp />,
             onClick: async (formData, setDialogMessage: (message: string) => void) => {
-                const content = await chooseAndLoadPdf("kerelmezo_formdata.json");
+                const content = await chooseAndLoadPdf("kerelmezo_form.json");
                 if (!content) return;
                 setDialogMessage("Adatlap betöltése");
                 const parsedContent = JSON.parse(content);
