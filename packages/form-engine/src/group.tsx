@@ -45,9 +45,9 @@ export const GroupPanel = ({
     const isImportant = group.attribs?.important === true;
 
     return (
-        <div style={{ display: isVisible ? "block" : "none" }}>
+        <div className="formgroup" style={{ display: isVisible ? "block" : "none" }}>
             {group.label && !noLabel && <GroupLabel title={group.label} />}
-            <div className={`relative p-2 rounded-lg space-y-1 ${isImportant ? "bg-primary" : "bg-secondary"} ${className}`}>{children}</div>
+            <div className={`shadow-md relative p-2 rounded-lg space-y-1 ${isImportant ? "bg-primary" : "bg-secondary"} ${className}`}>{children}</div>
         </div>
     );
 };
@@ -171,6 +171,7 @@ export const Group = ({
                         formData={formData}
                         index={index}
                         readonly={field.readonly}
+                        twoColumn={field.attribs?.noAlign ? false : true}
                     ></TextInput>
                 );
                 break;
@@ -230,6 +231,7 @@ export const Group = ({
                         index={index}
                         readonly={field.readonly}
                         fractional={field.attribs?.["fractional"] === true}
+                        twoColumn={field.attribs?.noAlign ? false : true}
                     />
                 );
                 break;
@@ -286,7 +288,15 @@ export const Group = ({
                 break;
             case "link":
                 component = readonly ? (
-                    <LinkDataDisplay label={field.label ?? field.key} fieldKey={field.valueSource ?? key} key={key} formData={formData} index={index} />
+                    <LinkDataDisplay
+                        label={field.label ?? field.key}
+                        fieldKey={field.valueSource ?? key}
+                        key={key}
+                        formData={formData}
+                        index={index}
+                        twoColumn={field.attribs?.noAlign ? false : true}
+                        short={field.attribs?.short === true}
+                    />
                 ) : (
                     <TextInput
                         label={field.label ?? field.key}

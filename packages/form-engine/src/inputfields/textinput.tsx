@@ -10,6 +10,7 @@ export const TextInput = ({
     className = "",
     children,
     formData,
+    twoColumn = true,
     index,
     onBlur,
     readonly = false
@@ -21,6 +22,7 @@ export const TextInput = ({
     className?: string;
     children?: React.ReactNode;
     formData: FormData;
+    twoColumn?: boolean;
     index: number;
     onBlur?: (value: string, setValue: (value: string) => void) => void;
     readonly?: boolean;
@@ -28,7 +30,7 @@ export const TextInput = ({
     const [value, setValue] = useAtom(formData[fieldKey]);
 
     const baseClass = inline ? "flex items-center space-x-2" : "";
-    const labelClass = inline ? "text-end w-1/4 leading-[0.95em]" : "";
+    const labelClass = inline ? "leading-[0.95em]" + (twoColumn ? " text-end w-1/4" : "") : "";
 
     const fieldName = `${fieldKey}-${index}`;
 

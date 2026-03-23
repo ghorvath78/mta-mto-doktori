@@ -6,6 +6,7 @@ import { Button } from "@repo/ui";
 import type { AttribType, FormData, SectionDescriptor } from "./forms";
 import { Group, GroupPanel, GroupArrayPanel } from "./group";
 import { Fragment } from "react/jsx-runtime";
+import { TabularList } from "./inputfields/tabularlist";
 
 const trueConditionAtom = atom(["true"]);
 
@@ -41,7 +42,7 @@ export const Section = ({ section, formData, keyPrefix }: { section: SectionDesc
                                 )}
                             </GroupPanel>
                         )}
-                        {group.isArray && (
+                        {group.isArray && !group.attribs?.printTabular && (
                             <GroupArrayPanel
                                 group={group}
                                 formData={formData}
@@ -49,6 +50,11 @@ export const Section = ({ section, formData, keyPrefix }: { section: SectionDesc
                                 Component={Group}
                                 readonly={group.readonly}
                             />
+                        )}
+                        {group.isArray && group.attribs?.printTabular && (
+                            <GroupPanel group={group} formData={formData}>
+                                <TabularList group={group} formData={formData} keyPrefix={groupKeyPrefix} index={0} />
+                            </GroupPanel>
                         )}
                     </Fragment>
                 );

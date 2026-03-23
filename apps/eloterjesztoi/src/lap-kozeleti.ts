@@ -1,6 +1,5 @@
 import type { PageDescriptor } from "@repo/form-engine";
 import { applicantDataLoaded } from "./atoms";
-import { TabularList } from "./customgroups/tabularlist";
 import { PublicActivitySummary } from "./customgroups/publicactivitysummary";
 
 export const kozeletiTevekenyseg: PageDescriptor = {
@@ -16,14 +15,51 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                 {
                     key: "Lista",
                     label: "Témavezetések listája:",
-                    customComponent: TabularList,
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "Hallgató neve|OTDK éve|OTDK szekció|Helyezés|Igazoló link",
-                        colWidths: "*,40,*,50,40"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "Hallgató neve",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "OTDK éve",
+                            type: "year",
+                            attribs: {
+                                colWidth: "40"
+                            }
+                        },
+                        {
+                            key: "OTDK szekció",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Helyezés",
+                            type: "text",
+                            attribs: {
+                                colWidth: "50"
+                            }
+                        },
+                        {
+                            key: "Igazoló link",
+                            type: "link",
+                            attribs: {
+                                colWidth: "40"
+                            }
+                        }
+                    ]
                 },
                 {
                     key: "Összesítés",
@@ -65,7 +101,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -98,21 +134,77 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "Intézmény és szervezeti egység|Tantárgy neve|Oktatói munka jellege|Képzési szint|Időszak",
-                        colWidths: "*,*,80,60,55",
-                        extraLabel: "Tevékenység igazoló linkje",
-                        extraInfo: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Link|Tevékenység igazoló linkje"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "Intézmény és szervezeti egység",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Tantárgy neve",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Oktatói munka jellege",
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        },
+                        {
+                            key: "Képzési szint",
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Időszak",
+                            type: "yearRange",
+                            attribs: {
+                                colWidth: "55"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Tevékenység igazoló linkje",
+                            label: "Alátámasztó link:",
+                            helpText:
+                                "Kérjük, adjon meg egy érvényes URL-t, amely alátámasztó információkat tartalmazó weblapra mutat, vagy az információkat összefűzve tartalmazó PDF-dokumentum letöltési helyére.",
+                            type: "link",
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Link|Tevékenység igazoló linkje",
+                            attribs: {
+                                inline: "false",
+                                noAlign: true,
+                                short: true
+                            }
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -145,22 +237,69 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Témavezetések listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "Hallgató neve|Témavezetés|Doktori iskola|Fokozatszerzés éve",
-                        colWidths: "*,80,*,80",
-                        extraLabel: "Fokozatot szerzett doktoranduszok száma",
-                        extraInfo:
-                            "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatot szerzett doktoranduszok száma"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "Hallgató neve",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Témavezetés",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Doktori iskola",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Fokozatszerzés éve",
+                            type: "year",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Összes",
+                    label: "",
+                    fields: [
+                        {
+                            key: "Fokozatott szerzett doktoranduszok száma",
+                            label: "Összes fokozatott szerzett doktoranduszok száma (témavezetői arányokkal súlyozva):",
+                            valueSource:
+                                "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma",
+                            type: "number",
+                            readonly: true,
+                            noPersist: true,
+                            attribs: {
+                                inline: "false",
+                                fractional: true,
+                                noAlign: true
+                            }
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -192,21 +331,69 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "A testület megnevezése|Hazai/nemzetközi|Részvételi szerep|Időszak",
-                        colWidths: "*,60,*,80",
-                        extraLabel: "Alátámasztó link",
-                        extraInfo: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Link|Alátámasztó link"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "A testület megnevezése",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Hazai/nemzetközi",
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Részvételi szerep",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Időszak",
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Alátámasztó link",
+                            label: "Alátámasztó link:",
+                            valueSource:
+                                "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Link|Alátámasztó link",
+                            type: "link",
+                            attribs: {
+                                inline: "false",
+                                noAlign: true,
+                                short: true
+                            }
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -239,23 +426,70 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource:
                         "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "A rendezvény pontos címe és ideje|A rendező ország|Szervezői/előadói szerep leírása|Alátámasztó weblink",
-                        colWidths: "*,80,100,60",
-                        extraLabel: "További információ",
-                        extraInfo:
-                            "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Link|További információ"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "A rendezvény pontos címe és ideje",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "A rendező ország",
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        },
+                        {
+                            key: "Szervezői/előadói szerep leírása",
+                            type: "text",
+                            attribs: {
+                                colWidth: "100"
+                            }
+                        },
+                        {
+                            key: "Alátámasztó weblink",
+                            type: "link",
+                            attribs: {
+                                colWidth: "60",
+                                short: true
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "További információ",
+                            label: "További információ:",
+                            type: "link",
+                            attribs: {
+                                noAlign: true,
+                                short: true
+                            },
+                            valueSource:
+                                "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Link|További információ"
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey:
                         "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Lista|_length",
                     conditionValue: "1",
@@ -289,22 +523,76 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "A szervezet neve|A szervezet weboldala|Hazai/nemzetközi|Tisztsége|Tagság",
-                        colWidths: "*,60,60,90,80",
-                        extraLabel: "Alátámasztó link",
-                        extraInfo:
-                            "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Link|Alátámasztó link"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "A szervezet neve",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "A szervezet weboldala",
+                            label: "Szervezet weboldala",
+                            type: "link",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Hazai/nemzetközi",
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Tisztsége",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        },
+                        {
+                            key: "Tagság",
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Alátámasztó link",
+                            label: "Alátámasztó link:",
+                            type: "link",
+                            attribs: {
+                                noAlign: true,
+                                short: true
+                            },
+                            valueSource:
+                                "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Link|Alátámasztó link"
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -336,21 +624,76 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "A folyóirat neve|A folyóirat weboldala|Besorolás|Tisztsége|Mettől-meddig",
-                        colWidths: "*,60,60,90,80",
-                        extraLabel: "Alátámasztó link",
-                        extraInfo: "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Link|Alátámasztó link"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "A folyóirat neve",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "A folyóirat weboldala",
+                            type: "link",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Besorolás",
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Tisztsége",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        },
+                        {
+                            key: "Mettől-meddig",
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Alátámasztó link",
+                            label: "Alátámasztó link:",
+                            type: "link",
+                            attribs: {
+                                inline: "false",
+                                noAlign: true,
+                                short: true
+                            },
+                            valueSource:
+                                "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Link|Alátámasztó link"
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -383,8 +726,9 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Összesítés",
-                    label: "Összesítő táblázat",
+                    label: "",
                     noPersist: true,
+                    readonly: true,
                     fields: [
                         {
                             key: "MTA doktora értekezés bírálója",
@@ -423,20 +767,20 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         },
                         {
                             key: "Alátámasztó link",
-                            label: "Adja meg a linket, ahol a részvételét tudományos minősítésben tudja igazolni (pl. felkérőlevelek másolatai)",
                             type: "link",
                             noPersist: true,
                             readonly: true,
                             valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben|Összesítés|Alátámasztó link",
                             attribs: {
-                                inline: "false"
+                                inline: "false",
+                                short: true
                             }
                         }
                     ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     fields: [
                         {
                             key: "Követelmény teljesül",
@@ -461,26 +805,78 @@ export const kozeletiTevekenyseg: PageDescriptor = {
         },
         {
             key: "Elnyert tudományos pályázat",
-            helpText:
-                "Elnyert pályázatok témavezetőként.\n\nMinimum követelmény: legyen legalább\n• 2 db NKFIH által kezelt pályázat (pl. “OTKA” K, FK, PD; ERC starting vagy advanced; PIAC; GINOP) témavezetője; vagy\n• 1 db Lendület csoport vezetője; vagy\n• 1 db rangos (ERC, HORIZON, HORIZON 2020) nemzetközi pályázat vezetője, alprojekt-/munkacsoport-munkaszakasz dokumentált vezetője.\n\nLegfeljebb 5 tétel adható meg.",
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "A pályázat címe|Támogatási összeg|Hazai/nemzetközi|Funkció|Futamidő",
-                        colWidths: "*,70,60,60,80",
-                        extraLabel: "Alátámasztó link",
-                        extraInfo: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Link|Alátámasztó link"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "A pályázat címe",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Támogatási összeg",
+                            type: "text",
+                            attribs: {
+                                colWidth: "70"
+                            }
+                        },
+                        {
+                            key: "Hazai/nemzetközi",
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Funkció",
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
+                        },
+                        {
+                            key: "Futamidő",
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Alátámasztó link",
+                            label: "Alátámasztó link:",
+                            type: "link",
+                            attribs: {
+                                inline: "false",
+                                noAlign: true,
+                                short: true
+                            },
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Link|Alátámasztó link"
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -513,21 +909,68 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
+                    isArray: true,
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Lista",
-                    fields: [],
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "A meghívó neve, helyszín|A tartózkodás jellege|Finanszírozás forrása|Mettől-meddig",
-                        colWidths: "*,85,85,90",
-                        extraLabel: "Alátámasztó link",
-                        extraInfo: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Link|Alátámasztó link"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "A meghívó neve, helyszín",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "A tartózkodás jellege",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        },
+                        {
+                            key: "Finanszírozás forrása",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        },
+                        {
+                            key: "Mettől-meddig",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Alátámasztó link",
+                            label: "Alátámasztó link:",
+                            type: "link",
+                            attribs: {
+                                inline: "false",
+                                noAlign: true,
+                                short: true
+                            },
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Link|Alátámasztó link"
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Lista|_length",
                     conditionValue: "1",
                     fields: [
@@ -559,22 +1002,69 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             groups: [
                 {
                     key: "Lista",
-                    label: "Tevékenységek listája:",
-                    customComponent: TabularList,
+                    label: "",
                     lengthSource: "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Lista|_length",
                     valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Lista",
-                    fields: [],
+                    isArray: true,
+                    readonly: true,
+                    noPersist: true,
                     attribs: {
-                        colNames: "Kitüntetés megnevezése|Adományozó szervezet|Ország|Adományozás időpontja",
-                        colWidths: "*,*,90,90",
-                        extraLabel: "Alátámasztó link",
-                        extraInfo:
-                            "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Link|Alátámasztó link"
-                    }
+                        printTabular: true
+                    },
+                    fields: [
+                        {
+                            key: "Kitüntetés megnevezése",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Adományozó szervezet",
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
+                        },
+                        {
+                            key: "Ország",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        },
+                        {
+                            key: "Adományozás időpontja",
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
+                        }
+                    ]
+                },
+                {
+                    key: "Link",
+                    label: "",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
+                        {
+                            key: "Alátámasztó link",
+                            label: "Alátámasztó link:",
+                            type: "link",
+                            attribs: {
+                                inline: "false",
+                                noAlign: true,
+                                short: true
+                            },
+                            valueSource:
+                                "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Link|Alátámasztó link"
+                        }
+                    ]
                 },
                 {
                     key: "Értékelés",
-                    label: "Értékelés:",
+                    label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Lista|_length",
                     conditionValue: "1",
                     fields: [

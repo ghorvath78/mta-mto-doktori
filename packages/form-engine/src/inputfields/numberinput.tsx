@@ -11,7 +11,8 @@ export const NumberInput = ({
     inline = false,
     className = "",
     fractional = false,
-    readonly = false
+    readonly = false,
+    twoColumn = true
 }: {
     label: string;
     formData: FormData;
@@ -21,11 +22,12 @@ export const NumberInput = ({
     className?: string;
     fractional?: boolean;
     readonly?: boolean;
+    twoColumn?: boolean;
 }) => {
     const [value, setValue] = useAtom(formData[fieldKey]);
 
     const baseClass = inline ? "flex items-center space-x-2" : "";
-    const labelClass = inline ? "text-end w-1/4 leading-[0.95em]" : "";
+    const labelClass = inline ? (twoColumn ? "text-end w-1/4" : "") + " leading-[0.95em]" : "";
 
     const sanitize = (raw: string) => {
         if (!fractional) return raw.replaceAll(/\D+/g, "");
@@ -67,7 +69,7 @@ export const NumberInput = ({
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>
-            <InputGroup className="w-full border border-gray-300 rounded py-1 px-2 flex-3 h-9">
+            <InputGroup className="w-full border border-gray-300 rounded py-1 px-2 flex-3 h-9 min-w-16">
                 <InputGroupInput
                     className="h-[unset] px-0 py-0 md:text-base"
                     type="text"

@@ -67,3 +67,7 @@
 .formlink:hover {
     text-decoration: underline;
 }
+
+.formgroup + .formgroup {
+    @apply mt-2;
+}
