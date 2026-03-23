@@ -202,30 +202,53 @@ export const groupToPdfTableDefinition = async (
     options: Options = {}
 ): Promise<Content[]> => {
     const fields = group.fields || [];
-    const lengthAtom = formData[`${groupKeyPrefix}|_length`];
+    const lengthAtom = group.lengthSource ? formData[group.lengthSource] : formData[`${groupKeyPrefix}|_length`];
     const length = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 1;
     // create rows array
     const rows: TableCell[][] = Array.from({ length: length + 1 }, () => []);
-    for (const field of fields) {
-        const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
-        const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
-        rows[0].push({ text: fieldLabel, bold: true });
+    if (fields.length === 0 && group.attribs?.colNames) {
+        // this is a special case when the table was rendered as a "tabular list"
+        const colNames = String(group.attribs.colNames).split("|");
+        for (let i = 0; i < colNames.length; i++) {
+            rows[0].push({ text: colNames[i], bold: true });
+        }
         for (let index = 0; index < length; index++) {
-            const fieldValue = store.get(formData[fieldKey])[index];
-            if (field.type === "link") {
-                rows[index + 1].push({
-                    text: fieldValue ? "link" : "-",
-                    link: fieldValue || undefined,
-                    style: fieldValue ? "link" : undefined
-                });
-            } else {
-                rows[index + 1].push({ text: fieldValue || "-" });
+            for (let j = 0; j < colNames.length; j++) {
+                const fieldValue = store.get(formData[`${group.valueSource}|${colNames[j]}`])[index];
+                if (fieldValue && fieldValue.toString().startsWith("http")) {
+                    rows[index + 1].push({
+                        text: fieldValue ? "link" : "-",
+                        link: fieldValue || undefined,
+                        style: fieldValue ? "link" : undefined
+                    });
+                } else {
+                    rows[index + 1].push({ text: fieldValue || "-" });
+                }
+            }
+        }
+    } else {
+        for (const field of fields) {
+            const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
+            const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
+            rows[0].push({ text: fieldLabel, bold: true });
+            for (let index = 0; index < length; index++) {
+                const fieldValue = store.get(formData[fieldKey])[index];
+                if (field.type === "link" || fieldValue.startsWith("http")) {
+                    rows[index + 1].push({
+                        text: fieldValue ? "link" : "-",
+                        link: fieldValue || undefined,
+                        style: fieldValue ? "link" : undefined
+                    });
+                } else {
+                    rows[index + 1].push({ text: fieldValue || "-" });
+                }
             }
         }
     }
 
-    const colWidths = options.colWidths
-        ? String(options.colWidths)
+    const colSpec = options.colWidths ?? group.attribs?.colWidths;
+    const colWidths = colSpec
+        ? String(colSpec)
               .split(",")
               .map((width) => (width.includes("*") ? width.trim() : parseInt(width.trim())))
         : "*".repeat(fields.length).split("");
