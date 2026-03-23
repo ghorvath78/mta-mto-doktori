@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import "@repo/ui/index.css";
 import "@repo/form-engine/index.css";
 import { createForm } from "@repo/form-engine";
-import { eloterjesztoiFormInfo } from "./eloterjesztoiform";
+import { eloterjesztoiFormInfo } from "./eloterjesztoiform.tsx";
 
 const rootComponent = createForm(eloterjesztoiFormInfo);
 

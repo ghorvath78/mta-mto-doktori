@@ -1,5 +1,6 @@
 import {
     atomsToJSON,
+    getPdfDocumentStyles,
     getPdfSection,
     getScientometricsPdfSection,
     loadMTMTCitations,
@@ -11,8 +12,6 @@ import {
     type FormDescriptor
 } from "@repo/form-engine";
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
-
-declare const BUILD_DATE: string;
 
 export const savePDF = async (descriptor: FormDescriptor, formData: FormData) => {
     const doktoriMuSection = [];
@@ -41,6 +40,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
         .filter((h) => h) as string[];
 
     const docDefinition: TDocumentDefinitions = {
+        ...getPdfDocumentStyles(),
         content: [
             { text: "MTA Műszaki Tudományok Osztálya", italics: true },
             { text: "KÉRELMEZŐI ADATLAP", style: "header" },
@@ -184,86 +184,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
                 pageBreak: "before"
             },
             ...getScientometricsPdfSection()
-        ],
-        defaultStyle: {
-            fontSize: 11,
-            marginLeft: 20
-        },
-        styles: {
-            header: {
-                fontSize: 14,
-                bold: true,
-                alignment: "center",
-                marginTop: 20,
-                marginBottom: 20
-            },
-            section: {
-                fontSize: 12,
-                bold: true,
-                decoration: "underline",
-                marginTop: 15,
-                marginBottom: 5
-            },
-            subsection: {
-                fontSize: 11,
-                bold: true,
-                decoration: "underline",
-                marginTop: 10,
-                marginBottom: 0,
-                marginLeft: 10
-            },
-            grouplabel: {
-                fontSize: 11,
-                bold: true,
-                marginTop: 10,
-                marginBottom: 5,
-                marginLeft: 10
-            },
-            nodata: {
-                fontSize: 11,
-                italics: true,
-                marginLeft: 20,
-                marginTop: 10,
-                marginBottom: 5,
-                color: "gray"
-            },
-            tableHeader: { bold: true, fontSize: 9, fillColor: "#dddddd" },
-            subTableHeader: { bold: true, fontSize: 9, fillColor: "#dddddd" },
-            tableBody: { fontSize: 9 },
-            tableLink: { fontSize: 9, color: "blue", decoration: "underline" },
-            tableSummaryHeader: { bold: true, fontSize: 9, fillColor: "#dddddd" },
-            tableSummaryData: { bold: true, fontSize: 9, fillColor: "#dddddd" },
-            link: { color: "blue", decoration: "underline" },
-            authors: { fontSize: 10 },
-            title: { italics: true, fontSize: 11 },
-            info: { fontSize: 10 }
-        },
-        // add/adjust pageMargins if needed:
-        pageMargins: [40, 60, 40, 50],
-        footer: (currentPage: number) => {
-            return {
-                table: {
-                    widths: [500, "*"],
-                    body: [
-                        [
-                            {
-                                text: `Exportálás időpontja: ${new Date().toLocaleString("hu-HU")}  szoftver verzió: v${BUILD_DATE}`,
-                                fontSize: 8,
-                                margin: [40, 0, 0, 0],
-                                alignment: "left"
-                            },
-                            {
-                                text: `${currentPage}`,
-                                fontSize: 8,
-                                alignment: "right",
-                                margin: [0, 0, 40, 0]
-                            }
-                        ]
-                    ]
-                },
-                layout: "noBorders"
-            };
-        }
+        ]
     };
 
     const mtmtData = await collectMTMTDataToSave(descriptor, formData);

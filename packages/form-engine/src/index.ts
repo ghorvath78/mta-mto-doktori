@@ -5,5 +5,5 @@ export { createAtomsFromDescriptor, atomsToJSON, atomsFromJSON, getByPath } from
 export type { FormDescriptor, FormData, FormInfo, FieldDescriptor, GroupDescriptor } from "./forms.ts";
 export { invertedText, cD } from "./utils.tsx";
 export { readJsonFromPdf, chooseAndLoadPdf, chooseAndLoadJSON } from "./pdfloader.ts";
-export { getPdfSection, getScientometricsPdfSection, groupToPdfDocDefinition, groupToPdfTableDefinition, savePdfWithFormData } from "./pdftools.ts";
+export * from "./pdftools.ts";
 export * from "./mtmt.ts";

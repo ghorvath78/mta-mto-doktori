@@ -1,32 +1,32 @@
 import type { PageDescriptor } from "@repo/form-engine";
 import { applicantDataLoaded } from "./atoms";
 
-export const osszesites: PageDescriptor = {
-    key: "A tudományos minimumkövetelmények teljesítésének összesítése",
+export const osszefoglalo: PageDescriptor = {
+    key: "Összefoglaló javaslat",
     enabledAtom: applicantDataLoaded,
     sections: [
         {
-            key: "Összesítés",
-            label: "A tudományos minimumkövetelmények teljesítésének összesítése",
+            key: "Összefoglaló javaslat",
+            label: "Összefoglaló javaslat: A kérelmező doktori habitusának megítélése",
             attribs: {
                 important: true,
                 alwaysOpen: true
             },
             groups: [
                 {
-                    key: "Összesítés",
+                    key: "Összefoglaló javaslat",
                     fields: [
                         {
-                            key: "Minden követelmény teljesül",
-                            label: "Az előterjesztő véleménye szerint a kérelmező maradéktalanul teljesítette a minimumkövetelményeket",
+                            key: "Javaslat",
+                            label: "Az előterjesztő a doktori értekezés bírálatra bocsátását javasolja",
                             type: "decisionYesNo"
                         },
                         {
-                            key: "Indoklás",
-                            label: "A nem teljesült minimumkövetelmények indoklása legfeljebb 1500 karakterben",
+                            key: "A vélemény összegző értékelése",
+                            label: "A vélemény összegző értékelése, konkrét indoklása, legfeljebb 2500 karakter terjedelemben",
                             type: "decisionText",
                             attribs: {
-                                maxLength: 1500,
+                                maxLength: 2500,
                                 rows: 6
                             }
                         }

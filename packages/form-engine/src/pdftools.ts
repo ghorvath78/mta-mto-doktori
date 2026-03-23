@@ -15,6 +15,8 @@ export function removeSpecialUtf8KeepAccents(input: string): string {
         .trim();
 }
 
+declare const BUILD_DATE: string;
+
 export const groupToPdfDocDefinition = async (
     label: string,
     group: GroupDescriptor,
@@ -27,7 +29,7 @@ export const groupToPdfDocDefinition = async (
     const fields = group.fields || [];
     const groupKeyPrefix = `${keyPrefix}|${group.key}`;
     for (const field of fields) {
-        const fieldKey = `${groupKeyPrefix}|${field.key}`;
+        const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
         const fieldValue = store.get(formData[fieldKey])[index];
         const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
         // handle conditional fields
@@ -91,6 +93,13 @@ export const groupToPdfDocDefinition = async (
             case "longtext":
                 body.push([{ colSpan: 2, text: fieldLabel }, { text: "" }]);
                 body.push([{ colSpan: 2, text: fieldValue || "-", margin: [0, 0, 0, 10], border: [true, true, true, true] }, { text: "" }]);
+                break;
+            case "decisionText":
+                body.push([{ colSpan: 2, text: fieldLabel, bold: true, italics: true }, { text: "" }]);
+                body.push([{ colSpan: 2, text: fieldValue || "-", margin: [0, 0, 0, 10], border: [true, true, true, true] }, { text: "" }]);
+                break;
+            case "decisionYesNo":
+                body.push([{ colSpan: 2, text: `${fieldLabel} ${fieldValue.toUpperCase() || "-"}`, bold: true, italics: true }, { text: "" }]);
                 break;
             case "mtmtCitation":
             case "mtmtPub": {
@@ -198,7 +207,7 @@ export const groupToPdfTableDefinition = async (
     // create rows array
     const rows: TableCell[][] = Array.from({ length: length + 1 }, () => []);
     for (const field of fields) {
-        const fieldKey = `${groupKeyPrefix}|${field.key}`;
+        const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
         const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
         rows[0].push({ text: fieldLabel, bold: true });
         for (let index = 0; index < length; index++) {
@@ -258,12 +267,12 @@ export const getPdfSection = async (
             const isVisible = val && parseInt(val[0]) >= parseInt(group.conditionValue ?? "0");
             if (!isVisible) continue;
         }
-        const lengthAtom = formData[`${groupKeyPrefix}|_length`];
+        const lengthAtom = group.lengthSource ? formData[group.lengthSource] : formData[`${groupKeyPrefix}|_length`];
         const length = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 1;
         if (group.isArray !== true && options.hideEmptyGroup === "true") {
             let isEmpty = true;
             for (const field of group.fields || []) {
-                const fieldKey = `${groupKeyPrefix}|${field.key}`;
+                const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
                 const values = store.get(formData[fieldKey]);
                 for (let i = 0; i < length; i++) {
                     if (values[i] && values[i].toString().trim() !== "") {
@@ -470,6 +479,102 @@ export const getScientometricsPdfSection = (): Content[] => {
     content.push(table1);
     return content;
 };
+
+export function getPdfDocumentStyles(): TDocumentDefinitions {
+    return {
+        content: [],
+        defaultStyle: {
+            fontSize: 11,
+            marginLeft: 20
+        },
+        styles: {
+            header: {
+                fontSize: 14,
+                bold: true,
+                alignment: "center",
+                marginTop: 20,
+                marginBottom: 20
+            },
+            header_center_title: {
+                fontSize: 12,
+                bold: true,
+                alignment: "center"
+            },
+            header_center_data: {
+                fontSize: 12,
+                alignment: "center",
+                marginTop: 10,
+                marginBottom: 10
+            },
+            section: {
+                fontSize: 12,
+                bold: true,
+                decoration: "underline",
+                marginTop: 15,
+                marginBottom: 5
+            },
+            subsection: {
+                fontSize: 11,
+                bold: true,
+                decoration: "underline",
+                marginTop: 10,
+                marginBottom: 0,
+                marginLeft: 10
+            },
+            grouplabel: {
+                fontSize: 11,
+                bold: true,
+                marginTop: 10,
+                marginBottom: 5,
+                marginLeft: 10
+            },
+            nodata: {
+                fontSize: 11,
+                italics: true,
+                marginLeft: 20,
+                marginTop: 10,
+                marginBottom: 5,
+                color: "gray"
+            },
+            tableHeader: { bold: true, fontSize: 9, fillColor: "#dddddd" },
+            subTableHeader: { bold: true, fontSize: 9, fillColor: "#dddddd" },
+            tableBody: { fontSize: 9 },
+            tableLink: { fontSize: 9, color: "blue", decoration: "underline" },
+            tableSummaryHeader: { bold: true, fontSize: 9, fillColor: "#dddddd" },
+            tableSummaryData: { bold: true, fontSize: 9, fillColor: "#dddddd" },
+            link: { color: "blue", decoration: "underline" },
+            authors: { fontSize: 10 },
+            title: { italics: true, fontSize: 11 },
+            info: { fontSize: 10 }
+        },
+        // add/adjust pageMargins if needed:
+        pageMargins: [40, 60, 40, 50],
+        footer: (currentPage: number) => {
+            return {
+                table: {
+                    widths: [500, "*"],
+                    body: [
+                        [
+                            {
+                                text: `Exportálás időpontja: ${new Date().toLocaleString("hu-HU")}  szoftver verzió: v${BUILD_DATE}`,
+                                fontSize: 8,
+                                margin: [40, 0, 0, 0],
+                                alignment: "left"
+                            },
+                            {
+                                text: `${currentPage}`,
+                                fontSize: 8,
+                                alignment: "right",
+                                margin: [0, 0, 40, 0]
+                            }
+                        ]
+                    ]
+                },
+                layout: "noBorders"
+            };
+        }
+    };
+}
 
 export function savePdfWithFormData(docDefinition: TDocumentDefinitions, fileName: string, jsonsToEmbed: { [filename: string]: string }) {
     const fonts = {

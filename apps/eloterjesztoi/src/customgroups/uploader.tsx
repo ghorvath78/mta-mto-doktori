@@ -1,7 +1,7 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@repo/ui";
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
-import { loadApplicantData } from "@/eloterjesztoiform";
+import { loadApplicantData } from "../eloterjesztoiform.tsx";
 import { getByPath, loadMTMTPublications, loadPubItemSummary } from "@repo/form-engine";
 import { readJsonFromPdf } from "@repo/form-engine";
 import { useAtomValue } from "jotai";

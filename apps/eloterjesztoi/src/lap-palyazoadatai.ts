@@ -9,7 +9,7 @@ export const palyazoAdatai: PageDescriptor = {
             key: "A pályázó személyes adatai",
             groups: [
                 {
-                    key: "Személyi adatok",
+                    key: "A pályázó személyes adatai",
                     noPersist: true,
                     fields: [
                         {
@@ -41,7 +41,7 @@ export const palyazoAdatai: PageDescriptor = {
             key: "Aktuális munkahelyek",
             groups: [
                 {
-                    key: "Aktuális munkahely",
+                    key: "Aktuális munkahelyek",
                     readonly: true,
                     isArray: true,
                     arrayAddLabel: "Új munkahely hozzáadása",
@@ -75,12 +75,12 @@ export const palyazoAdatai: PageDescriptor = {
             key: "A doktori mű",
             groups: [
                 {
-                    key: "A doktori mű adatai",
+                    key: "A doktori mű",
                     readonly: true,
                     noPersist: true,
                     fields: [
                         {
-                            key: "Doktori mű formája",
+                            key: "Formája",
                             type: "text",
                             helpText:
                                 "A doktori mű formája (pl. értekezés, rövid értekezés, monográfia vagy könyv. Vegye figyelembe, hogy különböző formájú művekre eltérő tudományos minimumkövetelmények vonatkoznak.",
@@ -89,12 +89,24 @@ export const palyazoAdatai: PageDescriptor = {
                             readonly: true
                         },
                         {
-                            key: "Doktori mű címe",
+                            key: "Címe",
                             type: "text",
                             helpText: "A doktori mű címe.",
                             valueSource: "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Címe",
                             readonly: true
-                        },
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            key: "A kérelmező által megnevezett szakterület és tudományos bizottság",
+            groups: [
+                {
+                    key: "A kérelmező által megnevezett szakterület és tudományos bizottság",
+                    readonly: true,
+                    noPersist: true,
+                    fields: [
                         {
                             key: "Szakterület",
                             type: "text",

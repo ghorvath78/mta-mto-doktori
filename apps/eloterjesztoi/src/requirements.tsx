@@ -1,5 +1,5 @@
 import { store } from "@repo/form-engine";
-import { eloterjesztoiFormData } from "./eloterjesztoiform";
+import { eloterjesztoiFormData } from "./eloterjesztoiform.tsx";
 
 export function getMinPaperQ(category: string) {
     switch (category) {
