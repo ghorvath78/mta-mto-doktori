@@ -208,7 +208,7 @@ export const tudomanymetria: PageDescriptor = {
             label: "I-szám: A kérelmező idézettsége",
             groups: [
                 {
-                    key: "Táblázat",
+                    key: "I-szám",
                     fields: [
                         {
                             key: "Független idézők száma",

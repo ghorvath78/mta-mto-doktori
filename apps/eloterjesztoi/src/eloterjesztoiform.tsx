@@ -86,10 +86,10 @@ export async function loadApplicantData(data: Record<string, unknown>) {
     const sciMetrics = JSON.parse(
         getByPath(data, "Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") as string
     );
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|Független idézők száma"], [sciMetrics[9][0] || "0"]);
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|I-szám"], [sciMetrics[10][0] || "0"]);
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|WoS idézők száma"], [sciMetrics[11][0] || "0"]);
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|H-index"], [sciMetrics[12][0] || "0"]);
+    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|Független idézők száma"], [sciMetrics[9][0] || "0"]);
+    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"], [sciMetrics[10][0] || "0"]);
+    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|WoS idézők száma"], [sciMetrics[11][0] || "0"]);
+    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|H-index"], [sciMetrics[12][0] || "0"]);
 
     // load 5 most important citations
     const summaryCache = store.get(mtmtPubSummaryCacheAtom);

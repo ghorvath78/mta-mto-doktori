@@ -9,7 +9,7 @@ export const IScoreSummary = ({ formData }: { field: FieldDescriptor; formData: 
             "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
         ] || [""]
     )[0];
-    const iScore = parseInt(useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|I-szám"] || [0])[0]);
+    const iScore = parseInt(useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"] || [0])[0]);
     const minIScore = getMinTotalI(category);
 
     console.log("IScoreSummary: category =", category, "iScore =", iScore, "minIScore =", minIScore);

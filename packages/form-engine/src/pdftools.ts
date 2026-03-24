@@ -29,6 +29,7 @@ export const groupToPdfDocDefinition = async (
     const fields = group.fields || [];
     const groupKeyPrefix = `${keyPrefix}|${group.key}`;
     for (const field of fields) {
+        if (field.type === "custom") continue;
         const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
         const fieldValue = store.get(formData[fieldKey])[index];
         const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";

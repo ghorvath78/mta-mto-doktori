@@ -12,7 +12,7 @@ export const ItemizedRequirements = ({ formData }: { group: GroupDescriptor; for
     )[0];
     const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
     const data = JSON.parse(rawData[0] || "[]");
-    const iScore = parseInt(useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|Táblázat|I-szám"] || [0])[0]);
+    const iScore = parseInt(useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"] || [0])[0]);
 
     const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
     const paperQValue = cD(data[1][6]) + cD(data[4][6]);

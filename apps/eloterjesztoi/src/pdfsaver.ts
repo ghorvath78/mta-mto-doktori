@@ -1,5 +1,6 @@
-import { atomsToJSON, getPdfDocumentStyles, getPdfSection, savePdfWithFormData, store, type FormData, type FormDescriptor } from "@repo/form-engine";
-import type { TDocumentDefinitions } from "pdfmake/interfaces";
+import { atomsToJSON, cD, getPdfDocumentStyles, getPdfSection, savePdfWithFormData, store, type FormData, type FormDescriptor } from "@repo/form-engine";
+import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
+import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ } from "./requirements";
 
 declare const BUILD_DATE: string;
 
@@ -37,6 +38,20 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             { text: "B. A benyújtott doktori mű formai alkalmassága", style: "section" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Pályázó adatai|Alkalmasság", ""),
             { text: "C. A tudományos minimumkövetelmények teljesítésének ellenőrzése", style: "section" },
+            { text: "1. A kérelmező publikációs és alkotási teljesítménye (Q-szám)", style: "subsection" },
+            getQScoringTableSection(formData),
+            { text: "Q értékszám összesítő", style: "grouplabel" },
+            getQScoreSummarySection(formData),
+            { text: "2. A kérelmező idézettsége (I-szám)", style: "subsection" },
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos minimumkövetelmények|I-szám", ""),
+            getIScoreSummarySection(formData),
+            { text: "3. A tételes publikációs elvárások teljesülése", style: "subsection" },
+            await getItemizedRequirementsSection(descriptor, formData),
+
+            { text: "A kérelmező öt legfontosabb publikációja", style: "grouplabel" },
+            await getPdfSection(descriptor, formData, "Kérelmezői|Legfontosabb publikációk|Öt legfontosabb publikáció", "", { bibIndex: "true", bibLabel: "" }),
+
+            { text: "4. A tudományos közéleti tevékenység értékelése", style: "subsection" },
             { text: "4.1. TDK témavezetés", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
                 useGroupLabelAsHeader: "true"
@@ -98,4 +113,311 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
     };
 
     savePdfWithFormData(docDefinition, "eloterjesztoi_adatlap.pdf", { "eloterjeszto_form.json": JSON.stringify(atomsToJSON(formData), null, 4) });
+};
+
+const getQScoringTableSection = (formData: FormData): Content => {
+    const rawDataAtom = formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"];
+    const rawData = rawDataAtom ? store.get(rawDataAtom) : [];
+    const data = JSON.parse(rawData[0] || "[]");
+
+    const d = (row: number, col: number) => cD(data[row]?.[col] ?? 0);
+
+    const tableBody = [
+        [
+            { text: "Tudományos folyóiratcikk", bold: true, fillColor: "#dddddd" },
+            { text: "darab", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "pontszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+        ],
+        [
+            { text: "Lektorált folyóiratcikk" },
+            { text: String(d(1, 0) + d(1, 2) + d(1, 4)), alignment: "center" as const },
+            { text: String(d(1, 6)), alignment: "center" as const }
+        ],
+        [{ text: "Lektorált folyóirat cikk IF-ral" }, { text: String(d(2, 0) + d(2, 2) + d(2, 4)), alignment: "center" as const }, { text: "" }],
+        [{ text: "Lektorált folyóirat egyszerzős IF-os cikk" }, { text: String(d(3, 0) + d(3, 2) + d(3, 4)), alignment: "center" as const }, { text: "" }],
+        [
+            { text: "Konferenciacikk konferenciakötetben, folyóiratban, könyvrészletben" },
+            { text: String(d(4, 0) + d(4, 2) + d(4, 4)), alignment: "center" as const },
+            { text: String(d(4, 6)), alignment: "center" as const }
+        ],
+        [
+            { text: "Tudományos folyóirat és konferenciacikk Q érték", bold: true, colSpan: 2 },
+            { text: "" },
+            { text: String(d(1, 6) + d(4, 6)), bold: true, alignment: "center" as const }
+        ]
+    ];
+
+    const tableBody2 = [
+        [
+            { text: "Tudományos könyv, könyvrészlet szerzőként", bold: true, fillColor: "#dddddd" },
+            { text: "darab", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "pontszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+        ],
+        [
+            { text: "Könyv" },
+            { text: String(d(6, 0) + d(6, 2) + d(6, 4)), alignment: "center" as const },
+            { text: String(d(6, 6)), alignment: "center" as const }
+        ],
+        [
+            { text: "Könyvrészlet" },
+            { text: String(d(7, 0) + d(7, 2) + d(7, 4)), alignment: "center" as const },
+            { text: String(d(7, 6)), alignment: "center" as const }
+        ],
+        [
+            { text: "Tudományos könyv és könyvrészlet Q érték", bold: true, colSpan: 2 },
+            { text: "" },
+            { text: String(d(6, 6) + d(7, 6)), bold: true, alignment: "center" as const }
+        ]
+    ];
+
+    return [
+        {
+            margin: [20, 5, 0, 0],
+            table: { widths: ["*", 50, 50], body: tableBody }
+        },
+        {
+            margin: [20, 10, 0, 0],
+            table: { widths: ["*", 50, 50], body: tableBody2 }
+        }
+    ] as Content;
+};
+
+const getQScoreSummarySection = (formData: FormData): Content => {
+    const achievementQAtom = formData["Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám"];
+    const achievementQ = achievementQAtom ? store.get(achievementQAtom) : [];
+    const categoryAtom =
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ];
+    const category = categoryAtom ? (store.get(categoryAtom)[0] ?? "") : "";
+    const rawDataAtom = formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"];
+    const rawData = rawDataAtom ? store.get(rawDataAtom) : [];
+    const data = JSON.parse(rawData[0] || "[]");
+
+    const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
+    const paperQValue = cD(data[1]?.[6]) + cD(data[4]?.[6]);
+    const bookQValue = cD(data[6]?.[6]) + cD(data[7]?.[6]);
+
+    const minPaperQ = getMinPaperQ(category);
+    const maxBookQ = getMaxBookQ();
+    const maxAchievementQ = getMaxAchievementQ(category);
+    const totalQ = paperQValue + Math.min(bookQValue, maxBookQ) + Math.min(achievementQValue, maxAchievementQ);
+    const minTotalQ = getMinTotalQ(category);
+    const satisfied = totalQ >= minTotalQ;
+
+    const tableBody = [
+        [
+            { text: "Összetevői", bold: true, fillColor: "#dddddd" },
+            { text: "Előírt", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "Elért", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "Figyelembe vehető", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+        ],
+        [
+            { text: "Tudományos cikk" },
+            { text: `minimum ${minPaperQ}`, alignment: "center" as const },
+            { text: String(paperQValue), alignment: "center" as const },
+            { text: String(paperQValue), alignment: "center" as const }
+        ],
+        [
+            { text: "Tudományos könyv, könyvrészlet" },
+            { text: `maximum ${maxBookQ}`, alignment: "center" as const },
+            { text: String(bookQValue), alignment: "center" as const },
+            { text: String(Math.min(bookQValue, maxBookQ)), alignment: "center" as const }
+        ],
+        [
+            { text: "Kiemelkedő alkotás" },
+            { text: `maximum ${maxAchievementQ}`, alignment: "center" as const },
+            { text: String(achievementQValue), alignment: "center" as const },
+            { text: String(Math.min(achievementQValue, maxAchievementQ)), alignment: "center" as const }
+        ],
+        [{ text: "Összesen", bold: true }, { text: "" }, { text: "" }, { text: String(totalQ), bold: true, alignment: "center" as const }]
+    ];
+
+    const summaryBody = [
+        [
+            { text: "A kérelmező által elért publikációs (alkotási, Q) érték:", bold: true },
+            { text: String(totalQ), bold: true, alignment: "center" as const }
+        ],
+        [
+            { text: "Minimum követelmény (Qmin):", bold: true },
+            { text: String(minTotalQ), bold: true, alignment: "center" as const }
+        ],
+        [
+            { text: "A kérelmező teljesítette a Q \u2265 Qmin követelményt:", bold: true },
+            { text: satisfied ? "IGEN" : "NEM", bold: true, alignment: "center" as const, fillColor: "#000000", color: "#ffffff" }
+        ]
+    ];
+
+    return [
+        {
+            margin: [20, 5, 0, 0],
+            table: { widths: ["*", 80, 50, 80], body: tableBody }
+        },
+        {
+            margin: [20, 10, 0, 0],
+            table: { widths: ["*", 80], body: summaryBody }
+        }
+    ] as Content;
+};
+
+const getIScoreSummarySection = (formData: FormData): Content => {
+    const categoryAtom =
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ];
+    const category = categoryAtom ? (store.get(categoryAtom)[0] ?? "") : "";
+    const iScoreAtom = formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"];
+    const iScore = parseInt(iScoreAtom ? (store.get(iScoreAtom)[0] ?? "0") : "0");
+    const minIScore = getMinTotalI(category);
+    const satisfied = iScore >= minIScore;
+    return {
+        text: [
+            "A kérelmező teljesítette az I \u2265 Imin követelményt: ",
+            { text: satisfied ? "IGEN" : "NEM", bold: true, background: "#000000", color: "#ffffff" }
+        ],
+        bold: true,
+        margin: [20, 5, 0, 5]
+    };
+};
+
+const getItemizedRequirementsSection = async (_descriptor: FormDescriptor, formData: FormData): Promise<Content[]> => {
+    const achievementQAtom = formData["Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám"];
+    const achievementQ = achievementQAtom ? store.get(achievementQAtom) : [];
+    const categoryAtom =
+        formData[
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+        ];
+    const category = categoryAtom ? (store.get(categoryAtom)[0] ?? "") : "";
+    const rawDataAtom = formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"];
+    const rawData = rawDataAtom ? store.get(rawDataAtom) : [];
+    const data = JSON.parse(rawData[0] || "[]");
+    const iScoreAtom = formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"];
+    const iScore = parseInt(iScoreAtom ? (store.get(iScoreAtom)[0] ?? "0") : "0");
+    const phdStudentsAtom =
+        formData["Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma"];
+    const phdStudents = cD(phdStudentsAtom ? (store.get(phdStudentsAtom)[0] ?? 0) : 0);
+
+    const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
+    const paperQValue = cD(data[1]?.[6]) + cD(data[4]?.[6]);
+    const bookQValue = cD(data[6]?.[6]) + cD(data[7]?.[6]);
+
+    const minPaperQ = getMinPaperQ(category);
+    const maxBookQ = getMaxBookQ();
+    const maxAchievementQ = getMaxAchievementQ(category);
+    const minIScore = getMinTotalI(category);
+    const minTotalQ = getMinTotalQ(category);
+
+    const hunPapers = cD(data[13]?.[0] ?? 0);
+    const minHunPapers = 1;
+
+    const asIfPapers = cD(data[14]?.[0] ?? 0);
+    const minSaIfPhdSum = 2;
+
+    const ifPapers = cD(data[15]?.[0] ?? 0);
+    const relIf = cD(data[16]?.[0] ?? 0);
+    const wosCitations = cD(data[11]?.[0] ?? 0);
+    const hIndex = cD(data[12]?.[0] ?? 0);
+    const minHIndex = getMinHIndex(category);
+
+    const optionalSatisfied =
+        paperQValue >= minPaperQ * 1.5 || bookQValue >= maxBookQ * 1.5 || achievementQValue >= maxAchievementQ * 1.5 || iScore >= 1.5 * minIScore;
+
+    const allSatisfied =
+        paperQValue >= minPaperQ &&
+        optionalSatisfied &&
+        hunPapers >= minHunPapers &&
+        asIfPapers + phdStudents >= minSaIfPhdSum &&
+        ifPapers >= minTotalQ * 0.5 &&
+        relIf >= minTotalQ * 0.25 &&
+        hIndex >= minHIndex &&
+        wosCitations >= minIScore * 0.5;
+
+    const check = (ok: boolean) => ({ text: ok ? "✓" : "✗", alignment: "center" as const });
+    const num = (v: number) => ({ text: String(v), alignment: "center" as const });
+
+    const tableBody = [
+        [
+            { text: "", bold: true, fillColor: "#dddddd" },
+            { text: "Tételes publikációs elvárások", bold: true, fillColor: "#dddddd" },
+            { text: "Saját", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "Minimum", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "Teljesül", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+        ],
+        [
+            { text: "1." },
+            { text: "A Q érték cikkekre külön is érje el a cikkekre előírt minimumot" },
+            num(paperQValue),
+            num(minPaperQ),
+            check(paperQValue >= minPaperQ)
+        ],
+        [
+            { text: "2.a." },
+            { text: "Cikkekre érjen el szignifikánsan (≥ 50%-kal) nagyobb Q értéket" },
+            num(paperQValue),
+            num(minPaperQ * 1.5),
+            { ...check(optionalSatisfied), rowSpan: 4 }
+        ],
+        [{ text: "2.b." }, { text: "Könyvekre érjen el szignifikánsan (≥ 50%-kal) nagyobb Q értéket" }, num(bookQValue), num(maxBookQ * 1.5), { text: "" }],
+        [
+            { text: "2.c." },
+            { text: "Alkotásokra érjen el szignifikánsan (≥ 50%-kal) nagyobb Q értéket" },
+            num(achievementQValue),
+            num(maxAchievementQ * 1.5),
+            { text: "" }
+        ],
+        [{ text: "2.d." }, { text: "Idézettségre érjen el szignifikánsan (≥ 50%-kal) nagyobb értéket" }, num(iScore), num(minIScore * 1.5), { text: "" }],
+        [
+            { text: "3." },
+            { text: "A magyar állampolgároknak legyen magyar nyelvű publikációja is" },
+            num(hunPapers),
+            num(minHunPapers),
+            check(hunPapers >= minHunPapers)
+        ],
+        [
+            { text: "4." },
+            { text: "Az egyszerzős IF-os cikkeinek és a sikeresen védett PhD/DLA hallgatói darabszámainak összege legyen legalább 2" },
+            num(asIfPapers + phdStudents),
+            num(minSaIfPhdSum),
+            check(asIfPapers + phdStudents >= minSaIfPhdSum)
+        ],
+        [
+            { text: "5." },
+            { text: "Az IF-os cikkeinek száma (a szerzők számával nem kell osztani) legyen legalább 0,5 Qmin" },
+            num(ifPapers),
+            num(minTotalQ * 0.5),
+            check(ifPapers >= minTotalQ * 0.5)
+        ],
+        [
+            { text: "6." },
+            { text: "A viszonyított IF-számok összege legyen legalább 0,25 Qmin" },
+            num(relIf),
+            num(minTotalQ * 0.25),
+            check(relIf >= minTotalQ * 0.25)
+        ],
+        [
+            { text: "7." },
+            { text: "A WoS-ben megjelent hivatkozásainak darabszáma legyen legalább 0,5 Imin" },
+            num(wosCitations),
+            num(minIScore * 0.5),
+            check(wosCitations >= minIScore * 0.5)
+        ],
+        [{ text: "8." }, { text: "MTMT-ben szereplő független hivatkozásokból számolt Hirsch-indexe" }, num(hIndex), num(minHIndex), check(hIndex >= minHIndex)]
+    ];
+
+    return [
+        {
+            margin: [20, 5, 0, 0],
+            table: {
+                widths: [30, "*", 50, 50, 45],
+                body: tableBody
+            }
+        },
+        {
+            text: [
+                "A kérelmező maradéktalanul teljesítette a tételes publikációs elvárásokat: ",
+                { text: allSatisfied ? "IGEN" : "NEM", bold: true, background: "#000000", color: "#ffffff" }
+            ],
+            margin: [20, 5, 0, 5]
+        }
+    ];
 };
