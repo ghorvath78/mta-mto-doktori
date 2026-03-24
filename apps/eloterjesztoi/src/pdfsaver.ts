@@ -39,56 +39,39 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             { text: "C. A tudományos minimumkövetelmények teljesítésének ellenőrzése", style: "section" },
             { text: "4.1. TDK témavezetés", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
-                tableGroup: "Lista",
                 useGroupLabelAsHeader: "true"
             }),
             { text: "4.2. Részvétel graduális és doktori képzésben (tárgyelőadó, tárgyfelelős)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", "", {
-                tableGroup: "Lista"
-            }),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", ""),
             { text: "4.3. Részvétel doktori témavezetésben (fokozatot szerzett hallgatók)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", "", {
-                tableGroup: "Lista"
-            }),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók", ""),
             { text: "4.4. Részvétel tudományos zsűriben, kuratóriumban, bírálatokban", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban",
-                "",
-                {
-                    tableGroup: "Lista"
-                }
+                ""
             ),
             { text: "4.5. Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében, plenáris előadások", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében",
-                "",
-                {
-                    tableGroup: "Lista"
-                }
+                ""
             ),
             { text: "4.6. Tisztség, kiemelt/választott tagság hazai és/vagy nemzetközi tudományos szervezetben", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben",
-                "",
-                {
-                    tableGroup: "Lista"
-                }
+                ""
             ),
             { text: "4.7. Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig",
-                "",
-                {
-                    tableGroup: "Lista"
-                }
+                ""
             ),
             { text: "4.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", "", {
@@ -96,22 +79,15 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
                 hideEmptyGroup: "true"
             }),
             { text: "4.9. Elnyert tudományos pályázat (témavezető, résztvevő)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat", "", {
-                tableGroup: "Lista"
-            }),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat", ""),
             { text: "4.10. Külföldi tartózkodás", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Külföldi tartózkodás", "", {
-                tableGroup: "Lista"
-            }),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
             { text: "4.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés",
-                "",
-                {
-                    tableGroup: "Lista"
-                }
+                ""
             ),
             { text: "5. A tudományos minimumkövetelmények teljesítésének összesítése", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|A tudományos minimumkövetelmények teljesítésének összesítése|Összesítés", ""),

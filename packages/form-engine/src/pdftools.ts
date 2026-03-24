@@ -43,7 +43,9 @@ export const groupToPdfDocDefinition = async (
             case "select":
             case "number":
             case "selectAddOther":
-                if (field.attribs?.inline && field.attribs.inline === "false") {
+                if (field.attribs?.noAlign) {
+                    body.push([{ colSpan: 2, text: `${fieldLabel} ${fieldValue || "-"}` }, { text: "" }]);
+                } else if (field.attribs?.inline === "false") {
                     body.push([{ colSpan: 2, text: fieldLabel }, { text: "" }]);
                     body.push([{ colSpan: 2, text: fieldValue || "-", margin: [0, 0, 0, 0], border: [true, true, true, true] }, { text: "" }]);
                 } else {
@@ -51,21 +53,39 @@ export const groupToPdfDocDefinition = async (
                 }
                 break;
             case "link":
-                if (field.attribs?.inline && field.attribs.inline === "false") {
-                    body.push([{ colSpan: 2, text: fieldLabel }, { text: "" }]);
-                    body.push([
-                        { colSpan: 2, text: fieldValue || "-", margin: [0, 0, 0, 0], style: fieldValue ? "link" : undefined, border: [true, true, true, true] },
-                        { text: "" }
-                    ]);
-                } else {
-                    body.push([
-                        { text: fieldLabel },
-                        {
-                            text: fieldValue || "-",
-                            link: fieldValue || undefined,
-                            style: fieldValue ? "link" : undefined
-                        }
-                    ]);
+                {
+                    const linkText = fieldValue ? (field.attribs?.short ? "link" : fieldValue) : "-";
+                    if (field.attribs?.noAlign) {
+                        body.push([
+                            {
+                                colSpan: 2,
+                                text: [{ text: `${fieldLabel} ` }, { text: linkText, link: fieldValue || undefined, style: fieldValue ? "link" : undefined }]
+                            },
+                            { text: "" }
+                        ]);
+                    } else if (field.attribs?.inline === "false") {
+                        body.push([{ colSpan: 2, text: fieldLabel }, { text: "" }]);
+                        body.push([
+                            {
+                                colSpan: 2,
+                                text: linkText,
+                                link: fieldValue || undefined,
+                                margin: [0, 0, 0, 0],
+                                style: fieldValue ? "link" : undefined,
+                                border: [true, true, true, true]
+                            },
+                            { text: "" }
+                        ]);
+                    } else {
+                        body.push([
+                            { text: fieldLabel },
+                            {
+                                text: linkText,
+                                link: fieldValue || undefined,
+                                style: fieldValue ? "link" : undefined
+                            }
+                        ]);
+                    }
                 }
                 break;
             case "mtmtUser":
@@ -206,52 +226,28 @@ export const groupToPdfTableDefinition = async (
     const length = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 1;
     // create rows array
     const rows: TableCell[][] = Array.from({ length: length + 1 }, () => []);
-    if (fields.length === 0 && group.attribs?.colNames) {
-        // this is a special case when the table was rendered as a "tabular list"
-        const colNames = String(group.attribs.colNames).split("|");
-        for (let i = 0; i < colNames.length; i++) {
-            rows[0].push({ text: colNames[i], bold: true });
-        }
+
+    const colWidths: (string | number)[] = [];
+    for (const field of fields) {
+        const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
+        const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
+        rows[0].push({ text: fieldLabel, bold: true });
         for (let index = 0; index < length; index++) {
-            for (let j = 0; j < colNames.length; j++) {
-                const fieldValue = store.get(formData[`${group.valueSource}|${colNames[j]}`])[index];
-                if (fieldValue && fieldValue.toString().startsWith("http")) {
-                    rows[index + 1].push({
-                        text: fieldValue ? "link" : "-",
-                        link: fieldValue || undefined,
-                        style: fieldValue ? "link" : undefined
-                    });
-                } else {
-                    rows[index + 1].push({ text: fieldValue || "-" });
-                }
+            const fieldValue = store.get(formData[fieldKey])[index];
+            if (field.type === "link" || fieldValue.startsWith("http")) {
+                rows[index + 1].push({
+                    text: fieldValue ? "link" : "-",
+                    link: fieldValue || undefined,
+                    style: fieldValue ? "link" : undefined
+                });
+            } else {
+                rows[index + 1].push({ text: fieldValue || "-" });
             }
         }
-    } else {
-        for (const field of fields) {
-            const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
-            const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
-            rows[0].push({ text: fieldLabel, bold: true });
-            for (let index = 0; index < length; index++) {
-                const fieldValue = store.get(formData[fieldKey])[index];
-                if (field.type === "link" || fieldValue.startsWith("http")) {
-                    rows[index + 1].push({
-                        text: fieldValue ? "link" : "-",
-                        link: fieldValue || undefined,
-                        style: fieldValue ? "link" : undefined
-                    });
-                } else {
-                    rows[index + 1].push({ text: fieldValue || "-" });
-                }
-            }
-        }
+        const colWidth = field?.attribs?.colWidth ? String(field.attribs.colWidth) : "*";
+        colWidths.push(colWidth.includes("*") ? "*" : parseInt(colWidth));
     }
 
-    const colSpec = options.colWidths ?? group.attribs?.colWidths;
-    const colWidths = colSpec
-        ? String(colSpec)
-              .split(",")
-              .map((width) => (width.includes("*") ? width.trim() : parseInt(width.trim())))
-        : "*".repeat(fields.length).split("");
     const result: Content[] = [
         {
             layout: {
@@ -310,7 +306,7 @@ export const getPdfSection = async (
                 continue;
             }
         }
-        if (options.tableGroup && (options.tableGroup as string).includes(group.key)) {
+        if (group.attribs?.printTabular === true) {
             if (length === 0) rows.push({ text: "Nincs adat", style: "nodata" });
             else rows.push(...(await groupToPdfTableDefinition(String(label), group, formData, groupKeyPrefix, options)));
             continue;

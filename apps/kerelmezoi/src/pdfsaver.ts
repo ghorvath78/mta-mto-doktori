@@ -92,83 +92,47 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             { text: "8. A kérelmező tudományos közéleti tevékenysége", style: "section" },
             { text: "8.1. TDK témavezetés", style: "subsection" },
             await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
-                tableGroup: "Lista",
-                colWidths: "*,40,*,50,40",
                 useGroupLabelAsHeader: "true"
             }),
             { text: "8.2. Részvétel graduális és doktori képzésben (tárgyelőadó, tárgyfelelős)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", "", {
-                tableGroup: "Lista",
-                colWidths: "*,*,80,60,55"
-            }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", ""),
             { text: "8.3. Részvétel doktori témavezetésben (fokozatot szerzett hallgatók)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók", "", {
-                tableGroup: "Lista",
-                colWidths: "*,80,*,80"
-            }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók", ""),
             { text: "8.4. Részvétel tudományos zsűriben, kuratóriumban, bírálatokban", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban",
-                "",
-                {
-                    tableGroup: "Lista",
-                    colWidths: "*,60,*,80"
-                }
+                ""
             ),
             { text: "8.5. Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében, plenáris előadások", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében",
-                "",
-                {
-                    tableGroup: "Lista",
-                    colWidths: "*,80,100,60"
-                }
+                ""
             ),
             { text: "8.6. Tisztség, kiemelt/választott tagság hazai és/vagy nemzetközi tudományos szervezetben", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben",
-                "",
-                {
-                    tableGroup: "Lista",
-                    colWidths: "*,60,60,90,80"
-                }
+                ""
             ),
             { text: "8.7. Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", "", {
-                tableGroup: "Lista",
-                colWidths: "*,60,60,90,80"
-            }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", ""),
             { text: "8.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", "", {
-                firstColWidth: "200",
-                hideEmptyGroup: "true"
-            }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", ""),
             { text: "8.9. Elnyert tudományos pályázat (témavezető, résztvevő)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat (témavezető, résztvevő)", "", {
-                tableGroup: "Lista",
-                colWidths: "*,70,60,60,80"
-            }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat (témavezető, résztvevő)", ""),
             { text: "8.10. Külföldi tartózkodás", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás", "", {
-                tableGroup: "Lista",
-                colWidths: "*,85,85,90"
-            }),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
             { text: "8.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés",
-                "",
-                {
-                    tableGroup: "Lista",
-                    colWidths: "*,*,90,90"
-                }
+                ""
             ),
             { text: "9. A doktori címet megalapozó tudományos munkásság rövid összefoglalója", style: "section" },
             await getPdfSection(descriptor, formData, "Kérelmezői|Munkásság összefoglalása|Összefoglaló szövege", "", { nolabel: "true" }),

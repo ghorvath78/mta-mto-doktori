@@ -15,26 +15,44 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új TDK témavezetés hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "Hallgató neve",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "OTDK éve",
-                            type: "year"
+                            type: "year",
+                            attribs: {
+                                colWidth: "40"
+                            }
                         },
                         {
                             key: "OTDK szekció",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Helyezés",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "50"
+                            }
                         },
                         {
                             key: "Igazoló link",
-                            type: "link"
+                            type: "link",
+                            attribs: {
+                                colWidth: "40"
+                            }
                         }
                     ]
                 },
@@ -76,34 +94,50 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új részvétel hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "Intézmény és szervezeti egység",
                             helpText: "Az intézmény neve mellett a kart is kérjük megadni.",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Tantárgy neve",
                             helpText: "A tantárgy teljes neve.",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Oktatói munka jellege",
                             helpText: "Jelölje, milyen jellegű oktatói munkát végzett (pl. tárgy kidolgozása, tárgyfelelős, előadó, gyakorlatvezető stb.).",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         },
                         {
                             key: "Képzési szint",
                             type: "select",
                             value: "alapképzés",
                             attribs: {
-                                options: ["alapképzés", "mesterképzés", "osztatlan képzés", "doktori képzés"]
+                                options: ["alapképzés", "mesterképzés", "osztatlan képzés", "doktori képzés"],
+                                colWidth: "60"
                             }
                         },
                         {
                             key: "Időszak",
                             type: "yearRange",
-                            helpText: "Az oktatói munka időszaka (kezdő és befejező év)."
+                            helpText: "Az oktatói munka időszaka (kezdő és befejező év).",
+                            attribs: {
+                                colWidth: "55"
+                            }
                         }
                     ]
                 },
@@ -138,26 +172,39 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új témavezetés hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "Hallgató neve",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Témavezetés",
                             type: "select",
                             value: "egyéni témavezető",
                             attribs: {
-                                options: ["egyéni témavezető", "társtémavezető"]
+                                options: ["egyéni témavezető", "társtémavezető"],
+                                colWidth: "*"
                             }
                         },
                         {
                             key: "Doktori iskola",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Fokozatszerzés éve",
-                            type: "year"
+                            type: "year",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         }
                     ]
                 },
@@ -190,26 +237,39 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új részvétel hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "A testület megnevezése",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Hazai/nemzetközi",
                             type: "select",
                             value: "hazai",
                             attribs: {
-                                options: ["hazai", "nemzetközi"]
+                                options: ["hazai", "nemzetközi"],
+                                colWidth: "60"
                             }
                         },
                         {
                             key: "Részvételi szerep",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Időszak",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         }
                     ]
                 },
@@ -244,22 +304,37 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új részvétel hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "A rendezvény pontos címe és ideje",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "A rendező ország",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         },
                         {
                             key: "Szervezői/előadói szerep leírása",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "100"
+                            }
                         },
                         {
                             key: "Alátámasztó weblink",
-                            type: "link"
+                            type: "link",
+                            attribs: {
+                                colWidth: "60"
+                            }
                         }
                     ]
                 },
@@ -295,30 +370,46 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új tisztség hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "A szervezet neve",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "A szervezet weboldala",
-                            type: "link"
+                            type: "link",
+                            attribs: {
+                                colWidth: "60"
+                            }
                         },
                         {
                             key: "Hazai/nemzetközi",
                             type: "select",
                             value: "hazai",
                             attribs: {
-                                options: ["hazai", "nemzetközi"]
+                                options: ["hazai", "nemzetközi"],
+                                colWidth: "60"
                             }
                         },
                         {
                             key: "Tisztsége",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         },
                         {
                             key: "Tagság",
-                            type: "yearRange"
+                            type: "yearRange",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         }
                     ]
                 },
@@ -352,26 +443,44 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új tagság hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "A folyóirat neve",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "A folyóirat weboldala",
-                            type: "link"
+                            type: "link",
+                            attribs: {
+                                colWidth: "60"
+                            }
                         },
                         {
                             key: "Besorolás",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "60"
+                            }
                         },
                         {
                             key: "Tisztsége",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         },
                         {
                             key: "Mettől-meddig",
-                            type: "text"
+                            type: "text",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         }
                     ]
                 },
@@ -446,16 +555,25 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új pályázat hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "A pályázat címe",
                             type: "text",
-                            helpText: "Adja meg a pályázat címét, azonosítóját, kiíróját."
+                            helpText: "Adja meg a pályázat címét, azonosítóját, kiíróját.",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Támogatási összeg",
                             type: "text",
-                            helpText: "Adja meg a pályázat támogatási összegét."
+                            helpText: "Adja meg a pályázat támogatási összegét.",
+                            attribs: {
+                                colWidth: "70"
+                            }
                         },
                         {
                             key: "Hazai/nemzetközi",
@@ -463,7 +581,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             value: "hazai",
                             helpText: "Adja meg, hogy a pályázat hazai vagy nemzetközi.",
                             attribs: {
-                                options: ["hazai", "nemzetközi"]
+                                options: ["hazai", "nemzetközi"],
+                                colWidth: "60"
                             }
                         },
                         {
@@ -471,7 +590,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             type: "selectAddOther",
                             value: "témavezető",
                             attribs: {
-                                options: ["témavezető", "alprojektvezető", "munkacsoportvezető"]
+                                options: ["témavezető", "alprojektvezető", "munkacsoportvezető"],
+                                colWidth: "60"
                             },
                             helpText:
                                 "Adja meg a pályázatban betöltött funkcióját (témavezető, résztvevő). Ha egyéb funkciót töltött be, válassza az 'egyéb' opciót, és adja meg a pontos funkciót."
@@ -479,7 +599,10 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "Futamidő",
                             type: "text",
-                            helpText: "Adja meg a pályázat futamidejét (pl. 2020-2023). Ha még folyamatban van, jelezze (pl. 2021-folyamatban)."
+                            helpText: "Adja meg a pályázat futamidejét (pl. 2020-2023). Ha még folyamatban van, jelezze (pl. 2021-folyamatban).",
+                            attribs: {
+                                colWidth: "80"
+                            }
                         }
                     ]
                 },
@@ -514,26 +637,41 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új tartózkodás hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "A meghívó neve, helyszín",
                             type: "text",
-                            helpText: "A meghívó intézmény, egység megnevezése, helyszíne."
+                            helpText: "A meghívó intézmény, egység megnevezése, helyszíne.",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "A tartózkodás jellege",
                             type: "text",
-                            helpText: "Adja meg a tartózkodás jellegét (pl. tanulmányút, munkavállalás, vendégprofesszori megbízás)."
+                            helpText: "Adja meg a tartózkodás jellegét (pl. tanulmányút, munkavállalás, vendégprofesszori megbízás).",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         },
                         {
                             key: "Finanszírozás forrása",
                             type: "text",
-                            helpText: "Szponzor/ösztöndíj (ahol releváns)."
+                            helpText: "Szponzor/ösztöndíj (ahol releváns).",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         },
                         {
                             key: "Mettől-meddig",
                             type: "text",
-                            helpText: "A tartózkodás időtartama (pl. 2020.03-2020.09)."
+                            helpText: "A tartózkodás időtartama (pl. 2020.03-2020.09).",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         }
                     ]
                 },
@@ -567,26 +705,41 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     isArray: true,
                     arrayMax: 5,
                     arrayAddLabel: "Új díj, kitüntetés hozzáadása",
+                    attribs: {
+                        printTabular: true
+                    },
                     fields: [
                         {
                             key: "Kitüntetés megnevezése",
                             type: "text",
-                            helpText: "A díj, kitüntetés megnevezése, jellege."
+                            helpText: "A díj, kitüntetés megnevezése, jellege.",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Adományozó szervezet",
                             type: "text",
-                            helpText: "Adja meg az adományozó szervezet nevét."
+                            helpText: "Adja meg az adományozó szervezet nevét.",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Ország",
                             type: "text",
-                            helpText: "Adja meg az ország nevét, ahol a díjat, kitüntetést adományozták."
+                            helpText: "Adja meg az ország nevét, ahol a díjat, kitüntetést adományozták.",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         },
                         {
                             key: "Adományozás időpontja",
                             type: "text",
-                            helpText: "A díj, kitüntetés adományozásának időpontja (pl. 2020.03.01)."
+                            helpText: "A díj, kitüntetés adományozásának időpontja (pl. 2020.03.01).",
+                            attribs: {
+                                colWidth: "90"
+                            }
                         }
                     ]
                 },

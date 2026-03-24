@@ -189,13 +189,9 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Tevékenység igazoló linkje",
-                            label: "Alátámasztó link:",
-                            helpText:
-                                "Kérjük, adjon meg egy érvényes URL-t, amely alátámasztó információkat tartalmazó weblapra mutat, vagy az információkat összefűzve tartalmazó PDF-dokumentum letöltési helyére.",
                             type: "link",
                             valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Link|Tevékenység igazoló linkje",
                             attribs: {
-                                inline: "false",
                                 noAlign: true,
                                 short: true
                             }
@@ -283,14 +279,13 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Fokozatott szerzett doktoranduszok száma",
-                            label: "Összes fokozatott szerzett doktoranduszok száma (témavezetői arányokkal súlyozva):",
+                            label: "Összes fokozatott szerzett doktoranduszok száma (témavezetői arányokkal súlyozva)",
                             valueSource:
                                 "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma",
                             type: "number",
                             readonly: true,
                             noPersist: true,
                             attribs: {
-                                inline: "false",
                                 fractional: true,
                                 noAlign: true
                             }
@@ -379,12 +374,10 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Alátámasztó link:",
                             valueSource:
                                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Link|Alátámasztó link",
                             type: "link",
                             attribs: {
-                                inline: "false",
                                 noAlign: true,
                                 short: true
                             }
@@ -476,7 +469,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "További információ",
-                            label: "További információ:",
+                            label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             type: "link",
                             attribs: {
                                 noAlign: true,
@@ -579,7 +572,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Alátámasztó link:",
+                            label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             type: "link",
                             attribs: {
                                 noAlign: true,
@@ -679,10 +672,9 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Alátámasztó link:",
+                            label: "Alátámasztó link, ha nem szerepel a folyóirat honlapján",
                             type: "link",
                             attribs: {
-                                inline: "false",
                                 noAlign: true,
                                 short: true
                             },
@@ -772,7 +764,6 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             readonly: true,
                             valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben|Összesítés|Alátámasztó link",
                             attribs: {
-                                inline: "false",
                                 short: true
                             }
                         }
@@ -863,10 +854,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Alátámasztó link:",
                             type: "link",
                             attribs: {
-                                inline: "false",
                                 noAlign: true,
                                 short: true
                             },
@@ -957,10 +946,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Alátámasztó link:",
                             type: "link",
                             attribs: {
-                                inline: "false",
                                 noAlign: true,
                                 short: true
                             },
@@ -1050,10 +1037,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Alátámasztó link:",
                             type: "link",
                             attribs: {
-                                inline: "false",
                                 noAlign: true,
                                 short: true
                             },
