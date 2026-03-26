@@ -61,6 +61,9 @@ export const tudomanymetria: PageDescriptor = {
                     isArray: true,
                     lengthSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|_length",
                     readonly: true,
+                    attribs: {
+                        pdfTabular: true
+                    },
                     fields: [
                         {
                             key: "Műszaki alkotás megnevezése",
@@ -69,7 +72,10 @@ export const tudomanymetria: PageDescriptor = {
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Műszaki alkotás megnevezése",
                             helpText:
-                                "A műszaki alkotás megnevezése. Csak kiemelkedő megvalósult műszaki alkotásra adható pont. Ezek jellemzője az, hogy vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá. Szóközökkel együtt legfeljebb 750 karakter terjedelemben."
+                                "A műszaki alkotás megnevezése. Csak kiemelkedő megvalósult műszaki alkotásra adható pont. Ezek jellemzője az, hogy vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá. Szóközökkel együtt legfeljebb 750 karakter terjedelemben.",
+                            attribs: {
+                                colWidth: "*"
+                            }
                         },
                         {
                             key: "Műszaki alkotás típusa",
@@ -77,7 +83,10 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Műszaki alkotás típusa",
-                            helpText: "A műszaki alkotás típusa (pl. szabadalom, építészeti alkotás, egyéb)."
+                            helpText: "A műszaki alkotás típusa (pl. szabadalom, építészeti alkotás, egyéb).",
+                            attribs: {
+                                colWidth: "75"
+                            }
                         },
                         {
                             key: "Kapcsolódó szabadalom",
@@ -88,7 +97,10 @@ export const tudomanymetria: PageDescriptor = {
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó szabadalom",
                             helpText:
-                                'A műszaki alkotáshoz kapcsolódó szabadalom MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.'
+                                'A műszaki alkotáshoz kapcsolódó szabadalom MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.',
+                            attribs: {
+                                noPrint: true
+                            }
                         },
                         {
                             key: "Kapcsolódó publikáció",
@@ -101,7 +113,8 @@ export const tudomanymetria: PageDescriptor = {
                             helpText:
                                 'A műszaki alkotáshoz kapcsolódó publikáció MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.',
                             attribs: {
-                                unique: true
+                                unique: true,
+                                noPrint: true
                             }
                         },
                         {
@@ -114,7 +127,8 @@ export const tudomanymetria: PageDescriptor = {
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|1. legfontosabb hivatkozás",
                             helpText: "A műszaki alkotáshoz kapcsolódó szabadalom vagy publikáció első legfontosabb hivatkozásának MTMT azonosítója.",
                             attribs: {
-                                pubKey: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó publikáció"
+                                pubKey: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó publikáció",
+                                noPrint: true
                             }
                         },
                         {
@@ -127,7 +141,8 @@ export const tudomanymetria: PageDescriptor = {
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|2. legfontosabb hivatkozás",
                             helpText: "A műszaki alkotáshoz kapcsolódó szabadalom vagy publikáció második legfontosabb hivatkozásának MTMT azonosítója.",
                             attribs: {
-                                pubKey: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó publikáció"
+                                pubKey: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó publikáció",
+                                noPrint: true
                             }
                         },
                         {
@@ -139,7 +154,11 @@ export const tudomanymetria: PageDescriptor = {
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Egyéb alkotásra hivatkozás linkje",
                             helpText:
-                                "Adja meg a műszaki alkotásra vonatkozó hivatkozás linkjét, ha nincsen az MTMT-ben. A mező végén az ikonra kattintva ellenőrizheti, hogy helyesen adta-e meg a linket."
+                                "Adja meg a műszaki alkotásra vonatkozó hivatkozás linkjét, ha nincsen az MTMT-ben. A mező végén az ikonra kattintva ellenőrizheti, hogy helyesen adta-e meg a linket.",
+                            attribs: {
+                                noPrint: true,
+                                short: true
+                            }
                         },
                         {
                             key: "Társalkotók",
@@ -149,7 +168,10 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Társalkotók",
-                            helpText: "Az építészeti alkotás társalkotóinak felsorolása, vesszővel elválasztva."
+                            helpText: "Az építészeti alkotás társalkotóinak felsorolása, vesszővel elválasztva.",
+                            attribs: {
+                                noPrint: true
+                            }
                         },
                         {
                             key: "Alkotás minősítése",
@@ -159,7 +181,10 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Alkotás minősítése",
-                            helpText: "Az építészeti alkotás minősítésének megadása (pl. nívódíj, nemzetközi elismerés)."
+                            helpText: "Az építészeti alkotás minősítésének megadása (pl. nívódíj, nemzetközi elismerés).",
+                            attribs: {
+                                noPrint: true
+                            }
                         },
                         {
                             key: "Alkotás MTMT azonosítója",
@@ -170,7 +195,10 @@ export const tudomanymetria: PageDescriptor = {
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Alkotás MTMT azonosítója",
                             helpText:
-                                'Az építészeti alkotáshoz kapcsolódó publikáció MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.'
+                                'Az építészeti alkotáshoz kapcsolódó publikáció MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.',
+                            attribs: {
+                                noPrint: true
+                            }
                         },
                         {
                             key: "Építészeti alkotásra hivatkozás linkje",
@@ -182,14 +210,19 @@ export const tudomanymetria: PageDescriptor = {
                             valueSource:
                                 "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Építészeti alkotásra hivatkozás linkje",
                             helpText:
-                                "Adja meg az építészeti alkotásra vonatkozó hivatkozás linkjét, ha nincsen az MTMT-ben. A mező végén az ikonra kattintva ellenőrizheti, hogy helyesen adta-e meg a linket."
+                                "Adja meg az építészeti alkotásra vonatkozó hivatkozás linkjét, ha nincsen az MTMT-ben. A mező végén az ikonra kattintva ellenőrizheti, hogy helyesen adta-e meg a linket.",
+                            attribs: {
+                                noPrint: true,
+                                short: true
+                            }
                         },
                         {
                             key: "Pontszám",
                             type: "number",
                             helpText: "A műszaki alkotásra megítélt pontszám.",
                             attribs: {
-                                fractional: true
+                                fractional: true,
+                                colWidth: "50"
                             }
                         }
                     ]

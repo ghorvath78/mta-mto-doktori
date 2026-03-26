@@ -1,6 +1,14 @@
 import { Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
 import type { AttribType, FormData } from "../forms";
-import { activeMTMTUserIdAtom, getRanking, getRating, mtmtPubListAtom, mtmtPubSummaryCacheAtom, processMTMTTemplateLinks } from "../mtmt";
+import {
+    activeMTMTUserIdAtom,
+    getIndependentCitationCount,
+    getRanking,
+    getRating,
+    mtmtPubListAtom,
+    mtmtPubSummaryCacheAtom,
+    processMTMTTemplateLinks
+} from "../mtmt";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -86,10 +94,15 @@ export const MTMTPubInput = ({
         return cachedSummary?.rating ?? getRating(mtmtPubList, value[index]);
     }, [mtmtPubList, value, index, cachedSummary]);
 
+    const independentCitationCount = useMemo(() => {
+        return cachedSummary?.independentCitationCount ?? getIndependentCitationCount(mtmtPubList, value[index]);
+    }, [mtmtPubList, value, index, cachedSummary]);
+
     const description = (
         <div className="w-3/4 px-2 text-sm mtmt-publication">
             <div ref={template} />
             {rating && <div className="mt-1 italic text-gray-500">SJR: {rating}</div>}
+            {independentCitationCount !== undefined && <div className="mt-1 italic text-gray-500">Független hivatkozások: {independentCitationCount}</div>}
         </div>
     );
 

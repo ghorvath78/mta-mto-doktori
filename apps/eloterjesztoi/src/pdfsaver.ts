@@ -1,4 +1,14 @@
-import { atomsToJSON, cD, getPdfDocumentStyles, getPdfSection, savePdfWithFormData, store, type FormData, type FormDescriptor } from "@repo/form-engine";
+import {
+    atomsToJSON,
+    cD,
+    getPdfDocumentStyles,
+    getPdfSection,
+    groupToPdfTableDefinition,
+    savePdfWithFormData,
+    store,
+    type FormData,
+    type FormDescriptor
+} from "@repo/form-engine";
 import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ } from "./requirements";
 
@@ -13,6 +23,10 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
     const eloterjesztoNeve = store.get(formData["Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Előterjesztő neve"])?.[0] || "";
     const eloterjesztoFokozata = store.get(formData["Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Tudományos fokozat"])?.[0] || "";
 
+    const tudomanyMetria = descriptor["Tudománymetria"];
+    const qSection = tudomanyMetria.sections.find((s) => s.key === "Q-szám");
+    const alkGroup = qSection?.groups.find((g) => g.key === "A kérelmező alkotási teljesítménye");
+    const alkNum = parseInt(store.get(formData["Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|_length"])[0]);
     const docDefinition: TDocumentDefinitions = {
         ...getPdfDocumentStyles(),
         content: [
@@ -40,6 +54,22 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             { text: "C. A tudományos minimumkövetelmények teljesítésének ellenőrzése", style: "section" },
             { text: "1. A kérelmező publikációs és alkotási teljesítménye (Q-szám)", style: "subsection" },
             getQScoringTableSection(formData),
+
+            {
+                stack: [
+                    alkGroup && alkNum
+                        ? await groupToPdfTableDefinition(
+                              "",
+                              alkGroup,
+                              formData,
+                              "Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye",
+                              {}
+                          )
+                        : { text: "Nincsenek megadva műszaki alkotások", italics: true }
+                ],
+                margin: [0, 5, 0, 0]
+            },
+
             { text: "Q értékszám összesítő", style: "grouplabel" },
             getQScoreSummarySection(formData),
             { text: "2. A kérelmező idézettsége (I-szám)", style: "subsection" },
@@ -47,10 +77,19 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             getIScoreSummarySection(formData),
             { text: "3. A tételes publikációs elvárások teljesülése", style: "subsection" },
             await getItemizedRequirementsSection(descriptor, formData),
-
             { text: "A kérelmező öt legfontosabb publikációja", style: "grouplabel" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Legfontosabb publikációk|Öt legfontosabb publikáció", "", { bibIndex: "true", bibLabel: "" }),
-
+            await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt publikáció|A kérelmező által megjelölt öt legfontosabb publikáció", "", {
+                bibIndex: "true",
+                bibLabel: ""
+            }),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt publikáció|Öt legfontosabb publikáció értékelése", "", {}),
+            { text: "A kérelmező öt legfontosabb hivatkozása", style: "grouplabel" },
+            await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt hivatkozás|A kérelmező által megjelölt öt legfontosabb hivatkozás", "", {
+                bibIndex: "true",
+                bibLabels: { "Hivatkozott közlemény": "Hivatkozott\nközlemény", "Hivatkozó közlemény": "Hivatkozó\nközlemény" },
+                indexColWidth: "75"
+            }),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt hivatkozás|Öt legfontosabb hivatkozás értékelése", "", {}),
             { text: "4. A tudományos közéleti tevékenység értékelése", style: "subsection" },
             { text: "4.1. TDK témavezetés", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
@@ -125,8 +164,8 @@ const getQScoringTableSection = (formData: FormData): Content => {
     const tableBody = [
         [
             { text: "Tudományos folyóiratcikk", bold: true, fillColor: "#dddddd" },
-            { text: "darab", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
-            { text: "pontszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+            { text: "Darab", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "Pontszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
         ],
         [
             { text: "Lektorált folyóiratcikk" },
@@ -150,8 +189,8 @@ const getQScoringTableSection = (formData: FormData): Content => {
     const tableBody2 = [
         [
             { text: "Tudományos könyv, könyvrészlet szerzőként", bold: true, fillColor: "#dddddd" },
-            { text: "darab", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
-            { text: "pontszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+            { text: "Darab", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+            { text: "Pontszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
         ],
         [
             { text: "Könyv" },
@@ -235,16 +274,16 @@ const getQScoreSummarySection = (formData: FormData): Content => {
 
     const summaryBody = [
         [
-            { text: "A kérelmező által elért publikációs (alkotási, Q) érték:", bold: true },
+            { text: "A kérelmező által elért publikációs (alkotási, Q) érték:", bold: false },
             { text: String(totalQ), bold: true, alignment: "center" as const }
         ],
         [
-            { text: "Minimum követelmény (Qmin):", bold: true },
+            { text: "Minimum követelmény (Qmin):", bold: false },
             { text: String(minTotalQ), bold: true, alignment: "center" as const }
         ],
         [
-            { text: "A kérelmező teljesítette a Q \u2265 Qmin követelményt:", bold: true },
-            { text: satisfied ? "IGEN" : "NEM", bold: true, alignment: "center" as const, fillColor: "#000000", color: "#ffffff" }
+            { text: "A kérelmező teljesítette a Q \u2265 Qmin követelményt:", bold: false },
+            { text: satisfied ? "IGEN" : "NEM", bold: true, alignment: "center" as const, background: "#000000", color: "#ffffff" }
         ]
     ];
 
@@ -255,7 +294,8 @@ const getQScoreSummarySection = (formData: FormData): Content => {
         },
         {
             margin: [20, 10, 0, 0],
-            table: { widths: ["*", 80], body: summaryBody }
+            table: { widths: ["*", 80], body: summaryBody },
+            layout: { defaultBorder: false }
         }
     ] as Content;
 };

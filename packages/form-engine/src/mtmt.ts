@@ -16,7 +16,8 @@ type PubItem = {
 
 export type PubItemSummary = {
     template: string;
-    rating: string | null;
+    rating: string;
+    independentCitationCount?: number;
 };
 
 export const activeMTMTUserIdAtom = atom<string>("");
@@ -184,17 +185,30 @@ export const loadScientometrics = async () => {
     }
 };
 
-export const getPubRating = (pubItem: PubItem): string | null => {
+export const getPubRating = (pubItem: PubItem): string => {
     if (pubItem.journal && pubItem.ratings) {
         const sjr = pubItem.ratings.find((r) => r.otype === "SjrRating");
         if (sjr) return sjr.ranking;
     }
-    return null;
+    return "";
 };
 
 export const getRating = (mtmtPubList: PubItem[], mtid: string): string | null => {
     const pub = mtmtPubList.find((c) => String(c.mtid) === mtid);
-    return pub ? getPubRating(pub) : null;
+    return pub ? getPubRating(pub) : "";
+};
+
+export const getIndependentCitationCount = (mtmtPubList: PubItem[], mtid: string): number | null => {
+    const pub = mtmtPubList.find((c) => String(c.mtid) === mtid);
+    return pub ? (pub.independentCitationCount ?? null) : null;
+};
+
+export const getPubItemSummary = (mtmtPub: PubItem): PubItemSummary => {
+    return {
+        template: mtmtPub.template,
+        rating: getPubRating(mtmtPub),
+        independentCitationCount: getIndependentCitationCount([mtmtPub], String(mtmtPub.mtid)) ?? undefined
+    };
 };
 
 export const savePubItemSummary = (mtids: string[]): Record<string, PubItemSummary> => {
@@ -204,13 +218,13 @@ export const savePubItemSummary = (mtids: string[]): Record<string, PubItemSumma
             // search in publication list
             const pub = mtmtPubList.find((c) => String(c.mtid) === id);
             if (pub) {
-                return [id, { template: pub.template, rating: getRating(mtmtPubList, id) }];
+                return [id, getPubItemSummary(pub)] as [string, PubItemSummary];
             }
             // search in citation cache
             for (const cachedCitations of Object.values(citationCache)) {
                 const cite = cachedCitations.find((c) => String(c.mtid) === id);
                 if (cite) {
-                    return [id, { template: cite.template, rating: getPubRating(cite) }];
+                    return [id, getPubItemSummary(cite)] as [string, PubItemSummary];
                 }
             }
             return null;

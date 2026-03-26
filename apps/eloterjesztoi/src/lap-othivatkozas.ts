@@ -12,7 +12,7 @@ export const otHivatkozas: PageDescriptor = {
             },
             groups: [
                 {
-                    key: "Hivatkozások listája",
+                    key: "A kérelmező által megjelölt öt legfontosabb hivatkozás",
                     isArray: true,
                     lengthSource: "Kérelmezői|Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|_length",
                     readonly: true,

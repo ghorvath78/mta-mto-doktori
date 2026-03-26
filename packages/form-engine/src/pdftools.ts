@@ -2,7 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import { store } from "./atoms";
 import { type FormData, type FormDescriptor, type GroupDescriptor } from "./forms";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
-import { getRanking, loadMTMTCitations, mtmtPubListAtom, mtmtScientometricsAtom } from "./mtmt";
+import { getPubItemSummary, loadMTMTCitations, mtmtPubListAtom, mtmtPubSummaryCacheAtom, mtmtScientometricsAtom, type PubItemSummary } from "./mtmt";
 import { saveAs } from "file-saver";
 import { PDFDocument } from "pdf-lib";
 
@@ -30,6 +30,7 @@ export const groupToPdfDocDefinition = async (
     const groupKeyPrefix = `${keyPrefix}|${group.key}`;
     for (const field of fields) {
         if (field.type === "custom") continue;
+        if (field.attribs?.noPrint) continue;
         const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
         const fieldValue = store.get(formData[fieldKey])[index];
         const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
@@ -125,14 +126,20 @@ export const groupToPdfDocDefinition = async (
             case "mtmtCitation":
             case "mtmtPub": {
                 const mtmt = String(fieldValue);
-                let pub = store.get(mtmtPubListAtom).find((p) => String(p.mtid) === mtmt);
-                if (field.type === "mtmtCitation" && !pub && mtmt) {
+                const pubSummaries = store.get(mtmtPubSummaryCacheAtom);
+                let pubSummary: PubItemSummary | null = pubSummaries[mtmt] ?? null;
+                if (!pubSummary) {
+                    const pub = store.get(mtmtPubListAtom).find((p) => String(p.mtid) === mtmt);
+                    pubSummary = pub ? getPubItemSummary(pub) : null;
+                }
+                if (field.type === "mtmtCitation" && !pubSummary && mtmt) {
                     const pubMTMT = store.get(formData[String(field?.attribs?.pubKey)])[index];
                     const citations = pubMTMT ? await loadMTMTCitations(pubMTMT) : [];
-                    pub = citations.find((p) => String(p.mtid) === mtmt);
+                    const pub = citations.find((p) => String(p.mtid) === mtmt);
+                    pubSummary = pub ? getPubItemSummary(pub) : null;
                 }
                 const el = document.createElement("div");
-                el.innerHTML = pub?.template ?? "";
+                el.innerHTML = pubSummary?.template ?? "";
                 const authors = Array.from(el.getElementsByClassName("author-name"))
                     .map((element) => removeSpecialUtf8KeepAccents(element.textContent))
                     .join(", ");
@@ -140,8 +147,8 @@ export const groupToPdfDocDefinition = async (
                 const info = el.getElementsByClassName("pub-info")[0]?.textContent ?? "";
                 const category = el.getElementsByClassName("pub-category")[0]?.textContent ?? "";
                 const type = el.getElementsByClassName("pub-type")[0]?.textContent ?? "";
-                const ranking = pub ? getRanking(pub) : "N/A";
-                const citations = pub ? (pub["independentCitationCount"] ?? "N/A") : "N/A";
+                const ranking = pubSummary ? pubSummary.rating : "N/A";
+                const citations = pubSummary ? (pubSummary.independentCitationCount ?? "N/A") : "N/A";
                 const baseLabel =
                     options.bibLabel !== undefined
                         ? String(options.bibLabel)
@@ -150,7 +157,7 @@ export const groupToPdfDocDefinition = async (
                           : fieldLabel;
                 const baseIndex = options.bibIndex && field.type === "mtmtPub" ? [{ text: `[${index + 1}]`, bold: true }] : [];
                 const pubBody: TableCell[][] = [];
-                if (pub) {
+                if (pubSummary) {
                     pubBody.push([
                         [...baseIndex, { text: String(baseLabel) }],
                         [
@@ -230,11 +237,13 @@ export const groupToPdfTableDefinition = async (
 
     const colWidths: (string | number)[] = [];
     for (const field of fields) {
+        if (field.type === "custom") continue;
+        if (field.attribs?.noPrint) continue;
         const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
-        const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
-        rows[0].push({ text: fieldLabel, bold: true });
+        const fieldLabel = options.nolabel === "true" ? "" : field.label || field.key;
+        rows[0].push({ text: fieldLabel, bold: true, style: "tableHeader", fontSize: 11 });
         for (let index = 0; index < length; index++) {
-            const fieldValue = store.get(formData[fieldKey])[index];
+            const fieldValue = store.get(formData[fieldKey])[index] ?? "";
             if (field.type === "link" || fieldValue.startsWith("http")) {
                 rows[index + 1].push({
                     text: fieldValue ? "link" : "-",
@@ -307,7 +316,7 @@ export const getPdfSection = async (
                 continue;
             }
         }
-        if (group.attribs?.printTabular === true) {
+        if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
             if (length === 0) rows.push({ text: "Nincs adat", style: "nodata" });
             else rows.push(...(await groupToPdfTableDefinition(String(label), group, formData, groupKeyPrefix, options)));
             continue;

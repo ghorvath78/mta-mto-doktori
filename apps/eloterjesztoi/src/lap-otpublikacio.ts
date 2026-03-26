@@ -12,7 +12,7 @@ export const otPublikacio: PageDescriptor = {
             },
             groups: [
                 {
-                    key: "Publikációk listája",
+                    key: "A kérelmező által megjelölt öt legfontosabb publikáció",
                     isArray: true,
                     lengthSource: "Kérelmezői|Legfontosabb publikációk|Öt legfontosabb publikáció|Öt legfontosabb publikáció|_length",
                     readonly: true,
