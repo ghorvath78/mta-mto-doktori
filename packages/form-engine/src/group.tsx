@@ -160,6 +160,7 @@ export const Group = ({
     for (const field of group.fields) {
         const key = `${keyPrefix}|${field.key}`;
         let component: JSX.Element | null = null;
+        const fieldReadonly = field.readonly === true; // || readonly;
         switch (field.type) {
             case "text":
                 component = (
@@ -170,13 +171,13 @@ export const Group = ({
                         key={key}
                         formData={formData}
                         index={index}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                         twoColumn={field.attribs?.noAlign ? false : true}
                     ></TextInput>
                 );
                 break;
             case "birthYearPlace":
-                component = <BirthDataInput fieldKey={field.valueSource ?? key} key={key} formData={formData} index={index} readonly={field.readonly} />;
+                component = <BirthDataInput fieldKey={field.valueSource ?? key} key={key} formData={formData} index={index} readonly={readonly} />;
                 break;
             case "longtext":
                 component = (
@@ -189,7 +190,7 @@ export const Group = ({
                         key={key}
                         formData={formData}
                         index={index}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                     />
                 );
                 break;
@@ -229,7 +230,7 @@ export const Group = ({
                         key={key}
                         formData={formData}
                         index={index}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                         fractional={field.attribs?.["fractional"] === true}
                         twoColumn={field.attribs?.noAlign ? false : true}
                     />
@@ -244,7 +245,7 @@ export const Group = ({
                         key={key}
                         formData={formData}
                         index={index}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                     />
                 );
                 break;
@@ -255,7 +256,7 @@ export const Group = ({
                         fieldKey={field.valueSource ?? key}
                         formData={formData}
                         index={index}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                         onMTMTIdChange={field.attribs?.onMTMTIdChange}
                     />
                 );
@@ -268,7 +269,7 @@ export const Group = ({
                         formData={formData}
                         index={index}
                         attribs={field.attribs}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                     />
                 );
                 break;
@@ -280,7 +281,7 @@ export const Group = ({
                         formData={formData}
                         index={index}
                         attribs={field.attribs}
-                        readonly={field.readonly}
+                        readonly={fieldReadonly}
                     />
                 );
                 break;
@@ -288,7 +289,7 @@ export const Group = ({
                 component = <MTMTScientometrics fieldKey={field.valueSource ?? key} formData={formData} />;
                 break;
             case "link":
-                component = readonly ? (
+                component = fieldReadonly ? (
                     <LinkDataDisplay
                         label={field.label ?? field.key}
                         fieldKey={field.valueSource ?? key}

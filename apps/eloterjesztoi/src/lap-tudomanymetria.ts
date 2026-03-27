@@ -60,6 +60,7 @@ export const tudomanymetria: PageDescriptor = {
                     label: "A kérelmező alkotási teljesítménye",
                     isArray: true,
                     lengthSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|_length",
+                    readonly: true,
                     attribs: {
                         pdfTabular: true
                     },
