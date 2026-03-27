@@ -47,7 +47,7 @@ export const otHivatkozas: PageDescriptor = {
             },
             groups: [
                 {
-                    key: "Hivatkozások értékelése",
+                    key: "Öt legfontosabb hivatkozás értékelése",
                     fields: [
                         {
                             key: "Szöveges értékelés",

@@ -14,7 +14,7 @@ import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHInd
 
 declare const BUILD_DATE: string;
 
-export const savePDF = async (descriptor: FormDescriptor, formData: FormData) => {
+export const savePDF = async (descriptor: FormDescriptor, formData: FormData, formName: string) => {
     const name = store.get(formData["Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|Név"])?.[0] || "Név";
     const bizottsag =
         store.get(
@@ -151,7 +151,9 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
         ]
     };
 
-    savePdfWithFormData(docDefinition, "eloterjesztoi_adatlap.pdf", { "eloterjeszto_form.json": JSON.stringify(atomsToJSON(formData), null, 4) });
+    savePdfWithFormData(docDefinition, "eloterjesztoi_adatlap.pdf", {
+        "eloterjeszto_form.json": JSON.stringify(atomsToJSON(formData, descriptor, formName), null, 4)
+    });
 };
 
 const getQScoringTableSection = (formData: FormData): Content => {

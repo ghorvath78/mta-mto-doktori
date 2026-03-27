@@ -150,7 +150,7 @@ export function createAtomsFromDescriptor(formName: string, descriptor: FormDesc
     return atoms;
 }
 
-export function atomsToJSON(formData: FormData): Record<string, unknown> {
+export function atomsToJSON(formData: FormData, descriptor?: FormDescriptor, formName?: string): Record<string, unknown> {
     const result: Record<string, unknown> = {};
 
     // Keys always have 5 parts: form|page|section|group|field (or _length/_open).
@@ -163,6 +163,22 @@ export function atomsToJSON(formData: FormData): Record<string, unknown> {
         if (parts[parts.length - 1] === "_length") {
             const parentPath = parts.slice(0, -1).join("|");
             arrayPaths.set(parentPath, parseInt(store.get(formData[key])[0]) || 0);
+        }
+    }
+
+    // For groups that use lengthSource, override with the actual source length
+    if (descriptor && formName) {
+        for (const pageKey in descriptor) {
+            const page = descriptor[pageKey];
+            for (const section of page.sections) {
+                for (const group of section.groups) {
+                    if (group.isArray && group.lengthSource && formData[group.lengthSource]) {
+                        const parentPath = `${formName}|${page.key}|${section.key}|${group.key}`;
+                        const len = parseInt(store.get(formData[group.lengthSource])[0]) || 0;
+                        arrayPaths.set(parentPath, len);
+                    }
+                }
+            }
         }
     }
 

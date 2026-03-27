@@ -37,7 +37,7 @@ export const otPublikacio: PageDescriptor = {
             },
             groups: [
                 {
-                    key: "Publikációk értékelése",
+                    key: "Öt legfontosabb publikáció értékelése",
                     fields: [
                         {
                             key: "Szöveges értékelés",

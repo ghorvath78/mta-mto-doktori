@@ -125,7 +125,7 @@ export const eloterjesztoiFormInfo: FormInfo = {
                     console.log(key);
                 }
 
-                await savePDF(eloterjesztoiFormDescriptor, formData);
+                await savePDF(eloterjesztoiFormDescriptor, formData, formName);
                 setDialogMessage("");
             }
         },
