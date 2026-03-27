@@ -27,7 +27,8 @@ export type CustomFieldComponent = ({
     index: number;
 }) => JSX.Element;
 
-export type AttribType = { [key: string]: string | number | boolean | string[] };
+// export type AttribType = { [key: string]: string | number | boolean | string[] | any };
+export type AttribType = { [key: string]: any };
 
 export type FieldDescriptor = {
     label?: string;

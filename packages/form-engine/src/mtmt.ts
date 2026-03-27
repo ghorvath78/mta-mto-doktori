@@ -28,9 +28,8 @@ export const mtmtScientometricsStatusAtom = atom<"uninitialized" | "loading" | "
 
 export const mtmtPubSummaryCacheAtom = atom<{ [mtid: string]: PubItemSummary }>({});
 
-export const getMTMTObject = async (object: string, params: string | null = null): Promise<{ [key: string]: unknown }> => {
-    const paramStr = params ? params : "";
-    const response = await fetch(`https://m2.mtmt.hu${object}?${paramStr}&format=json`);
+export const getMTMTObject = async (object: string, params?: string): Promise<{ [key: string]: unknown }> => {
+    const response = await fetch(`https://m2.mtmt.hu${object}?${params ?? ""}&format=json`);
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -235,4 +234,48 @@ export const savePubItemSummary = (mtids: string[]): Record<string, PubItemSumma
 
 export const loadPubItemSummary = (summaries: Record<string, PubItemSummary>) => {
     store.set(mtmtPubSummaryCacheAtom, { ...summaries });
+};
+
+export type AuthorData = {
+    name: string;
+    affiliations: string[];
+    degrees: string[];
+    disciplines: string[];
+};
+
+export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
+    const resp = await getMTMTObject(`/api/author/${mtid}`);
+    if (resp && resp.content && typeof resp.content === "object") {
+        const content = resp.content as { familyName?: string; givenName?: string; affiliations?: any[]; degrees?: string[] };
+        const result = {
+            name: String(content.familyName) + " " + String(content.givenName),
+            affiliations: [],
+            degrees: [],
+            disciplines: []
+        } as AuthorData;
+
+        if ("affiliations" in resp.content && Array.isArray(resp.content["affiliations"])) {
+            resp.content["affiliations"].forEach((affil: any) => {
+                const label = affil.worksFor.label;
+                if (typeof label === "string" && label.includes("-]")) {
+                    result.affiliations.push(label);
+                }
+            });
+        }
+
+        if ("degrees" in resp.content && Array.isArray(resp.content["degrees"])) {
+            resp.content["degrees"].forEach((deg: any) => {
+                result.degrees.push(deg.label);
+            });
+        }
+
+        if ("disciplines" in resp.content && Array.isArray(resp.content["disciplines"])) {
+            resp.content["disciplines"].forEach((disc: any) => {
+                result.disciplines.push(disc.label);
+            });
+        }
+
+        return result;
+    }
+    throw new Error(`Author record not found for MTID: ${mtid}`);
 };

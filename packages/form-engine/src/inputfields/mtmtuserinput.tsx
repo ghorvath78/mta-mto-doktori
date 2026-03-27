@@ -39,6 +39,7 @@ export const MTMTUserInput = ({
     formData,
     index,
     readonly = false,
+    onMTMTIdChange,
     onBlur
 }: {
     label: string;
@@ -46,6 +47,7 @@ export const MTMTUserInput = ({
     formData: FormData;
     index: number;
     readonly?: boolean;
+    onMTMTIdChange?: (id: string, formData: FormData, fieldKey: string, index: number) => void;
     onBlur?: (value: string, setValue: (value: string) => void) => void;
 }) => {
     const [value, setValue] = useAtom(formData[fieldKey]);
@@ -94,11 +96,14 @@ export const MTMTUserInput = ({
                                         newValue[index] = val;
                                         setValue(newValue);
                                     });
-                                if (isValidMTMTId(id) && activeMTMTUserId !== id) {
-                                    setActiveMTMTUserId(id);
-                                    loadMTMTPublications(id).then(() => {
-                                        loadScientometrics();
-                                    });
+                                if (isValidMTMTId(id)) {
+                                    if (onMTMTIdChange) onMTMTIdChange(id, formData, fieldKey, index);
+                                    else if (activeMTMTUserId !== id) {
+                                        setActiveMTMTUserId(id);
+                                        loadMTMTPublications(id).then(() => {
+                                            loadScientometrics();
+                                        });
+                                    }
                                 }
                             }}
                         />
@@ -134,11 +139,14 @@ export const MTMTUserInput = ({
                             newValue[index] = id;
                             setValue(newValue);
                             setDialogOpen(false);
-                            if (isValidMTMTId(id) && activeMTMTUserId !== id) {
-                                setActiveMTMTUserId(id);
-                                loadMTMTPublications(id).then(() => {
-                                    loadScientometrics();
-                                });
+                            if (isValidMTMTId(id)) {
+                                if (onMTMTIdChange) onMTMTIdChange(id, formData, fieldKey, index);
+                                else if (activeMTMTUserId !== id) {
+                                    setActiveMTMTUserId(id);
+                                    loadMTMTPublications(id).then(() => {
+                                        loadScientometrics();
+                                    });
+                                }
                             }
                         }}
                     />

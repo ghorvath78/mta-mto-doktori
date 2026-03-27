@@ -256,6 +256,7 @@ export const Group = ({
                         formData={formData}
                         index={index}
                         readonly={field.readonly}
+                        onMTMTIdChange={field.attribs?.onMTMTIdChange}
                     />
                 );
                 break;

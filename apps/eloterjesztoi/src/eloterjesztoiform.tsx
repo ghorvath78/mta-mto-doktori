@@ -13,6 +13,7 @@ import { applicantDataLoaded } from "./atoms.ts";
 import { FileDown, FileUp } from "lucide-react";
 import { savePDF } from "./pdfsaver.ts";
 import { osszefoglalo } from "./lap-osszefoglalo.ts";
+import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 
 // A form neve, ez lesz a form adatok prefixe is a JSON-ban
 export const formName = "Előterjesztői";
@@ -26,7 +27,8 @@ export const eloterjesztoiFormDescriptor: FormDescriptor = {
     "Öt kiemelt hivatkozás": otHivatkozas,
     "Közéleti tevékenység": kozeletiTevekenyseg,
     Minimumkövetelmények: osszesites,
-    Javaslat: osszefoglalo
+    Javaslat: osszefoglalo,
+    "Bíráló bizottság": biraloBizottsag
 };
 
 // elkészítjük a form mezők tárolóját
