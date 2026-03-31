@@ -3,7 +3,7 @@ import { Section } from "./section";
 
 export const Page = ({ descriptor, formData, keyPrefix }: { descriptor: PageDescriptor; formData: FormData; keyPrefix: string }) => {
     return (
-        <section className="flex-grow pl-4">
+        <section className="flex-grow pl-4 min-w-0">
             {descriptor.sections
                 .filter((section) => !section.hidden)
                 .map((section) => (

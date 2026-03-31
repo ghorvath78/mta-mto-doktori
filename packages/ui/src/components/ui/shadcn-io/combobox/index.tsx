@@ -122,10 +122,10 @@ export const ComboboxTrigger = ({ children, ...props }: ComboboxTriggerProps) =>
 
     return (
         <PopoverTrigger asChild>
-            <Button variant="outline" {...props} ref={ref}>
+            <Button variant="outline" {...props} ref={ref} className={cn("overflow-hidden", props.className)}>
                 {children ?? (
-                    <span className="flex w-full items-center justify-between gap-2">
-                        {value ? data.find((item) => item.value === value)?.label : `${type} kiválasztása...`}
+                    <span className="flex w-full items-center justify-between gap-2 overflow-hidden min-w-0">
+                        <span className="truncate">{value ? data.find((item) => item.value === value)?.label : `${type} kiválasztása...`}</span>
                         <ChevronsUpDownIcon className="shrink-0 text-muted-foreground" size={16} />
                     </span>
                 )}

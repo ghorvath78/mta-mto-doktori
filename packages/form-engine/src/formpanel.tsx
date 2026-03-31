@@ -11,11 +11,11 @@ export const FormPanel = ({ formName, descriptor, formData }: { formName: string
     const [activePage, setActivePage] = useState(descriptor ? Object.keys(descriptor)[0] : "");
 
     return (
-        <main className="flex-3 p-4 relative max-w-[1200px] mx-auto w-full">
+        <main className="flex-3 min-w-0 p-4 relative max-w-[1200px] mx-auto w-full">
             <div className="flex w-full pt-4 min-h-0 max-h-[100%]">
                 <PageSelector activePage={activePage} setActivePage={setActivePage} pages={descriptor} />
                 <div className="w-[1px] bg-primary" />
-                <div className="flex-3 flex min-h-0 overflow-y-auto overflow-x-hidden relative">
+                <div className="flex-3 flex min-h-0 min-w-0 overflow-y-auto overflow-x-hidden relative">
                     <Page descriptor={descriptor[activePage]} formData={formData} keyPrefix={`${formName}|${descriptor[activePage].key}`} />
                 </div>
             </div>

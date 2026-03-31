@@ -34,10 +34,10 @@ export const SelectOrAddInput = ({
     const extChoices = !choices.includes(value[index]) && value[index] !== "" ? [...choices, value[index]] : choices;
 
     return (
-        <div className="flex items-center space-x-2">
-            <div className="text-end w-1/4 font-medium leading-[0.95em]">{label}</div>
+        <div className="flex items-center space-x-2 min-w-0">
+            <div className="text-end w-1/4 shrink-0 font-medium leading-[0.95em]">{label}</div>
             <SelectOrAddField
-                className="flex flex-grow"
+                className="flex flex-1 min-w-0"
                 value={value[index] ?? ""}
                 type={type}
                 choices={extChoices}
@@ -74,27 +74,29 @@ export const SelectOrAddField = ({
     const data = choices.map((choice) => ({ label: choice, value: choice }));
 
     return (
-        <Combobox data={data} onValueChange={(newValue: string) => onChange(newValue ?? "")} type={type} value={value}>
-            <ComboboxTrigger className={`${className} rounded bg-transparent border-gray-300 hover:bg-background`} />
-            <ComboboxContent>
-                {addNew && (
-                    <>
-                        <ComboboxInput />
-                        <ComboboxEmpty>
-                            <ComboboxCreateNew onCreateNew={handleCreateNew} />
-                        </ComboboxEmpty>
-                    </>
-                )}
-                <ComboboxList>
-                    <ComboboxGroup>
-                        {choices.map((choice) => (
-                            <ComboboxItem key={choice} value={choice}>
-                                {choice}
-                            </ComboboxItem>
-                        ))}
-                    </ComboboxGroup>
-                </ComboboxList>
-            </ComboboxContent>
-        </Combobox>
+        <div className={className}>
+            <Combobox data={data} onValueChange={(newValue: string) => onChange(newValue ?? "")} type={type} value={value}>
+                <ComboboxTrigger className="w-full rounded bg-transparent border-gray-300 hover:bg-background" />
+                <ComboboxContent>
+                    {addNew && (
+                        <>
+                            <ComboboxInput />
+                            <ComboboxEmpty>
+                                <ComboboxCreateNew onCreateNew={handleCreateNew} />
+                            </ComboboxEmpty>
+                        </>
+                    )}
+                    <ComboboxList>
+                        <ComboboxGroup>
+                            {choices.map((choice) => (
+                                <ComboboxItem key={choice} value={choice}>
+                                    {choice}
+                                </ComboboxItem>
+                            ))}
+                        </ComboboxGroup>
+                    </ComboboxList>
+                </ComboboxContent>
+            </Combobox>
+        </div>
     );
 };

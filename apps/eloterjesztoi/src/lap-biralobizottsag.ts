@@ -6,6 +6,7 @@ const bizottsagiTagFields: FieldDescriptor[] = [
         key: "MTMT azonosító",
         type: "mtmtUser",
         attribs: {
+            noPrint: true,
             onMTMTIdChange: (id: string, formData: FormData, fieldKey: string, index: number) => {
                 console.log(`MTMT ID changed: ${id} (field: ${fieldKey})`);
                 getAuthorRecord(id)
