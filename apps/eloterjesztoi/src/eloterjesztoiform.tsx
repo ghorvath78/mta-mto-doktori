@@ -1,7 +1,7 @@
-import { chooseAndLoadPdf, mtmtPubSummaryCacheAtom, store, type FormInfo } from "@repo/form-engine";
+import { readJsonFromPdf, mtmtPubSummaryCacheAtom, store, type FormInfo } from "@repo/form-engine";
 import { atomsFromJSON, createAtomsFromDescriptor, getByPath, type FormDescriptor } from "@repo/form-engine";
 import { getCategory, getMinCommunityCount, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
-import { loadMTMTCitations } from "@repo/form-engine";
+import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, type PubItemSummary } from "@repo/form-engine";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
@@ -70,8 +70,13 @@ function onCategoryChange() {
     }
 }
 
+let mtmtDataInForm: Record<string, unknown> | null = null;
+let applicantDataInForm: Record<string, unknown> | null = null;
+
 // ezt kell meghívni, miután betöltötték a kérelmezői adatlapot, hogy az ottaniaknak megfelelően frissüljenek a form mezői
-export async function loadApplicantData(data: Record<string, unknown>) {
+export async function loadApplicantData(data: Record<string, unknown>, mtmtData: Record<string, unknown>) {
+    mtmtDataInForm = mtmtData;
+    applicantDataInForm = data;
     atomsFromJSON(data, eloterjesztoiFormData, "", true);
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     const committee = getByPath(
@@ -127,7 +132,10 @@ export const eloterjesztoiFormInfo: FormInfo = {
                     console.log(key);
                 }
 
-                await savePDF(eloterjesztoiFormDescriptor, formData, formName);
+                await savePDF(eloterjesztoiFormDescriptor, formData, formName, {
+                    "kerelmezo_form.json": JSON.stringify(applicantDataInForm, null, 4),
+                    "kerelmezo_mtmt.json": JSON.stringify(mtmtDataInForm, null, 4)
+                });
                 setDialogMessage("");
             }
         },
@@ -135,11 +143,46 @@ export const eloterjesztoiFormInfo: FormInfo = {
             label: "Adatlap betöltése",
             icon: <FileUp />,
             onClick: async (formData, setDialogMessage: (message: string) => void) => {
-                const content = await chooseAndLoadPdf("eloterjeszto_form.json");
-                if (!content) return;
+                const file = await new Promise<File | null>((resolve) => {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = ".pdf,application/pdf";
+                    input.oncancel = () => resolve(null);
+                    input.onchange = () => resolve(input.files?.[0] ?? null);
+                    input.click();
+                });
+                if (!file) return;
+
                 setDialogMessage("Adatlap betöltése");
-                const parsedContent = JSON.parse(content);
-                setDialogMessage("Pubikációk és hivatkozások betöltése");
+                const [formContent, applicantContent, mtmtContent] = await Promise.all([
+                    readJsonFromPdf(file, "eloterjeszto_form.json"),
+                    readJsonFromPdf(file, "kerelmezo_form.json"),
+                    readJsonFromPdf(file, "kerelmezo_mtmt.json")
+                ]);
+                if (!formContent) {
+                    setDialogMessage("");
+                    return;
+                }
+
+                const parsedContent = JSON.parse(formContent);
+
+                if (applicantContent) {
+                    const applicantData = JSON.parse(applicantContent);
+                    const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
+                    setDialogMessage("Publikációk és hivatkozások betöltése");
+                    if ("Adatlapon szereplő publikációk" in mtmtData && "A pályázó összes publikációja a beadáskor" in mtmtData) {
+                        loadPubItemSummary(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
+                    } else {
+                        const mtmtId = String(
+                            getByPath(applicantData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || ""
+                        );
+                        if (mtmtId) {
+                            await loadMTMTPublications(mtmtId);
+                        }
+                    }
+                    await loadApplicantData(applicantData, mtmtData);
+                }
+
                 atomsFromJSON(parsedContent, formData);
                 setDialogMessage("");
             }

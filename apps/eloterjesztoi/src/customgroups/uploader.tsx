@@ -2,7 +2,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTit
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
 import { loadApplicantData } from "../eloterjesztoiform.tsx";
-import { getByPath, loadMTMTPublications, loadPubItemSummary } from "@repo/form-engine";
+import { getByPath, loadMTMTPublications, loadPubItemSummary, type PubItemSummary } from "@repo/form-engine";
 import { readJsonFromPdf } from "@repo/form-engine";
 import { useAtomValue } from "jotai";
 import { UploadIcon } from "lucide-react";
@@ -28,7 +28,7 @@ export const ApplicationPdfUploader = () => {
             }
             const parsedMtmtContent = JSON.parse(mtmtContent);
             if ("Adatlapon szereplő publikációk" in parsedMtmtContent && "A pályázó összes publikációja a beadáskor" in parsedMtmtContent) {
-                loadPubItemSummary(parsedMtmtContent["Adatlapon szereplő publikációk"] as Record<string, { template: string; rating: string | null }>);
+                loadPubItemSummary(parsedMtmtContent["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
             } else {
                 const mtmtId = String(
                     getByPath(parsedFormContent, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || ""
@@ -42,7 +42,7 @@ export const ApplicationPdfUploader = () => {
                     return { status: "error", error: "Nem található MTMT azonosító a kérelmezői adatlapon." };
                 }
             }
-            await loadApplicantData(parsedFormContent);
+            await loadApplicantData(parsedFormContent, parsedMtmtContent);
             return {
                 status: "success",
                 result: URL.createObjectURL(file)
