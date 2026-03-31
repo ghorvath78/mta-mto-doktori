@@ -147,7 +147,15 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
             await getPdfSection(descriptor, formData, "Előterjesztői|A tudományos minimumkövetelmények teljesítésének összesítése|Összesítés", ""),
             { text: "D. Összefoglaló javaslat: A kérelmező doktori habitusának megítélése", style: "section" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Összefoglaló javaslat|Összefoglaló javaslat", ""),
-            { text: "E. Javaslat a bírálókra és a bíráló bizottság tagjaira", style: "section" }
+            { text: "E. Javaslat a bírálókra és a bíráló bizottság tagjaira", style: "section" },
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Hivatalos bírálók", "Hivatalos bírálók:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Tartalék bírálók", "Tartalék bírálók:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság elnöke", "Bíráló bizottság elnöke:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság titkára", "Bíráló bizottság titkára:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tartalék elnöke", "Bíráló bizottság tartalék elnöke:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tartalék titkára", "Bíráló bizottság tartalék titkára:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tagjai", "Bíráló bizottság tagjai:"),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tartalék tagjai", "Bíráló bizottság tartalék tagjai:")
         ]
     };
 
