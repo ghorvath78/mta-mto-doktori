@@ -222,7 +222,8 @@ export const tudomanymetria: PageDescriptor = {
                             helpText: "A műszaki alkotásra megítélt pontszám.",
                             attribs: {
                                 fractional: true,
-                                colWidth: "50"
+                                colWidth: "50",
+                                important: true
                             }
                         }
                     ]

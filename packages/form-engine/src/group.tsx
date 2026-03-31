@@ -173,6 +173,7 @@ export const Group = ({
                         index={index}
                         readonly={fieldReadonly}
                         twoColumn={field.attribs?.noAlign ? false : true}
+                        important={field.attribs?.important === true}
                     ></TextInput>
                 );
                 break;
@@ -233,6 +234,7 @@ export const Group = ({
                         readonly={fieldReadonly}
                         fractional={field.attribs?.["fractional"] === true}
                         twoColumn={field.attribs?.noAlign ? false : true}
+                        important={field.attribs?.important === true}
                     />
                 );
                 break;

@@ -13,7 +13,8 @@ export const TextInput = ({
     twoColumn = true,
     index,
     onBlur,
-    readonly = false
+    readonly = false,
+    important = false
 }: {
     label: string;
     fieldKey: string;
@@ -26,6 +27,7 @@ export const TextInput = ({
     index: number;
     onBlur?: (value: string, setValue: (value: string) => void) => void;
     readonly?: boolean;
+    important?: boolean;
 }) => {
     const [value, setValue] = useAtom(formData[fieldKey]);
 
@@ -45,7 +47,7 @@ export const TextInput = ({
                 </div>
             )}
             {!readonly && (
-                <InputGroup className="w-full border border-gray-300 rounded py-1 px-2 flex-3 h-9">
+                <InputGroup className={`w-full border rounded py-1 px-2 flex-3 h-9 ${important ? "border-primary border-2" : "border-gray-300"}`}>
                     <InputGroupInput
                         className="h-[unset] px-0 py-0 md:text-base"
                         type={numeric ? "number" : "text"}

@@ -12,7 +12,8 @@ export const NumberInput = ({
     className = "",
     fractional = false,
     readonly = false,
-    twoColumn = true
+    twoColumn = true,
+    important = false
 }: {
     label: string;
     formData: FormData;
@@ -23,6 +24,7 @@ export const NumberInput = ({
     fractional?: boolean;
     readonly?: boolean;
     twoColumn?: boolean;
+    important?: boolean;
 }) => {
     const [value, setValue] = useAtom(formData[fieldKey]);
 
@@ -69,7 +71,7 @@ export const NumberInput = ({
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>
-            <InputGroup className="w-full border border-gray-300 rounded py-1 px-2 flex-3 h-9 min-w-16">
+            <InputGroup className={`w-full border rounded py-1 px-2 flex-3 h-9 min-w-16 ${important ? "border-primary border-2" : "border-gray-300"}`}>
                 <InputGroupInput
                     className="h-[unset] px-0 py-0 md:text-base"
                     type="text"
