@@ -1,38 +1,12 @@
-import { type PageDescriptor, type FieldDescriptor, getAuthorRecord, store, type FormData } from "@repo/form-engine";
+import { type PageDescriptor, type FieldDescriptor } from "@repo/form-engine";
 import { applicantDataLoaded } from "./atoms";
+import { CommitteeTable, CommitteeDndProvider } from "./customgroups/committeetable";
 
 const bizottsagiTagFields: FieldDescriptor[] = [
     {
         key: "MTMT azonosító",
         type: "mtmtUser",
-        attribs: {
-            noPrint: true,
-            onMTMTIdChange: (id: string, formData: FormData, fieldKey: string, index: number) => {
-                console.log(`MTMT ID changed: ${id} (field: ${fieldKey})`);
-                getAuthorRecord(id)
-                    .then((data) => {
-                        console.log("MTMT user data:", data);
-                        const baseKey = fieldKey.split("|").slice(0, -1).join("|");
-                        const newNames = [...store.get(formData[`${baseKey}|Név`])];
-                        newNames[index] = data.name as string;
-                        store.set(formData[`${baseKey}|Név`], newNames);
-                        const newAffil = [...store.get(formData[`${baseKey}|Munkahely`])];
-                        newAffil[index] = data.affiliations ? (data.affiliations as string[]).join(", ") : "";
-                        store.set(formData[`${baseKey}|Munkahely`], newAffil);
-                        const newDegrees = [...store.get(formData[`${baseKey}|Tudományos fokozat`])];
-                        newDegrees[index] = data.degrees ? (data.degrees as string[]).join(", ") : "";
-                        store.set(formData[`${baseKey}|Tudományos fokozat`], newDegrees);
-                        const newDisciplines = [...store.get(formData[`${baseKey}|Szakterület`])];
-                        newDisciplines[index] = data.disciplines ? (data.disciplines as string[]).join(", ") : "";
-                        store.set(formData[`${baseKey}|Szakterület`], newDisciplines);
-                        return data;
-                    })
-                    .catch((error) => {
-                        console.error("Error fetching MTMT user data:", error);
-                        return null;
-                    });
-            }
-        }
+        attribs: { noPrint: true }
     },
     {
         key: "Név",
@@ -60,6 +34,7 @@ const bizottsagiTagFields: FieldDescriptor[] = [
 export const biraloBizottsag: PageDescriptor = {
     key: "Bíráló bizottság",
     enabledAtom: applicantDataLoaded,
+    wrapperComponent: CommitteeDndProvider,
     sections: [
         {
             key: "Hivatalos bírálók",
@@ -67,9 +42,9 @@ export const biraloBizottsag: PageDescriptor = {
                 {
                     key: "Hivatalos bírálók",
                     isArray: true,
-                    arrayMin: 3,
+                    arrayMin: 0,
                     arrayMax: 3,
-                    arrayAddLabel: "Új bíráló hozzáadása",
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -80,9 +55,9 @@ export const biraloBizottsag: PageDescriptor = {
                 {
                     key: "Tartalék bírálók",
                     isArray: true,
-                    arrayMin: 3,
+                    arrayMin: 0,
                     arrayMax: 3,
-                    arrayAddLabel: "Új bíráló hozzáadása",
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -92,6 +67,10 @@ export const biraloBizottsag: PageDescriptor = {
             groups: [
                 {
                     key: "Bíráló bizottság elnöke",
+                    isArray: true,
+                    arrayMin: 0,
+                    arrayMax: 1,
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -101,6 +80,10 @@ export const biraloBizottsag: PageDescriptor = {
             groups: [
                 {
                     key: "Bíráló bizottság titkára",
+                    isArray: true,
+                    arrayMin: 0,
+                    arrayMax: 1,
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -110,6 +93,10 @@ export const biraloBizottsag: PageDescriptor = {
             groups: [
                 {
                     key: "Bíráló bizottság tartalék elnöke",
+                    isArray: true,
+                    arrayMin: 0,
+                    arrayMax: 1,
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -119,6 +106,10 @@ export const biraloBizottsag: PageDescriptor = {
             groups: [
                 {
                     key: "Bíráló bizottság tartalék titkára",
+                    isArray: true,
+                    arrayMin: 0,
+                    arrayMax: 1,
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -129,9 +120,9 @@ export const biraloBizottsag: PageDescriptor = {
                 {
                     key: "Bíráló bizottság tagjai",
                     isArray: true,
-                    arrayMin: 5,
+                    arrayMin: 0,
                     arrayMax: 5,
-                    arrayAddLabel: "Új tag hozzáadása",
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]
@@ -142,9 +133,9 @@ export const biraloBizottsag: PageDescriptor = {
                 {
                     key: "Bíráló bizottság tartalék tagjai",
                     isArray: true,
-                    arrayMin: 5,
+                    arrayMin: 0,
                     arrayMax: 5,
-                    arrayAddLabel: "Új tag hozzáadása",
+                    customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
                 }
             ]

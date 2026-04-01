@@ -93,12 +93,15 @@ export type GroupDescriptor = {
     lengthSource?: string;
 };
 
+export type PageWrapperComponent = ({ children }: { children: React.ReactNode }) => JSX.Element;
+
 export type PageDescriptor = {
     label?: string;
     key: string;
     sections: SectionDescriptor[];
     attribs?: AttribType;
     enabledAtom?: PrimitiveAtom<boolean>;
+    wrapperComponent?: PageWrapperComponent;
 };
 
 export type FormDescriptor = {

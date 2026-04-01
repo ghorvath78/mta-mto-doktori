@@ -169,7 +169,7 @@ export const MTMTUserInput = ({
     );
 };
 
-const MTMTIdFinder = ({ onSelect, onClose, isOpen }: { onSelect: (id: string) => void; onClose: () => void; isOpen: boolean }) => {
+export const MTMTIdFinder = ({ onSelect, onClose, isOpen }: { onSelect: (id: string) => void; onClose: () => void; isOpen: boolean }) => {
     const [name, setName] = useState<string>("");
     const [suggestions, setSuggestions] = useState<Array<{ mtid: string; label: string }>>([]);
     const fetching = useRef<boolean>(false);
@@ -201,7 +201,6 @@ const MTMTIdFinder = ({ onSelect, onClose, isOpen }: { onSelect: (id: string) =>
     return (
         <>
             <Dialog open={isOpen} onOpenChange={(open) => (open ? null : onClose())}>
-                <DialogTrigger> </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>MTMT azonosító keresése név alapján</DialogTitle>

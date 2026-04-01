@@ -42,7 +42,7 @@ export const Section = ({ section, formData, keyPrefix }: { section: SectionDesc
                                 )}
                             </GroupPanel>
                         )}
-                        {group.isArray && !(group.attribs?.printTabular && group.readonly) && (
+                        {group.isArray && !group.customComponent && !(group.attribs?.printTabular && group.readonly) && (
                             <GroupArrayPanel
                                 group={group}
                                 formData={formData}
@@ -51,7 +51,12 @@ export const Section = ({ section, formData, keyPrefix }: { section: SectionDesc
                                 readonly={group.readonly}
                             />
                         )}
-                        {group.isArray && group.attribs?.printTabular && group.readonly && (
+                        {group.isArray && group.customComponent && (
+                            <GroupPanel group={group} formData={formData}>
+                                <group.customComponent group={group} formData={formData} keyPrefix={groupKeyPrefix} index={0} />
+                            </GroupPanel>
+                        )}
+                        {group.isArray && !group.customComponent && group.attribs?.printTabular && group.readonly && (
                             <GroupPanel group={group} formData={formData}>
                                 <TabularList group={group} formData={formData} keyPrefix={groupKeyPrefix} index={0} />
                             </GroupPanel>
