@@ -239,7 +239,7 @@ export const loadPubItemSummary = (summaries: Record<string, PubItemSummary>) =>
 export type AuthorData = {
     name: string;
     affiliations: string[];
-    degrees: string[];
+    degree: string;
     disciplines: string[];
 };
 
@@ -250,7 +250,7 @@ export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
         const result = {
             name: String(content.familyName) + " " + String(content.givenName),
             affiliations: [],
-            degrees: [],
+            degree: "",
             disciplines: []
         } as AuthorData;
 
@@ -264,9 +264,26 @@ export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
         }
 
         if ("degrees" in resp.content && Array.isArray(resp.content["degrees"])) {
+            const allDegrees: string[] = [];
             resp.content["degrees"].forEach((deg: any) => {
-                result.degrees.push(deg.label);
+                allDegrees.push(deg.label);
             });
+            const degreesString = allDegrees.join(", ");
+            if (degreesString.includes("MTA Rendes tag")) {
+                result.degree = "MTA rendes tagja";
+            } else if (degreesString.includes("MTA Levelező tag")) {
+                result.degree = "MTA levelező tagja";
+            } else if (degreesString.includes("MTA külső tagja")) {
+                result.degree = "MTA külső tagja";
+            } else if (degreesString.includes("MTA Doktora")) {
+                result.degree = "MTA doktora";
+            } else if (degreesString.includes("Tudomány doktora (nagydoktor)")) {
+                result.degree = "Tudomány doktora";
+            } else if (degreesString.includes("Kandidátus")) {
+                result.degree = "Kandidátus";
+            } else if (degreesString.includes("PhD")) {
+                result.degree = "PhD";
+            }
         }
 
         if ("disciplines" in resp.content && Array.isArray(resp.content["disciplines"])) {

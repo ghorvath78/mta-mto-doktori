@@ -1,0 +1,463 @@
+{
+    "Kérelmezői": {
+        "A kérelmező főbb adatai": {
+            "Személyes adatok": {
+                "Név": "Kovács Gábor Miklós",
+                "Születési adatok": "1978|Budapest",
+                "MTMT azonosító": "10025477",
+                "ODT személyi lap": "https://doktori.hu/index.php?menession=publish&PersonId=67890",
+                "Egyéni honlap": "https://www.inf.bme.hu/~kovacsgm"
+            },
+            "Diplomák": [
+                {
+                    "Egyetem": "Budapesti Műszaki és Gazdaságtudományi Egyetem",
+                    "Kar (szak)": "Villamosmérnöki és Informatikai Kar; Mérnök-informatikus szak",
+                    "Megszerzés éve": "2001",
+                    "Minősítése": "jeles"
+                },
+                {
+                    "Egyetem": "Eötvös Loránd Tudományegyetem",
+                    "Kar (szak)": "Informatikai Kar; Programtervező informatikus szak",
+                    "Megszerzés éve": "2003",
+                    "Minősítése": "kitűnő"
+                }
+            ],
+            "Tudományos fokozatok": [
+                {
+                    "Egyetem/TMB": "Budapesti Műszaki és Gazdaságtudományi Egyetem",
+                    "Tudományterület": "Informatikai tudományok",
+                    "Megszerzés éve": "2008",
+                    "Minősítése": "summa cum laude"
+                }
+            ],
+            "Tudományos címek": [
+                {
+                    "Cím": "Habilitált doktor",
+                    "Egyetem/TMB": "Budapesti Műszaki és Gazdaságtudományi Egyetem",
+                    "Tudományterület": "Informatikai tudományok",
+                    "Megszerzés éve": "2016",
+                    "Minősítése": "kiváló"
+                }
+            ],
+            "Aktuális munkahelyek": [
+                {
+                    "Intézmény": "Budapesti Műszaki és Gazdaságtudományi Egyetem",
+                    "Szervezeti egység": "Villamosmérnöki és Informatikai Kar, Hálózati Rendszerek és Szolgáltatások Tanszék",
+                    "Beosztás": "Egyetemi tanár"
+                },
+                {
+                    "Intézmény": "HUN-REN Számítástechnikai és Automatizálási Kutatóintézet",
+                    "Szervezeti egység": "Sztochasztikus Rendszerek Osztály",
+                    "Beosztás": "Tudományos tanácsadó"
+                }
+            ],
+            "Korábbi tevékenységek, munkahelyek": [
+                {
+                    "Intézmény": "Technical University of Berlin",
+                    "Szervezeti egység": "Faculty of Electrical Engineering, Telecommunication Networks Group",
+                    "Beosztás": "Postdoctoral researcher",
+                    "Időtartam": "2009-2011"
+                },
+                {
+                    "Intézmény": "University of Twente",
+                    "Szervezeti egység": "Department of Computer Science, Design and Analysis of Communication Systems",
+                    "Beosztás": "Visiting researcher",
+                    "Időtartam": "2006-2007"
+                }
+            ],
+            "Nyelvismeret": [
+                {
+                    "Nyelv": "Angol",
+                    "Képesség": "komplex",
+                    "Típus": "állami",
+                    "Szint": "C1",
+                    "Kiállító és szám": "Rigó utcai Nyelvvizsgaközpont, 2000/12345"
+                },
+                {
+                    "Nyelv": "Német",
+                    "Képesség": "komplex",
+                    "Típus": "ECL",
+                    "Szint": "B2",
+                    "Kiállító és szám": "ECL Nyelvvizsgaközpont, 2002/67890"
+                }
+            ],
+            "Szakterületek": {
+                "Szakterületek felsorolása": "Sztochasztikus modellezés, Markov-folyamatok, sorbanállási hálózatok, teljesítményanalízis, forgalmi folyamatok illesztése, numerikus módszerek, telekommunikációs rendszerek modellezése, mátrix-exponenciális eloszlások"
+            }
+        },
+        "A doktori mű adatai": {
+            "Az eljárás alapjául szolgáló doktori mű": {
+                "Címe": "Markov-érkezési folyamatok illesztése és alkalmazása telekommunikációs rendszerek teljesítményanalízisében",
+                "Formája": "értekezés",
+                "Tudományág": "Informatika",
+                "Illetékes bizottság": "Informatikai Tudományos Bizottság"
+            }
+        },
+        "Legfontosabb publikációk": {
+            "Öt legfontosabb publikáció": [
+                {
+                    "MTMT azonosító": "2605716",
+                    "Tézishez kapcsolódás": "igen",
+                    "Tartalmi összefoglaló": "A közlemény egy új módszert mutat be Markov-érkezési folyamatok (MAP) illesztésére, amely az érkezésközi idő eloszlásának és a lag-korreláció független közelítésén alapul."
+                },
+                {
+                    "MTMT azonosító": "2902864",
+                    "Tézishez kapcsolódás": "igen",
+                    "Tartalmi összefoglaló": "A publikáció egy hatékony analitikus eljárást dolgoz ki az MMAP[K]/PH[K]/1 prioritásos sorbanállási rendszer elemzésére."
+                },
+                {
+                    "MTMT azonosító": "2606626",
+                    "Tézishez kapcsolódás": "igen",
+                    "Tartalmi összefoglaló": "A cikk a Markov-érkezési folyamatok minimális reprezentációjával és egy momentum-illesztési módszerrel foglalkozik."
+                },
+                {
+                    "MTMT azonosító": "31031822",
+                    "Tézishez kapcsolódás": "igen",
+                    "Tartalmi összefoglaló": "A közleményben a numerikus inverz Laplace-transzformáció egy új megközelítését javasoltuk."
+                },
+                {
+                    "MTMT azonosító": "2644194",
+                    "Tézishez kapcsolódás": "nem",
+                    "Tartalmi összefoglaló": "A publikáció egy dekompozíciós módszert mutat be kétosztályú prioritásos sorbanállási hálózatok forgalmi elemzésére."
+                }
+            ]
+        },
+        "Legfontosabb hivatkozások": {
+            "Öt legfontosabb hivatkozás": [
+                {
+                    "Hivatkozott közlemény": "2644194",
+                    "Hivatkozó közlemény": "30830851",
+                    "Szövegkörnyezet": "As demonstrated by Kovács [12], the traffic-based decomposition of two-class queueing networks with priority service enables tractable performance bounds for complex multi-class systems.",
+                    "Fordítás": "Ahogy Kovács [12] bemutatta, a kétosztályú prioritásos sorbanállási hálózatok forgalmi alapú dekompozíciója lehetővé teszi az összetett többosztályos rendszerek kezelhető teljesítménybecslését."
+                },
+                {
+                    "Hivatkozott közlemény": "2902864",
+                    "Hivatkozó közlemény": "31081272",
+                    "Szövegkörnyezet": "In the context of learning-agent-based simulations for queue network systems, the efficient analysis technique for MMAP[K]/PH[K]/1 priority queues developed by Kovács [8] is instrumental.",
+                    "Fordítás": "A tanuló-ágens alapú szimulációk kontextusában Kovács [8] által kidolgozott MMAP[K]/PH[K]/1 prioritásos sorok hatékony elemzési technikája kulcsfontosságú."
+                },
+                {
+                    "Hivatkozott közlemény": "31031822",
+                    "Hivatkozó közlemény": "36693134",
+                    "Szövegkörnyezet": "For computing response time distributions under edge computing scenarios, we employ the numerical inverse Laplace transformation method based on concentrated matrix exponential distributions proposed by Kovács [15].",
+                    "Fordítás": "Az élszámítási forgatókönyvek alatt felmerülő válaszidő-eloszlások kiszámításához a Kovács [15] által javasolt módszert alkalmazzuk."
+                },
+                {
+                    "Hivatkozott közlemény": "2605716",
+                    "Hivatkozó közlemény": "34608385",
+                    "Szövegkörnyezet": "The MAP fitting approach with independent approximation of the inter-arrival time distribution and the lag correlation, as proposed by Kovács [7], is applied to model the arrival process.",
+                    "Fordítás": "A Kovács [7] által javasolt MAP illesztési módszert alkalmazzuk az érkezési folyamat modellezésére."
+                },
+                {
+                    "Hivatkozott közlemény": "2606626",
+                    "Hivatkozó közlemény": "35051735",
+                    "Szövegkörnyezet": "To model the traffic arrival process in our weighted fair queueing analysis, we utilize the minimal representation of Markov arrival processes introduced by Kovács [11].",
+                    "Fordítás": "A sülyozott méltányos sorkezelés elemzésünkben a Kovács [11] által bevezetett Markov-érkezési folyamatok minimális reprezentációját használjuk."
+                }
+            ]
+        },
+        "Műszaki alkotások": {
+            "Műszaki alkotások megadása": [
+                {
+                    "Műszaki alkotás megnevezése": "Valós idejű hálózati forgalomoptimalizáló rendszer adaptív Markov-modellezéssel",
+                    "Műszaki alkotás típusa": "szabadalom",
+                    "Kapcsolódó szabadalom": "",
+                    "Kapcsolódó publikáció": "",
+                    "1. legfontosabb hivatkozás": "",
+                    "2. legfontosabb hivatkozás": "",
+                    "Egyéb alkotásra hivatkozás linkje": "",
+                    "Társalkotók": "",
+                    "Alkotás minősítése": "",
+                    "Alkotás MTMT azonosítója": "",
+                    "Építészeti alkotásra hivatkozás linkje": ""
+                },
+                {
+                    "Műszaki alkotás megnevezése": "Szoftvereszköz sztochasztikus sorbanállási hálózatok automatizált teljesítményanalíziséhez",
+                    "Műszaki alkotás típusa": "egyéb alkotás",
+                    "Kapcsolódó szabadalom": "",
+                    "Kapcsolódó publikáció": "",
+                    "1. legfontosabb hivatkozás": "",
+                    "2. legfontosabb hivatkozás": "",
+                    "Egyéb alkotásra hivatkozás linkje": "https://github.com/kovacsgm/queueing-analyzer",
+                    "Társalkotók": "",
+                    "Alkotás minősítése": "",
+                    "Alkotás MTMT azonosítója": "",
+                    "Építészeti alkotásra hivatkozás linkje": ""
+                },
+                {
+                    "Műszaki alkotás megnevezése": "BME VIK oktatási adatközpont hűtési és energiahatékonysági rendszerének megtervezése",
+                    "Műszaki alkotás típusa": "építészeti alkotás",
+                    "Kapcsolódó szabadalom": "",
+                    "Kapcsolódó publikáció": "",
+                    "1. legfontosabb hivatkozás": "",
+                    "2. legfontosabb hivatkozás": "",
+                    "Egyéb alkotásra hivatkozás linkje": "",
+                    "Társalkotók": "Dr. Tóth László, Dr. Németh Péter",
+                    "Alkotás minősítése": "Nívódíj, Magyar Mérnöki Kamara 2020",
+                    "Alkotás MTMT azonosítója": "",
+                    "Építészeti alkotásra hivatkozás linkje": "https://www.mmk.hu/nivodij/2020/adatkozpont"
+                }
+            ]
+        },
+        "Tudománymetria": {
+            "Tudománymetriai táblázat": {
+                "Tudománymetriai táblázat": "[[\"Összesen\",\"Első/ut.\",\"Egyszerzős\",\"\",\"\",\"\",\"\"],[45,12,3,30,8,2,38.5],[28,8,2,20,5,1,0],[10,4,2,8,2,1,0],[15,3,0,10,2,0,12.0],[8,2,0,5,1,0,6.5],[0,0,0,0,0,0,0],[3,1,0,2,0,0,4.5],[5,0,0,3,0,0,2.0],[312,0,0,0,0,0,0],[185,0,0,0,0,0,0],[120,0,0,0,0,0,0],[42,0,0,0,0,0,0],[15,0,0,0,0,0,0],[1,0,0,0,0,0,0],[3,0,0,0,0,0,0],[28,0,0,0,0,0,0],[8.5,0,0,0,0,0,0]]"
+            }
+        },
+        "Tudományos közéleti tevékenység": {
+            "TDK témavezetés": {
+                "Lista": [
+                    {
+                        "Hallgató neve": "Szabó Péter András",
+                        "OTDK éve": "2019",
+                        "OTDK szekció": "Informatika szekció",
+                        "Helyezés": "I. díj",
+                        "Igazoló link": "https://otdt.hu/otdk/2019/informatika/eredmenyek"
+                    },
+                    {
+                        "Hallgató neve": "Balogh Eszter Mária",
+                        "OTDK éve": "2021",
+                        "OTDK szekció": "Informatika szekció",
+                        "Helyezés": "II. díj",
+                        "Igazoló link": "https://otdt.hu/otdk/2021/informatika/eredmenyek"
+                    },
+                    {
+                        "Hallgató neve": "Varga Tamás",
+                        "OTDK éve": "2023",
+                        "OTDK szekció": "Informatika szekció",
+                        "Helyezés": "Különdíj",
+                        "Igazoló link": "https://otdt.hu/otdk/2023/informatika/eredmenyek"
+                    }
+                ],
+                "Összesítés": {
+                    "I. díjas": "1",
+                    "II. díjas": "1",
+                    "III. díjas": "0",
+                    "Különdíjas": "1"
+                }
+            },
+            "Részvétel graduális és doktori képzésben": {
+                "Lista": [
+                    {
+                        "Intézmény és szervezeti egység": "BME Villamosmérnöki és Informatikai Kar",
+                        "Tantárgy neve": "Sztochasztikus folyamatok",
+                        "Oktatói munka jellege": "Tárgyfelelős, előadó",
+                        "Képzési szint": "mesterképzés",
+                        "Időszak": "2014-2025"
+                    },
+                    {
+                        "Intézmény és szervezeti egység": "BME Villamosmérnöki és Informatikai Kar",
+                        "Tantárgy neve": "Bevezetés a telekommunikációba",
+                        "Oktatói munka jellege": "Előadó",
+                        "Képzési szint": "alapképzés",
+                        "Időszak": "2012-2025"
+                    },
+                    {
+                        "Intézmény és szervezeti egység": "BME Villamosmérnöki és Informatikai Kar",
+                        "Tantárgy neve": "Sorbanállási rendszerek elmélete",
+                        "Oktatói munka jellege": "Tárgy kidolgozása, tárgyfelelős, előadó",
+                        "Képzési szint": "doktori képzés",
+                        "Időszak": "2016-2025"
+                    }
+                ],
+                "Link": {
+                    "Tevékenység igazoló linkje": "https://www.vik.bme.hu/oktatok/kovacsgm/tantargyak"
+                }
+            },
+            "Doktori fokozatot szerzett hallgatók": {
+                "Lista": [
+                    {
+                        "Hallgató neve": "Kiss Attila",
+                        "Témavezetés": "egyéni témavezető",
+                        "Doktori iskola": "BME Informatikai Tudományok Doktori Iskola",
+                        "Fokozatszerzés éve": "2017"
+                    },
+                    {
+                        "Hallgató neve": "Molnár Krisztina",
+                        "Témavezetés": "egyéni témavezető",
+                        "Doktori iskola": "BME Informatikai Tudományok Doktori Iskola",
+                        "Fokozatszerzés éve": "2020"
+                    },
+                    {
+                        "Hallgató neve": "Takács Dániel",
+                        "Témavezetés": "társtémavezető",
+                        "Doktori iskola": "ELTE Informatikai Doktori Iskola",
+                        "Fokozatszerzés éve": "2022"
+                    }
+                ],
+                "Összes": {
+                    "Fokozatott szerzett doktoranduszok száma": "2.5"
+                }
+            },
+            "Részvétel tudományos zsűriben, kuratóriumban, bírálatokban": {
+                "Lista": [
+                    {
+                        "A testület megnevezése": "NKFIH OTKA K pályázatok bíráló bizottsága",
+                        "Hazai/nemzetközi": "hazai",
+                        "Részvételi szerep": "Pályázati bíráló",
+                        "Időszak": "2018-2024"
+                    },
+                    {
+                        "A testület megnevezése": "European Research Council (ERC) Starting Grant, panel PE6",
+                        "Hazai/nemzetközi": "nemzetközi",
+                        "Részvételi szerep": "Remote reviewer",
+                        "Időszak": "2022"
+                    },
+                    {
+                        "A testület megnevezése": "MTA Bolyai János Kutatási Ösztöndíj bírálói testülete",
+                        "Hazai/nemzetközi": "hazai",
+                        "Részvételi szerep": "Felkért bíráló",
+                        "Időszak": "2019-2023"
+                    }
+                ],
+                "Link": {
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/reviews"
+                }
+            },
+            "Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében": {
+                "Lista": [
+                    {
+                        "A rendezvény pontos címe és ideje": "12th European Workshop on Performance Engineering (EPEW 2015), 2015. szeptember",
+                        "A rendező ország": "Spanyolország",
+                        "Szervezői/előadói szerep leírása": "Program Committee co-chair",
+                        "Alátámasztó weblink": "https://epew2015.example.org"
+                    },
+                    {
+                        "A rendezvény pontos címe és ideje": "36th International Teletraffic Congress (ITC 36), 2024. szeptember",
+                        "A rendező ország": "Svájc",
+                        "Szervezői/előadói szerep leírása": "Meghívott plenáris előadó",
+                        "Alátámasztó weblink": "https://itc36.example.org/program"
+                    }
+                ],
+                "Link": {
+                    "További információ": "https://www.inf.bme.hu/~kovacsgm/conferences"
+                }
+            },
+            "Tisztség, kiemelt/választott tagság tudományos szervezetben": {
+                "Lista": [
+                    {
+                        "A szervezet neve": "IEEE Communications Society, Technical Committee on Computer Communications",
+                        "A szervezet weboldala": "https://www.comsoc.org",
+                        "Hazai/nemzetközi": "nemzetközi",
+                        "Tisztsége": "Advisory Committee member",
+                        "Tagság": "2018-2025"
+                    },
+                    {
+                        "A szervezet neve": "HTE (Hírközlési és Informatikai Tudományos Egyesület)",
+                        "A szervezet weboldala": "https://www.hte.hu",
+                        "Hazai/nemzetközi": "hazai",
+                        "Tisztsége": "Informatikai szakosztály titkára",
+                        "Tagság": "2016-2025"
+                    }
+                ],
+                "Link": {
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/memberships"
+                }
+            },
+            "Folyóirat-szerkesztőbizottsági tagság legalább 2 évig": {
+                "Lista": [
+                    {
+                        "A folyóirat neve": "Performance Evaluation",
+                        "A folyóirat weboldala": "https://www.journals.elsevier.com/performance-evaluation",
+                        "Besorolás": "Q1 (Scopus)",
+                        "Tisztsége": "Associate editor",
+                        "Mettől-meddig": "2019-2025"
+                    },
+                    {
+                        "A folyóirat neve": "European Journal of Operational Research",
+                        "A folyóirat weboldala": "https://www.journals.elsevier.com/european-journal-of-operational-research",
+                        "Besorolás": "D1 (Scopus)",
+                        "Tisztsége": "Editorial board member",
+                        "Mettől-meddig": "2021-2025"
+                    }
+                ],
+                "Link": {
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/editorial"
+                }
+            },
+            "Részvétel tudományos minősítésben": {
+                "Összesítés": {
+                    "MTA doktora értekezés bírálója": "1",
+                    "MTA doktori bírálóbizottság titkára": "2",
+                    "PhD vagy kandidátusi értekezés bírálója": "5",
+                    "PhD bírálóbizottság titkára": "3",
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/phd-reviews"
+                }
+            },
+            "Elnyert tudományos pályázat": {
+                "Lista": [
+                    {
+                        "A pályázat címe": "OTKA K-132060: Markov-modellezési módszerek fejlesztése hálózati rendszerek teljesítményanalíziséhez",
+                        "Támogatási összeg": "42 000 000 Ft",
+                        "Hazai/nemzetközi": "hazai",
+                        "Funkció": "témavezető",
+                        "Futamidő": "2019-2023"
+                    },
+                    {
+                        "A pályázat címe": "OTKA FK-148721: Koncentrált mátrix-exponenciális módszerek alkalmazásai telekommunikációs rendszerekben",
+                        "Támogatási összeg": "38 500 000 Ft",
+                        "Hazai/nemzetközi": "hazai",
+                        "Funkció": "témavezető",
+                        "Futamidő": "2023-2027"
+                    },
+                    {
+                        "A pályázat címe": "EU HORIZON 2020 OTKA-NN: Stochastic Methods for Network Performance (StochNet)",
+                        "Támogatási összeg": "185 000 EUR",
+                        "Hazai/nemzetközi": "nemzetközi",
+                        "Funkció": "munkacsoportvezető",
+                        "Futamidő": "2020-2024"
+                    }
+                ],
+                "Link": {
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/grants"
+                }
+            },
+            "Külföldi tartózkodás": {
+                "Lista": [
+                    {
+                        "A meghívó neve, helyszín": "Technical University of Berlin, Berlin, Németország",
+                        "A tartózkodás jellege": "Posztdoktori kutatói állás",
+                        "Finanszírozás forrása": "DFG kutatási projekt",
+                        "Mettől-meddig": "2009.01-2011.06"
+                    },
+                    {
+                        "A meghívó neve, helyszín": "University of Twente, Enschede, Hollandia",
+                        "A tartózkodás jellege": "Vendégkutatói megbízás",
+                        "Finanszírozás forrása": "NWO ösztöndíj",
+                        "Mettől-meddig": "2006.09-2007.03"
+                    }
+                ],
+                "Link": {
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/stays"
+                }
+            },
+            "Állami vagy MTA által adományozott tudományos díj, kitüntetés": {
+                "Lista": [
+                    {
+                        "Kitüntetés megnevezése": "Akadémiai Ifjúsági Díj",
+                        "Adományozó szervezet": "Magyar Tudományos Akadémia",
+                        "Ország": "Magyarország",
+                        "Adományozás időpontja": "2013"
+                    },
+                    {
+                        "Kitüntetés megnevezése": "Bolyai-plakett",
+                        "Adományozó szervezet": "Magyar Tudományos Akadémia",
+                        "Ország": "Magyarország",
+                        "Adományozás időpontja": "2021"
+                    }
+                ],
+                "Link": {
+                    "Alátámasztó link": "https://www.inf.bme.hu/~kovacsgm/awards"
+                }
+            }
+        },
+        "Munkásság összefoglalása": {
+            "Összefoglaló szövege": {
+                "Összefoglaló szövege": "Kutatási munkásságom fő területe a sztochasztikus modellezés és a sorbanállási rendszerek teljesítményanalízise, különös tekintettel a telekommunikációs alkalmazásokra."
+            },
+            "Egyéb közlendők": {
+                "Egyéb közlendők": "Az MTA Bolyai János Kutatási Ösztöndíjasa voltam 2012-2015 között. 2018 óta az MTA Műszaki Tudományok Osztályának köztestületi tagja vagyok."
+            }
+        }
+    }
+}

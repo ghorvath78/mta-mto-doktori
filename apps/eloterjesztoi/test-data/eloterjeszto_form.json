@@ -1,0 +1,310 @@
+{
+    "Előterjesztői": {
+        "Előterjesztő adatai": {
+            "Adatok": {
+                "Előterjesztő neve": "Dr. Nagy István",
+                "Tudományos fokozat": "MTA doktora"
+            }
+        },
+        "Pályázó adatai": {
+            "Illetékesség": {
+                "Illetékesség megállapítása": "igen|A kérelmező szakterülete és kutatási profilja megfelel az Informatikai Tudományos Bizottság illetékességi körébe tartozó témáknak. A Markov-modellezés, sorbanállási hálózatok és sztochasztikus teljesítményanalízis területeken végzett munkája egyértelműen az informatikai tudományok területéhez sorolható."
+            },
+            "Alkalmasság": {
+                "Formai alkalmasság megállapítása": "igen|A benyújtott doktori mű formailag megfelel az előírásoknak, tartalmazza a szükséges fejezeteket és az irodalmi hivatkozásokat az akadémiai szabályzatnak megfelelően.",
+                "Alkalmasság indoklása": ""
+            }
+        },
+        "Tudományos minimumkövetelmények": {
+            "A kérelmezőre vonatkozó minimumkövetelmények": {
+                "Kategória": "B",
+                "Q küszöbszám": "16",
+                "I küszöbszám": "200",
+                "Tud. köz. szempontok": "5"
+            },
+            "Q-szám": {
+                "A kérelmező alkotási teljesítménye": [
+                    {
+                        "Műszaki alkotás megnevezése": "Valós idejű hálózati forgalomoptimalizáló rendszer adaptív Markov-modellezéssel",
+                        "Műszaki alkotás típusa": "szabadalom",
+                        "Kapcsolódó szabadalom": "",
+                        "Kapcsolódó publikáció": "",
+                        "1. legfontosabb hivatkozás": "",
+                        "2. legfontosabb hivatkozás": "",
+                        "Egyéb alkotásra hivatkozás linkje": "",
+                        "Társalkotók": "",
+                        "Alkotás minősítése": "",
+                        "Alkotás MTMT azonosítója": "",
+                        "Építészeti alkotásra hivatkozás linkje": "",
+                        "Pontszám": "3"
+                    },
+                    {
+                        "Műszaki alkotás megnevezése": "Szoftvereszköz sztochasztikus sorbanállási hálózatok automatizált teljesítményanalíziséhez",
+                        "Műszaki alkotás típusa": "egyéb alkotás",
+                        "Kapcsolódó szabadalom": "",
+                        "Kapcsolódó publikáció": "",
+                        "1. legfontosabb hivatkozás": "",
+                        "2. legfontosabb hivatkozás": "",
+                        "Egyéb alkotásra hivatkozás linkje": "https://github.com/kovacsgm/queueing-analyzer",
+                        "Társalkotók": "",
+                        "Alkotás minősítése": "",
+                        "Alkotás MTMT azonosítója": "",
+                        "Építészeti alkotásra hivatkozás linkje": "",
+                        "Pontszám": "2"
+                    },
+                    {
+                        "Műszaki alkotás megnevezése": "BME VIK oktatási adatközpont hűtési és energiahatékonysági rendszerének megtervezése",
+                        "Műszaki alkotás típusa": "építészeti alkotás",
+                        "Kapcsolódó szabadalom": "",
+                        "Kapcsolódó publikáció": "",
+                        "1. legfontosabb hivatkozás": "",
+                        "2. legfontosabb hivatkozás": "",
+                        "Egyéb alkotásra hivatkozás linkje": "",
+                        "Társalkotók": "Dr. Tóth László, Dr. Németh Péter",
+                        "Alkotás minősítése": "Nívódíj, Magyar Mérnöki Kamara 2020",
+                        "Alkotás MTMT azonosítója": "",
+                        "Építészeti alkotásra hivatkozás linkje": "https://www.mmk.hu/nivodij/2020/adatkozpont",
+                        "Pontszám": "1.5"
+                    }
+                ]
+            },
+            "I-szám": {
+                "Független idézők száma": "185",
+                "I-szám": "120",
+                "WoS idézők száma": "42",
+                "H-index": "15"
+            },
+            "Publikációs teljesítmény értékelése": {
+                "Szöveges értékelés": "A kérelmező publikációs és alkotási teljesítménye kiemelkedő. A Q-szám értéke meghaladja az előírt minimumot mind a tudományos cikkekre, mind összesítésben. Az I-szám szintén jóval felülmúlja a minimumkövetelményt. Az idézettségi mutatók egyértelműen igazolják a kérelmező tudományos hatását a szakterületen. Publikációi rangos, magas impaktfaktorú nemzetközi folyóiratokban jelentek meg, és azokat széles körben idézik."
+            }
+        },
+        "Öt kiemelt publikáció": {
+            "A kérelmező által megjelölt öt legfontosabb publikáció": [
+                { "Publikáció adatai": "2605716" },
+                { "Publikáció adatai": "2902864" },
+                { "Publikáció adatai": "2606626" },
+                { "Publikáció adatai": "31031822" },
+                { "Publikáció adatai": "2644194" }
+            ],
+            "Öt legfontosabb publikáció értékelése": {
+                "Szöveges értékelés": "Az öt legfontosabb publikáció mindegyike rangos nemzetközi folyóiratban jelent meg (Performance Evaluation, European Journal of Operational Research, Stochastic Models, Annals of Operations Research). A közlemények eredeti, jelentős tudományos eredményeket tartalmaznak a Markov-modellezés és sorbanállási rendszerek területén. A cikkek módszertani újdonságai (MAP illesztés, MMAP prioritásos sorok elemzése, minimális reprezentáció, numerikus inverz Laplace-transzformáció) a szakterület alapvető eszköztárát bővítették."
+            }
+        },
+        "Öt kiemelt hivatkozás": {
+            "A kérelmező által megjelölt öt legfontosabb hivatkozás": [
+                { "Hivatkozott közlemény": "2644194", "Hivatkozó közlemény": "30830851" },
+                { "Hivatkozott közlemény": "2902864", "Hivatkozó közlemény": "31081272" },
+                { "Hivatkozott közlemény": "31031822", "Hivatkozó közlemény": "36693134" },
+                { "Hivatkozott közlemény": "2605716", "Hivatkozó közlemény": "34608385" },
+                { "Hivatkozott közlemény": "2606626", "Hivatkozó közlemény": "35051735" }
+            ],
+            "Öt legfontosabb hivatkozás értékelése": {
+                "Szöveges értékelés": "A kérelmező öt legfontosabb hivatkozása egyértelműen igazolja az eredmények nemzetközi tudományos hatását. Különösen kiemelendő, hogy a hivatkozó munkák széles alkalmazási területekről származnak (sürgősségi osztály modellezése, megerősítéses tanulás, élszámítási forgatókönyvek, csoportos kézbesítési rendszerek, méltányos sorkezelés), ami azt bizonyítja, hogy a kérelmező eredményei nemcsak a szűkebb szakterületen, hanem távolabbi alkalmazási területeken is alapvető hivatkozási pontnak számítanak."
+            }
+        },
+        "Tudományos közéleti tevékenység": {
+            "TDK témavezetés": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező 3 TDK hallgatót vezetett OTDK eredményig, közülük 1 fő I. díjat, 1 fő II. díjat, 1 fő Különdíjat kapott.",
+                    "Indoklás": ""
+                }
+            },
+            "Részvétel graduális és doktori képzésben": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező aktívan részt vesz az alap-, mester- és doktori képzésben egyaránt, tárgyfelelősként és előadóként.",
+                    "Indoklás": ""
+                }
+            },
+            "Doktori fokozatot szerzett hallgatók": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmezőnek 2 egyéni témavezetéssel és 1 társtémavezetéssel fokozatot szerzett doktorandusza van (2.5 fő).",
+                    "Indoklás": ""
+                }
+            },
+            "Részvétel tudományos zsűriben, kuratóriumban, bírálatokban": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező részt vett az NKFIH OTKA, az ERC és az MTA Bolyai bírálati munkájában, hazai és nemzetközi szinten egyaránt.",
+                    "Indoklás": ""
+                }
+            },
+            "Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező program committee co-chair volt az EPEW 2015 konferencián, és meghívott plenáris előadó az ITC 36 kongresszuson.",
+                    "Indoklás": ""
+                }
+            },
+            "Tisztség, kiemelt/választott tagság tudományos szervezetben": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező tagja az IEEE Communications Society bizottságának és a HTE szakosztály titkára.",
+                    "Indoklás": ""
+                }
+            },
+            "Folyóirat-szerkesztőbizottsági tagság legalább 2 évig": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező associate editor a Performance Evaluation folyóiratnál (Q1) és editorial board member az European Journal of Operational Research-nél (D1), mindkettő 2 évnél hosszabb ideje.",
+                    "Indoklás": ""
+                }
+            },
+            "Részvétel tudományos minősítésben": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező 1 MTA doktori értekezést bírált, 2 MTA doktori bírálóbizottságban volt titkár, 5 PhD értekezést bírált és 3 PhD bírálóbizottságban volt titkár.",
+                    "Indoklás": ""
+                }
+            },
+            "Elnyert tudományos pályázat": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmezőnek 2 hazai (OTKA) és 1 nemzetközi (EU HORIZON 2020) pályázata volt, témavezetőként ill. munkacsoportvezetőként.",
+                    "Indoklás": ""
+                }
+            },
+            "Külföldi tartózkodás": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező 2.5 évet töltött külföldi kutatóhelyeken (TU Berlin, University of Twente), ami jelentős nemzetközi tapasztalatot biztosít.",
+                    "Indoklás": ""
+                }
+            },
+            "Állami vagy MTA által adományozott tudományos díj, kitüntetés": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező Akadémiai Ifjúsági Díjat (2013) és Bolyai-plakettet (2021) kapott az MTA-tól.",
+                    "Indoklás": ""
+                }
+            },
+            "Tudományos közéleti tevékenység értékelése": {
+                "Értékelés": {
+                    "Követelmény teljesül": "igen|A kérelmező a tudományos közéleti tevékenység mind a 11 értékelési szempontját teljesíti, beleértve a TDK témavezetést, a graduális és doktori oktatást, a doktori témavezetést, a nemzetközi konferenciaszervezést, a tudományos szervezeti tagságot, a szerkesztőbizottsági tagságot, a tudományos minősítésben való részvételt, a pályázati aktivitást, a külföldi tartózkodást és a tudományos kitüntetéseket.",
+                    "Indoklás": ""
+                }
+            }
+        },
+        "A tudományos minimumkövetelmények teljesítésének összesítése": {
+            "Összesítés": {
+                "Minden követelmény teljesül": "igen|A kérelmező valamennyi tudományos minimumkövetelményt maradéktalanul teljesíti. A Q-szám, az I-szám, a tételes publikációs elvárások és a tudományos közéleti tevékenység területén is megfelelő eredményeket ért el. A minimumkövetelményeket több területen is szignifikánsan meghaladja.",
+                "Indoklás": ""
+            }
+        },
+        "Összefoglaló javaslat": {
+            "Összefoglaló javaslat": {
+                "Javaslat": "igen|Kovács Gábor Miklós tudományos munkássága, publikációs teljesítménye, idézettsége és tudományos közéleti tevékenysége egyaránt kiemelkedő. A sztochasztikus modellezés és sorbanállási rendszerek területén elért eredményei nemzetközi szinten is elismertek, amit az idézettségi mutatók és a rangos szakmai tevékenységek egyaránt igazolnak. Javaslom az MTA doktora cím odaítélését.",
+                "A vélemény összegző értékelése": "A kérelmező a doktori mű keretében kimagasló tudományos eredményeket mutatott be a Markov-érkezési folyamatok illesztése, a többosztályos prioritásos sorbanállási rendszerek elemzése és a numerikus inverz Laplace-transzformáció területén. Publikációs teljesítménye (Q-szám) és idézettsége (I-szám) egyaránt jóval meghaladja az előírt minimumokat. Tudományos közéleti tevékenysége széleskörű és aktív: oktatás, doktori témavezetés, nemzetközi konferenciaszervezés, szerkesztőbizottsági tagság, pályázati aktivitás és tudományos díjak egyaránt jellemzik. Mindezek alapján meggyőződésem, hogy a kérelmező méltó az MTA doktora címre."
+            }
+        },
+        "Bíráló bizottság": {
+            "Hivatalos bírálók": {
+                "Hivatalos bírálók": [
+                    {
+                        "MTMT azonosító": "10031245",
+                        "Név": "Prof. Dr. Szilágyi Anna",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Sztochasztikus rendszerek, alkalmazott valószínűségszámítás",
+                        "Munkahely": "ELTE Informatikai Kar"
+                    },
+                    {
+                        "MTMT azonosító": "10028734",
+                        "Név": "Prof. Dr. Barta Zoltán",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Telekommunikációs hálózatok, forgalommérnökség",
+                        "Munkahely": "Debreceni Egyetem, Informatikai Kar"
+                    }
+                ]
+            },
+            "Tartalék bírálók": {
+                "Tartalék bírálók": [
+                    {
+                        "MTMT azonosító": "10045678",
+                        "Név": "Prof. Dr. Vincze Katalin",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Operációkutatás, matematikai modellezés",
+                        "Munkahely": "Szegedi Tudományegyetem, Informatikai Intézet"
+                    }
+                ]
+            },
+            "Bíráló bizottság elnöke": {
+                "Bíráló bizottság elnöke": [
+                    {
+                        "MTMT azonosító": "10009876",
+                        "Név": "Prof. Dr. Fehér László",
+                        "Tudományos fokozat": "MTA rendes tagja",
+                        "Szakterület": "Informatikai rendszerek, hálózatbiztonság",
+                        "Munkahely": "BME Villamosmérnöki és Informatikai Kar"
+                    }
+                ]
+            },
+            "Bíráló bizottság titkára": {
+                "Bíráló bizottság titkára": [
+                    {
+                        "MTMT azonosító": "10052341",
+                        "Név": "Dr. Molnár Béla",
+                        "Tudományos fokozat": "PhD",
+                        "Szakterület": "Számítógép-hálózatok, elosztott rendszerek",
+                        "Munkahely": "BME Hálózati Rendszerek és Szolgáltatások Tanszék"
+                    }
+                ]
+            },
+            "Bíráló bizottság tartalék elnöke": {
+                "Bíráló bizottság tartalék elnöke": [
+                    {
+                        "MTMT azonosító": "10011234",
+                        "Név": "Prof. Dr. Papp Gyula",
+                        "Tudományos fokozat": "MTA levelező tagja",
+                        "Szakterület": "Mesterséges intelligencia, gépi tanulás",
+                        "Munkahely": "HUN-REN SZTAKI"
+                    }
+                ]
+            },
+            "Bíráló bizottság tartalék titkára": {
+                "Bíráló bizottság tartalék titkára": [
+                    {
+                        "MTMT azonosító": "10067891",
+                        "Név": "Dr. Szűcs Mária",
+                        "Tudományos fokozat": "PhD",
+                        "Szakterület": "Valószínűségszámítás, sztochasztikus folyamatok",
+                        "Munkahely": "ELTE Valószínűségelméleti és Statisztika Tanszék"
+                    }
+                ]
+            },
+            "Bíráló bizottság tagjai": {
+                "Bíráló bizottság tagjai": [
+                    {
+                        "MTMT azonosító": "10023456",
+                        "Név": "Prof. Dr. Horváth Gábor",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Teljesítménymodellezés, fázis típusú eloszlások",
+                        "Munkahely": "BME Networked Systems and Services"
+                    },
+                    {
+                        "MTMT azonosító": "10034567",
+                        "Név": "Prof. Dr. Kis Tamás",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Operációkutatás, kombinatorikus optimalizálás",
+                        "Munkahely": "HUN-REN SZTAKI"
+                    },
+                    {
+                        "MTMT azonosító": "10045679",
+                        "Név": "Prof. Dr. Rácz Sára",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Forgalommodellezés, hálózatok teljesítményelemzése",
+                        "Munkahely": "BME Távközlési és Médiainformatikai Tanszék"
+                    }
+                ]
+            },
+            "Bíráló bizottság tartalék tagjai": {
+                "Bíráló bizottság tartalék tagjai": [
+                    {
+                        "MTMT azonosító": "10056789",
+                        "Név": "Prof. Dr. Lőrincz András",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Neurális hálózatok, mélytanulás",
+                        "Munkahely": "ELTE Informatikai Kar"
+                    },
+                    {
+                        "MTMT azonosító": "10067892",
+                        "Név": "Prof. Dr. Tóth Judit",
+                        "Tudományos fokozat": "MTA doktora",
+                        "Szakterület": "Matematikai statisztika, idősorok elemzése",
+                        "Munkahely": "Pécsi Tudományegyetem, Természettudományi Kar"
+                    }
+                ]
+            }
+        }
+    }
+}

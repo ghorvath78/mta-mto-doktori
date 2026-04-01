@@ -11,6 +11,7 @@ import {
 } from "@repo/form-engine";
 import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ } from "./requirements";
+import { biraloBizottsag } from "./lap-biralobizottsag";
 
 declare const BUILD_DATE: string;
 
@@ -148,14 +149,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
             { text: "D. Összefoglaló javaslat: A kérelmező doktori habitusának megítélése", style: "section" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Összefoglaló javaslat|Összefoglaló javaslat", ""),
             { text: "E. Javaslat a bírálókra és a bíráló bizottság tagjaira", style: "section" },
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Hivatalos bírálók", "Hivatalos bírálók:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Tartalék bírálók", "Tartalék bírálók:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság elnöke", "Bíráló bizottság elnöke:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság titkára", "Bíráló bizottság titkára:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tartalék elnöke", "Bíráló bizottság tartalék elnöke:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tartalék titkára", "Bíráló bizottság tartalék titkára:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tagjai", "Bíráló bizottság tagjai:"),
-            await getPdfSection(descriptor, formData, "Előterjesztői|Bíráló bizottság|Bíráló bizottság tartalék tagjai", "Bíráló bizottság tartalék tagjai:")
+            ...(await getBiraloBizottsagSection(formData))
         ]
     };
 
@@ -471,4 +465,23 @@ const getItemizedRequirementsSection = async (_descriptor: FormDescriptor, formD
             margin: [20, 5, 0, 5]
         }
     ];
+};
+
+const getBiraloBizottsagSection = async (formData: FormData): Promise<Content[]> => {
+    const result: Content[] = [];
+    const pageKey = "Előterjesztői|Bíráló bizottság";
+    for (const section of biraloBizottsag.sections) {
+        for (const group of section.groups) {
+            const keyPrefix = `${pageKey}|${section.key}|${group.key}`;
+            const lengthAtom = formData[`${keyPrefix}|_length`];
+            const length = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 0;
+            result.push({ text: section.key, style: "grouplabel" });
+            if (length === 0) {
+                result.push({ text: "Nincs megadva", italics: true, margin: [20, 0, 0, 5] } as Content);
+            } else {
+                result.push(...(await groupToPdfTableDefinition("", group, formData, keyPrefix, {})));
+            }
+        }
+    }
+    return result;
 };

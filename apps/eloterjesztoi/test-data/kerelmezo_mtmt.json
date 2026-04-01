@@ -1,0 +1,101 @@
+{
+    "Adatlapon szereplő publikációk": {
+        "2605716": {
+            "template": "Kovács G M, Horváth A: Fitting Markov arrival processes by independent approximation of the inter-arrival time distribution and the lag correlation. In: Performance Evaluation 69(10), pp. 459-473, 2012. (IF: 1.585)",
+            "rating": "Q1",
+            "independentCitationCount": 38
+        },
+        "2902864": {
+            "template": "Kovács G M: Efficient analysis of MMAP[K]/PH[K]/1 priority queues. In: European Journal of Operational Research 246(1), pp. 128-139, 2015. (IF: 4.213)",
+            "rating": "D1",
+            "independentCitationCount": 29
+        },
+        "2606626": {
+            "template": "Kovács G M, Telek M: Minimal representation and moments matching for Markov arrival processes. In: Stochastic Models 30(2), pp. 251-275, 2014. (IF: 0.978)",
+            "rating": "Q2",
+            "independentCitationCount": 22
+        },
+        "31031822": {
+            "template": "Kovács G M, Illés T: Numerical inverse Laplace transformation using concentrated matrix-exponential distributions. In: Performance Evaluation 137, 102067, 2020. (IF: 1.870)",
+            "rating": "Q1",
+            "independentCitationCount": 15
+        },
+        "2644194": {
+            "template": "Kovács G M, Horváth A, Telek M: A decomposition method for two-class priority queueing networks. In: Annals of Operations Research 162(1), pp. 159-175, 2008. (IF: 1.864)",
+            "rating": "Q1",
+            "independentCitationCount": 45
+        },
+        "30830851": {
+            "template": "Zhang L, Wang X: Agent-based emergency department modeling with priority-queue decomposition. In: Operations Research for Health Care 28, 100298, 2021. (IF: 2.100)",
+            "rating": "Q1",
+            "independentCitationCount": 12
+        },
+        "31081272": {
+            "template": "Chen Y, Li H: Reinforcement learning for scheduling in multi-class queueing networks. In: IEEE Trans. on Networking 30(4), pp. 1854-1867, 2022. (IF: 3.315)",
+            "rating": "Q1",
+            "independentCitationCount": 8
+        },
+        "36693134": {
+            "template": "Park S, Kim J: Latency characterization of distributed gaming platforms via matrix-exponential methods. In: Computer Networks 210, 109012, 2022. (IF: 4.474)",
+            "rating": "Q1",
+            "independentCitationCount": 5
+        },
+        "34608385": {
+            "template": "Müller R, Schmidt F: Group-service queueing with MAP arrivals for delivery systems. In: Queueing Systems 102(3), pp. 401-428, 2023. (IF: 1.200)",
+            "rating": "Q2",
+            "independentCitationCount": 3
+        },
+        "35051735": {
+            "template": "Patel V, Gupta N: Weighted fair queueing analysis with parsimonious MAP traffic models. In: Performance Evaluation 158, 102340, 2023. (IF: 1.870)",
+            "rating": "Q1",
+            "independentCitationCount": 4
+        }
+    },
+    "A pályázó összes publikációja a beadáskor": [
+        "2605716",
+        "2902864",
+        "2606626",
+        "31031822",
+        "2644194",
+        "2501133",
+        "2501245",
+        "2601877",
+        "2602015",
+        "2603218",
+        "2700412",
+        "2700556",
+        "2801733",
+        "2802019",
+        "2900163",
+        "2900417",
+        "2901256",
+        "3000187",
+        "3001024",
+        "3001578",
+        "3002345",
+        "3100289",
+        "3100567",
+        "3101024",
+        "3101789",
+        "3200134",
+        "3200567",
+        "3200987",
+        "3300124",
+        "3300567",
+        "3301024",
+        "3301456",
+        "3400123",
+        "3400567",
+        "3400989",
+        "3500124",
+        "3500567",
+        "3501024",
+        "3600123",
+        "3600567",
+        "3601024",
+        "3601456",
+        "3700123",
+        "3700567",
+        "3701024"
+    ]
+}

@@ -10,24 +10,35 @@ const bizottsagiTagFields: FieldDescriptor[] = [
     },
     {
         key: "Név",
-        type: "text"
+        type: "text",
+        attribs: {
+            colWidth: "100"
+        }
     },
     {
         key: "Tudományos fokozat",
+        label: "Fokozat",
         type: "selectAddOther",
         helpText: "Az előterjesztő tudományos fokozata (PhD, MTA doktora, MTA levelező tagja, MTA rendes tagja).",
         attribs: {
             type: "fokozat",
-            options: ["PhD", "MTA doktora", "MTA levelező tagja", "MTA rendes tagja"]
+            options: ["PhD", "Kandidátus", "Tudomány doktora", "MTA doktora", "MTA levelező tagja", "MTA rendes tagja", "MTA külső tagja"],
+            colWidth: "40"
         }
     },
     {
         key: "Szakterület",
-        type: "text"
+        type: "text",
+        attribs: {
+            colWidth: "*"
+        }
     },
     {
         key: "Munkahely",
-        type: "text"
+        type: "text",
+        attribs: {
+            colWidth: "*"
+        }
     }
 ];
 

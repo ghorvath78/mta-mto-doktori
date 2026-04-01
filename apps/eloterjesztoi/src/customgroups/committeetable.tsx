@@ -234,7 +234,8 @@ const SortableRow = ({
     index,
     onEdit,
     onDelete,
-    canDelete
+    canDelete,
+    colWidths
 }: {
     id: string;
     row: RowData;
@@ -242,6 +243,7 @@ const SortableRow = ({
     onEdit: (index: number) => void;
     onDelete: (index: number) => void;
     canDelete: boolean;
+    colWidths: string[];
 }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
@@ -251,7 +253,8 @@ const SortableRow = ({
         opacity: isDragging ? 0.4 : 1
     };
 
-    const displayName = row.name ? (row.mtmtId ? `${row.name} [${row.mtmtId}]` : row.name) : row.mtmtId ? `[${row.mtmtId}]` : "";
+    // const displayName = row.name ? (row.mtmtId ? `${row.name} [${row.mtmtId}]` : row.name) : row.mtmtId ? `[${row.mtmtId}]` : "";
+    const displayName = row.name;
 
     return (
         <tr ref={setNodeRef} style={style} className="group border-b border-border hover:bg-muted/50 cursor-pointer" onClick={() => onEdit(index)}>
@@ -266,10 +269,18 @@ const SortableRow = ({
                     <GripVertical className="w-4 h-4" />
                 </button>
             </td>
-            <td className="px-2 py-1.5 text-sm">{displayName}</td>
-            <td className="px-2 py-1.5 text-sm">{row.degree}</td>
-            <td className="px-2 py-1.5 text-sm">{row.discipline}</td>
-            <td className="px-2 py-1.5 text-sm">{row.workplace}</td>
+            <td className="px-2 py-1.5 text-sm" style={{ width: colWidths[0] === "*" ? "auto" : colWidths[0] ? `${colWidths[0]}pt` : undefined }}>
+                {displayName}
+            </td>
+            <td className="px-2 py-1.5 text-sm" style={{ width: colWidths[1] === "*" ? "auto" : colWidths[1] ? `${colWidths[1]}pt` : undefined }}>
+                {row.degree}
+            </td>
+            <td className="px-2 py-1.5 text-sm" style={{ width: colWidths[2] === "*" ? "auto" : colWidths[2] ? `${colWidths[2]}pt` : undefined }}>
+                {row.discipline}
+            </td>
+            <td className="px-2 py-1.5 text-sm" style={{ width: colWidths[3] === "*" ? "auto" : colWidths[3] ? `${colWidths[3]}pt` : undefined }}>
+                {row.workplace}
+            </td>
             <td className="px-1 py-1.5 w-8">
                 {canDelete && (
                     <Button
@@ -321,7 +332,7 @@ const EditRowDialog = ({
             setEditData({
                 ...editData,
                 name: data.name,
-                degree: data.degrees?.join(", ") ?? "",
+                degree: data.degree,
                 discipline: data.disciplines?.join(", ") ?? "",
                 workplace: data.affiliations?.join(", ") ?? ""
             });
@@ -401,7 +412,7 @@ const AddFromMTMTDialog = ({ open, onClose, onAdd }: { open: boolean; onClose: (
             onAdd({
                 mtmtId: id,
                 name: data.name,
-                degree: data.degrees?.join(", ") ?? "",
+                degree: data.degree,
                 discipline: data.disciplines?.join(", ") ?? "",
                 workplace: data.affiliations?.join(", ") ?? ""
             });
@@ -510,6 +521,7 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
     const editRow = editIndex < rows.length ? rows[editIndex] : { mtmtId: "", name: "", degree: "", discipline: "", workplace: "" };
 
     const degreeOptions = (group.fields.find((f) => f.key === "Tudományos fokozat")?.attribs?.options as string[] | undefined) ?? [];
+    const colWidths = group.fields.filter((f) => !f.attribs?.noPrint).map((f) => f.attribs?.colWidth ?? "");
 
     return (
         <div ref={setNodeRef} className={`transition-colors ${isOver ? "bg-primary/10 rounded" : ""}`}>
@@ -518,16 +530,33 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
                     <thead>
                         <tr className="border-b-2 border-border text-xs text-muted-foreground uppercase tracking-wider">
                             <th className="px-1 py-1 w-8"></th>
-                            <th className="px-2 py-1">Név</th>
-                            <th className="px-2 py-1">Tud. fokozat</th>
-                            <th className="px-2 py-1">Szakterület</th>
-                            <th className="px-2 py-1">Munkahely</th>
+                            <th className="px-2 py-1" style={{ width: colWidths[0] === "*" ? "auto" : colWidths[0] ? `${colWidths[0]}pt` : undefined }}>
+                                Név
+                            </th>
+                            <th className="px-2 py-1" style={{ width: colWidths[1] === "*" ? "auto" : colWidths[1] ? `${colWidths[1]}pt` : undefined }}>
+                                Tud. fokozat
+                            </th>
+                            <th className="px-2 py-1" style={{ width: colWidths[2] === "*" ? "auto" : colWidths[2] ? `${colWidths[2]}pt` : undefined }}>
+                                Szakterület
+                            </th>
+                            <th className="px-2 py-1" style={{ width: colWidths[3] === "*" ? "auto" : colWidths[3] ? `${colWidths[3]}pt` : undefined }}>
+                                Munkahely
+                            </th>
                             <th className="px-1 py-1 w-8"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {rows.map((row, i) => (
-                            <SortableRow key={itemIds[i]} id={itemIds[i]} row={row} index={i} onEdit={handleEdit} onDelete={handleDelete} canDelete={true} />
+                            <SortableRow
+                                key={itemIds[i]}
+                                id={itemIds[i]}
+                                row={row}
+                                index={i}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                                canDelete={true}
+                                colWidths={colWidths}
+                            />
                         ))}
                         {length === 0 && (
                             <tr>
@@ -547,11 +576,11 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
                 )}
                 {length < (group.arrayMax ?? Infinity) && (
                     <div className="flex-1 mt-1 flex gap-2 justify-end">
-                        <Button variant="outline" size="sm" onClick={() => setAddFromMTMTDialogOpen(true)}>
-                            <UserPlus /> Hozzáadás MTMT-ből
-                        </Button>
                         <Button variant="outline" size="sm" onClick={() => setAddManualDialogOpen(true)}>
                             <UserPlus /> Kézi hozzáadás
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setAddFromMTMTDialogOpen(true)}>
+                            <UserPlus /> Hozzáadás MTMT-ből
                         </Button>
                     </div>
                 )}
