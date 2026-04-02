@@ -12,7 +12,7 @@ const bizottsagiTagFields: FieldDescriptor[] = [
         key: "Név",
         type: "text",
         attribs: {
-            colWidth: "100"
+            colWidth: "120"
         }
     },
     {
@@ -23,7 +23,7 @@ const bizottsagiTagFields: FieldDescriptor[] = [
         attribs: {
             type: "fokozat",
             options: ["PhD", "Kandidátus", "Tudomány doktora", "MTA doktora", "MTA levelező tagja", "MTA rendes tagja", "MTA külső tagja"],
-            colWidth: "40"
+            colWidth: "80"
         }
     },
     {
@@ -44,7 +44,7 @@ const bizottsagiTagFields: FieldDescriptor[] = [
 
 export const biraloBizottsag: PageDescriptor = {
     key: "Bíráló bizottság",
-    enabledAtom: applicantDataLoaded,
+    //enabledAtom: applicantDataLoaded,
     wrapperComponent: CommitteeDndProvider,
     sections: [
         {

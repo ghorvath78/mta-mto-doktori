@@ -13,7 +13,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     AlertDialog,
     AlertDialogContent,
     AlertDialogTitle,

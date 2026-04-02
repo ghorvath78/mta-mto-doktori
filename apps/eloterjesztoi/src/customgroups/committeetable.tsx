@@ -10,7 +10,7 @@ import {
     SelectOrAddField,
     MTMTIdFinder
 } from "@repo/form-engine";
-import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, Input } from "@repo/ui";
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, Input, Spinner } from "@repo/ui";
 import { GripVertical, Trash, Search, UserPlus } from "lucide-react";
 import {
     DndContext,
@@ -200,7 +200,7 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
         <CommitteeDndReactContext.Provider value={ctxValue}>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                 {children}
-                <DragOverlay>
+                <DragOverlay dropAnimation={null}>
                     {activeId && activeRowData && (
                         <div className="bg-background border rounded shadow-lg px-3 py-2 text-sm flex items-center gap-2 opacity-90">
                             <GripVertical className="w-4 h-4 text-muted-foreground" />
@@ -257,17 +257,17 @@ const SortableRow = ({
     const displayName = row.name;
 
     return (
-        <tr ref={setNodeRef} style={style} className="group border-b border-border hover:bg-muted/50 cursor-pointer" onClick={() => onEdit(index)}>
-            <td className="px-1 py-1.5 w-8">
-                <button
-                    className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground touch-none"
-                    {...attributes}
-                    {...listeners}
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="Sor mozgatása"
-                >
+        <tr ref={setNodeRef} style={style} className="group border-b border-border hover:bg-background cursor-pointer" onClick={() => onEdit(index)}>
+            <td
+                className="px-1 py-1.5 w-8 cursor-grab active:cursor-grabbing touch-none"
+                {...attributes}
+                {...listeners}
+                onClick={(e) => e.stopPropagation()}
+                aria-label="Sor mozgatása"
+            >
+                <span className="flex items-center justify-center text-muted-foreground">
                     <GripVertical className="w-4 h-4" />
-                </button>
+                </span>
             </td>
             <td className="px-2 py-1.5 text-sm" style={{ width: colWidths[0] === "*" ? "auto" : colWidths[0] ? `${colWidths[0]}pt` : undefined }}>
                 {displayName}
@@ -406,7 +406,14 @@ const EditRowDialog = ({
 // ─── Add from MTMT dialog (wraps MTMTIdFinder + getAuthorRecord) ─────────────
 
 const AddFromMTMTDialog = ({ open, onClose, onAdd }: { open: boolean; onClose: () => void; onAdd: (row: RowData) => void }) => {
+    const [isOpen, setIsOpen] = useState(open);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        setIsOpen(open);
+    }, [open]);
     const handleSelect = async (id: string) => {
+        setIsOpen(false);
+        setLoading(true);
         try {
             const data = await getAuthorRecord(id);
             onAdd({
@@ -419,11 +426,25 @@ const AddFromMTMTDialog = ({ open, onClose, onAdd }: { open: boolean; onClose: (
         } catch {
             onAdd({ mtmtId: id, name: "", degree: "", discipline: "", workplace: "" });
         } finally {
+            setLoading(false);
             onClose();
         }
     };
 
-    return <MTMTIdFinder isOpen={open} onClose={onClose} onSelect={handleSelect} />;
+    return (
+        <>
+            <MTMTIdFinder isOpen={isOpen} onClose={onClose} onSelect={handleSelect} />
+            <Dialog open={loading}>
+                <DialogTitle className="hidden">MTMT adatok betöltése</DialogTitle>
+                <DialogContent className="sm:max-w-xs" showCloseButton={false}>
+                    <div className="flex flex-col items-center gap-4 py-4">
+                        <Spinner className="w-8 h-8" />
+                        <p className="text-sm text-muted-foreground">MTMT adatok betöltése...</p>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
 };
 
 // ─── Main CommitteeTable component (used as customComponent on each group) ───
@@ -526,23 +547,23 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
     return (
         <div ref={setNodeRef} className={`transition-colors ${isOver ? "bg-primary/10 rounded" : ""}`}>
             <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
-                <table className="w-full text-left border-collapse">
+                <table className="form-table w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b-2 border-border text-xs text-muted-foreground uppercase tracking-wider">
-                            <th className="px-1 py-1 w-8"></th>
-                            <th className="px-2 py-1" style={{ width: colWidths[0] === "*" ? "auto" : colWidths[0] ? `${colWidths[0]}pt` : undefined }}>
+                        <tr className="text-sm">
+                            <td className="px-1 py-1 w-8"></td>
+                            <td className="px-2 py-1" style={{ width: colWidths[0] === "*" ? "auto" : colWidths[0] ? `${colWidths[0]}pt` : undefined }}>
                                 Név
-                            </th>
-                            <th className="px-2 py-1" style={{ width: colWidths[1] === "*" ? "auto" : colWidths[1] ? `${colWidths[1]}pt` : undefined }}>
-                                Tud. fokozat
-                            </th>
-                            <th className="px-2 py-1" style={{ width: colWidths[2] === "*" ? "auto" : colWidths[2] ? `${colWidths[2]}pt` : undefined }}>
+                            </td>
+                            <td className="px-2 py-1" style={{ width: colWidths[1] === "*" ? "auto" : colWidths[1] ? `${colWidths[1]}pt` : undefined }}>
+                                Fokozat
+                            </td>
+                            <td className="px-2 py-1" style={{ width: colWidths[2] === "*" ? "auto" : colWidths[2] ? `${colWidths[2]}pt` : undefined }}>
                                 Szakterület
-                            </th>
-                            <th className="px-2 py-1" style={{ width: colWidths[3] === "*" ? "auto" : colWidths[3] ? `${colWidths[3]}pt` : undefined }}>
+                            </td>
+                            <td className="px-2 py-1" style={{ width: colWidths[3] === "*" ? "auto" : colWidths[3] ? `${colWidths[3]}pt` : undefined }}>
                                 Munkahely
-                            </th>
-                            <th className="px-1 py-1 w-8"></th>
+                            </td>
+                            <td className="px-1 py-1 w-8"></td>
                         </tr>
                     </thead>
                     <tbody>

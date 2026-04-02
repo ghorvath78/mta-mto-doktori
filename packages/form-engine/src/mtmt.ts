@@ -243,6 +243,31 @@ export type AuthorData = {
     disciplines: string[];
 };
 
+const institutionCache: { [mtid: string]: string[] } = {};
+
+const getInstitutionParts = async (inst: any): Promise<string[]> => {
+    if (inst["mtid"] && institutionCache[inst["mtid"]]) {
+        return institutionCache[inst["mtid"]];
+    }
+    const instRecord = (await getMTMTObject(inst["link"]))["content"] as any;
+    const name = (instRecord["abbreviation"] as string) ?? (instRecord["name"] as string) ?? "";
+    const type = (instRecord["type"] ? ((instRecord["type"] as any)["label"] ?? "") : "") as string;
+    const exclude = ["doktori iskola", "tanács"].some((keyword) => type.toLowerCase().includes(keyword));
+    if (exclude) {
+        return [""];
+    }
+    if (instRecord["parent"]) {
+        const containment = (await getMTMTObject((instRecord["parent"] as any)[0]["link"]))["content"] as any;
+        if (containment["parent"]) {
+            const parentParts = await getInstitutionParts(containment["parent"]);
+            institutionCache[inst["mtid"]] = [...parentParts, name];
+            return institutionCache[inst["mtid"]];
+        }
+    }
+    institutionCache[inst["mtid"]] = [name];
+    return [name];
+};
+
 export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
     const resp = await getMTMTObject(`/api/author/${mtid}`);
     if (resp && resp.content && typeof resp.content === "object") {
@@ -255,12 +280,17 @@ export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
         } as AuthorData;
 
         if ("affiliations" in resp.content && Array.isArray(resp.content["affiliations"])) {
-            resp.content["affiliations"].forEach((affil: any) => {
-                const label = affil.worksFor.label;
-                if (typeof label === "string" && label.includes("-]")) {
-                    result.affiliations.push(label);
+            result.affiliations = [];
+            for (const affil of resp.content["affiliations"]) {
+                if (affil.worksFor && !affil.endDate) {
+                    const instLabelParts = await getInstitutionParts(affil.worksFor);
+                    // push into result only if is does not have any empty part
+                    if (instLabelParts.length > 0 && !instLabelParts.some((part) => part.trim() === "")) {
+                        const instLabel = instLabelParts.join(" / ");
+                        result.affiliations.push(instLabel);
+                    }
                 }
-            });
+            }
         }
 
         if ("degrees" in resp.content && Array.isArray(resp.content["degrees"])) {
