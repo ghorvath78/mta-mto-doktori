@@ -291,6 +291,10 @@ export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
                     }
                 }
             }
+            // remove those affiliations that are prefixes of others
+            result.affiliations = result.affiliations.filter((affil, index) => {
+                return !result.affiliations.some((other, otherIndex) => otherIndex !== index && other.startsWith(affil + " / "));
+            });
         }
 
         if ("degrees" in resp.content && Array.isArray(resp.content["degrees"])) {
@@ -325,4 +329,9 @@ export const getAuthorRecord = async (mtid: string): Promise<AuthorData> => {
         return result;
     }
     throw new Error(`Author record not found for MTID: ${mtid}`);
+};
+
+export const isAuthorOfPubItem = (authorMtid: string, pubItem: PubItem): boolean => {
+    if (!pubItem.authorships) return false;
+    return pubItem.authorships.some((auth: any) => auth["author"] && String(auth["author"]["mtid"]) === authorMtid);
 };

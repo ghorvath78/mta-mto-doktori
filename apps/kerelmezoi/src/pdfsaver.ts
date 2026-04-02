@@ -1,5 +1,7 @@
 import {
+    activeMTMTUserIdAtom,
     atomsToJSON,
+    getAuthorRecord,
     getPdfDocumentStyles,
     getPdfSection,
     getScientometricsPdfSection,
@@ -202,10 +204,28 @@ async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormD
 
     const mtmtCache = savePubItemSummary(Array.from(mtids));
     const pubList = store.get(mtmtPubListAtom) ?? [];
-    const allPubMTMTs: string[] = pubList.map((pub) => String(pub.mtid));
+    const allPubMTMTs: Record<string, string[]> = pubList.reduce(
+        (acc, pub) => {
+            const mtid = String(pub.mtid);
+            if (!acc[mtid]) {
+                acc[mtid] = [];
+            }
+            if (pub.authorships) {
+                for (const auth of pub.authorships as any[]) {
+                    if (auth["authorTyped"] === true && auth["author"]) {
+                        acc[mtid].push(auth["author"]["mtid"]);
+                    }
+                }
+            }
+            return acc;
+        },
+        {} as Record<string, string[]>
+    );
+    const authorData = await getAuthorRecord(store.get(activeMTMTUserIdAtom));
 
     return {
         "Adatlapon szereplő publikációk": mtmtCache,
-        "A pályázó összes publikációja a beadáskor": allPubMTMTs
+        Társszerzők: allPubMTMTs,
+        "Szerzői adatok": authorData
     };
 }

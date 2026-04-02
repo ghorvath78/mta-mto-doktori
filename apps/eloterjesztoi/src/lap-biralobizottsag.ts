@@ -1,6 +1,6 @@
 import { type PageDescriptor, type FieldDescriptor } from "@repo/form-engine";
 import { applicantDataLoaded } from "./atoms";
-import { CommitteeTable, CommitteeDndProvider } from "./customgroups/committeetable";
+import { CommitteeTable, CommitteeDndProvider, CommitteeChecker } from "./customgroups/committeetable";
 
 const bizottsagiTagFields: FieldDescriptor[] = [
     {
@@ -148,6 +148,25 @@ export const biraloBizottsag: PageDescriptor = {
                     arrayMax: 5,
                     customComponent: CommitteeTable,
                     fields: [...bizottsagiTagFields]
+                }
+            ]
+        },
+        {
+            key: "Ellenőrzés",
+            attribs: {
+                alwaysOpen: true,
+                important: true,
+                noPrint: true
+            },
+            groups: [
+                {
+                    key: "Ellenőrzés",
+                    attribs: {
+                        noPersist: true,
+                        noPrint: true
+                    },
+                    customComponent: CommitteeChecker,
+                    fields: []
                 }
             ]
         }

@@ -471,7 +471,9 @@ const getBiraloBizottsagSection = async (formData: FormData): Promise<Content[]>
     const result: Content[] = [];
     const pageKey = "Előterjesztői|Bíráló bizottság";
     for (const section of biraloBizottsag.sections) {
+        if (section.attribs?.noPrint) continue;
         for (const group of section.groups) {
+            if (group.attribs?.noPrint) continue;
             const keyPrefix = `${pageKey}|${section.key}|${group.key}`;
             const lengthAtom = formData[`${keyPrefix}|_length`];
             const length = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 0;

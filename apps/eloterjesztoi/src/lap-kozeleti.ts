@@ -191,6 +191,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             key: "Tevékenység igazoló linkje",
                             type: "link",
                             valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Link|Tevékenység igazoló linkje",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -377,6 +378,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             valueSource:
                                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Link|Alátámasztó link",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -471,6 +473,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             key: "További információ",
                             label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -574,6 +577,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             key: "Alátámasztó link",
                             label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -674,6 +678,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             key: "Alátámasztó link",
                             label: "Alátámasztó link, ha nem szerepel a folyóirat honlapján",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -855,6 +860,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "Alátámasztó link",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -947,6 +953,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "Alátámasztó link",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
@@ -1038,6 +1045,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "Alátámasztó link",
                             type: "link",
+                            readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true

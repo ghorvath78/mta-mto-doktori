@@ -1,4 +1,4 @@
-import { readJsonFromPdf, mtmtPubSummaryCacheAtom, store, type FormInfo } from "@repo/form-engine";
+import { readJsonFromPdf, mtmtPubSummaryCacheAtom, store, type FormInfo, type AuthorData } from "@repo/form-engine";
 import { atomsFromJSON, createAtomsFromDescriptor, getByPath, type FormDescriptor } from "@repo/form-engine";
 import { getCategory, getMinCommunityCount, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, type PubItemSummary } from "@repo/form-engine";
@@ -115,6 +115,24 @@ export async function loadApplicantData(data: Record<string, unknown>, mtmtData:
     store.set(applicantDataLoaded, true);
 }
 
+export function getApplicantAuthorRecord(): AuthorData | null {
+    if (!mtmtDataInForm) return null;
+    return (mtmtDataInForm["Szerzői adatok"] as AuthorData) || null;
+}
+
+export function getCommonPubsWithApplicant(mtid: string): string[] {
+    if (!mtmtDataInForm) return [];
+    const coAuthors = mtmtDataInForm["Társszerzők"] as Record<string, string[]>;
+    const commonPubs: string[] = [];
+    // iterate over all publications (all keys of coAuthors object) and if mtid is among the co-authors of that publication, add it to otherPubs set, if mtid is among the co-authors and "Kérelmező" is also among the co-authors, add it to the result array
+    for (const [pubId, authors] of Object.entries(coAuthors)) {
+        if (authors.map((a) => String(a)).includes(mtid)) {
+            commonPubs.push(pubId);
+        }
+    }
+    return commonPubs;
+}
+
 // összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
 export const eloterjesztoiFormInfo: FormInfo = {
     name: formName,
@@ -170,7 +188,7 @@ export const eloterjesztoiFormInfo: FormInfo = {
                     const applicantData = JSON.parse(applicantContent);
                     const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
                     setDialogMessage("Publikációk és hivatkozások betöltése");
-                    if ("Adatlapon szereplő publikációk" in mtmtData && "A pályázó összes publikációja a beadáskor" in mtmtData) {
+                    if ("Adatlapon szereplő publikációk" in mtmtData && "Társszerzők" in mtmtData) {
                         loadPubItemSummary(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
                     } else {
                         const mtmtId = String(
