@@ -20,7 +20,7 @@ export const landingButtons: LandingButton[] = [
         url: "../kerelmezoi/"
     },
     {
-        icon: FileCheck,
+        icon: ClipboardList,
         title: "Előterjesztői adatlap",
         subtitle: "Az előterjesztő tölti ki",
         tooltip: "Az előterjesztői adatlap kitöltése",
@@ -28,10 +28,10 @@ export const landingButtons: LandingButton[] = [
         url: "../eloterjesztoi/"
     },
     {
-        icon: ClipboardList,
-        title: "Bírálói adatlap",
-        subtitle: "A bíráló tölti ki",
-        tooltip: "A bírálói adatlap kitöltése (hamarosan)",
+        icon: FileCheck,
+        title: "Bizottsági adatlap",
+        subtitle: "A tudományos bizottság elnöke vagy titkára tölti ki",
+        tooltip: "A bizottsági adatlap kitöltése (hamarosan)",
         enabled: false,
         url: "#"
     }
