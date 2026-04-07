@@ -13,7 +13,8 @@ export const NumberInput = ({
     fractional = false,
     readonly = false,
     twoColumn = true,
-    important = false
+    important = false,
+    maxValue
 }: {
     label: string;
     formData: FormData;
@@ -25,6 +26,7 @@ export const NumberInput = ({
     readonly?: boolean;
     twoColumn?: boolean;
     important?: boolean;
+    maxValue?: number;
 }) => {
     const [value, setValue] = useAtom(formData[fieldKey]);
 
@@ -32,16 +34,27 @@ export const NumberInput = ({
     const labelClass = inline ? (twoColumn ? "text-end w-1/4" : "") + " leading-[0.95em]" : "";
 
     const sanitize = (raw: string) => {
-        if (!fractional) return raw.replaceAll(/\D+/g, "");
-
-        let result = "";
-        let foundDecimal = false;
-        for (const char of raw) {
-            if (/[0-9]/.test(char)) {
-                result += char;
-            } else if ((char === "." || char === ",") && !foundDecimal) {
-                result += char;
-                foundDecimal = true;
+        let result: string;
+        if (!fractional) {
+            result = raw.replaceAll(/\D+/g, "");
+        } else {
+            result = "";
+            let foundDecimal = false;
+            for (const char of raw) {
+                if (/[0-9]/.test(char)) {
+                    result += char;
+                } else if ((char === "." || char === ",") && !foundDecimal) {
+                    result += char;
+                    foundDecimal = true;
+                }
+            }
+        }
+        result = result.replaceAll(",", ".");
+        console.log("Max value:", maxValue, "Sanitized result before max check:", result);
+        if (maxValue !== undefined && result !== "") {
+            const num = parseFloat(result);
+            if (!isNaN(num) && num > maxValue) {
+                result = String(maxValue);
             }
         }
         return result;

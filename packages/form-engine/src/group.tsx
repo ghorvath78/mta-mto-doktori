@@ -234,6 +234,7 @@ export const Group = ({
                         fractional={field.attribs?.["fractional"] === true}
                         twoColumn={field.attribs?.noAlign ? false : true}
                         important={field.attribs?.important === true}
+                        maxValue={field.attribs?.["maxValue"] as number | undefined}
                     />
                 );
                 break;

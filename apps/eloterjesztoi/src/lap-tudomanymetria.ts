@@ -228,7 +228,8 @@ export const tudomanymetria: PageDescriptor = {
                             attribs: {
                                 fractional: true,
                                 colWidth: "50",
-                                important: true
+                                important: true,
+                                maxValue: 1
                             }
                         }
                     ]
