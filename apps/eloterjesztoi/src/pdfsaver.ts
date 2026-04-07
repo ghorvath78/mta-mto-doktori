@@ -288,7 +288,7 @@ const getQScoreSummarySection = (formData: FormData): Content => {
         ],
         [
             { text: "A kérelmező teljesítette a Q \u2265 Qmin követelményt:", bold: false },
-            { text: satisfied ? "IGEN" : "NEM", bold: true, alignment: "center" as const, background: "#000000", color: "#ffffff" }
+            { text: satisfied ? "IGEN" : "NEM", bold: true, alignment: "center" as const }
         ]
     ];
 
@@ -318,7 +318,7 @@ const getIScoreSummarySection = (formData: FormData): Content => {
     return {
         text: [
             "A kérelmező teljesítette az I \u2265 Imin követelményt: ",
-            { text: satisfied ? "IGEN" : "NEM", bold: true, background: "#000000", color: "#ffffff" }
+            { text: satisfied ? "IGEN" : "NEM", bold: true }
         ],
         bold: true,
         margin: [20, 5, 0, 5]
@@ -460,7 +460,7 @@ const getItemizedRequirementsSection = async (_descriptor: FormDescriptor, formD
         {
             text: [
                 "A kérelmező maradéktalanul teljesítette a tételes publikációs elvárásokat: ",
-                { text: allSatisfied ? "IGEN" : "NEM", bold: true, background: "#000000", color: "#ffffff" }
+                { text: allSatisfied ? "IGEN" : "NEM", bold: true }
             ],
             margin: [20, 5, 0, 5]
         }

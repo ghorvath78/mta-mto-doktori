@@ -17,7 +17,7 @@ export const landingButtons: LandingButton[] = [
         subtitle: "A pályázó tölti ki",
         tooltip: "A kérelmezői adatlap kitöltése",
         enabled: true,
-        url: "../kerelmezoi/"
+        url: "kerelmezoi/"
     },
     {
         icon: ClipboardList,
@@ -25,7 +25,7 @@ export const landingButtons: LandingButton[] = [
         subtitle: "Az előterjesztő tölti ki",
         tooltip: "Az előterjesztői adatlap kitöltése",
         enabled: true,
-        url: "../eloterjesztoi/"
+        url: "eloterjesztoi/"
     },
     {
         icon: FileCheck,

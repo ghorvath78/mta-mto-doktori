@@ -195,6 +195,7 @@ export const eloterjesztoiFormInfo: FormInfo = {
                 ]);
                 if (!formContent) {
                     setDialogMessage("");
+                    alert("A kiválasztott PDF nem tartalmazza a szükséges adatokat. Kérem, válassza ki a form kitöltésekor letöltött PDF-et.");
                     return;
                 }
 
