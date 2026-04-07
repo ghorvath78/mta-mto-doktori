@@ -37,7 +37,7 @@ export const eloterjesztoAdatai: PageDescriptor = {
         {
             key: "Kérelmezői adatlap",
             helpText:
-                "A kérelmezői adatlap betöltése. Kérem töltse fel a kérelmező által kitöltött kérelmezői adatlapot PDF formátumban. Az adatlapot a rendszer feldolgozza, és az adatok automatikusan megjelennek a megfelelő mezőkben. Az adatlap feltöltése nélkül az űrlap kitöltése nem folytatható.",
+                "Töltse fel a kérelmező által kitöltött kérelmezői adatlapot PDF formátumban. Az adatlapot a rendszer feldolgozza, és a pályázó adatai automatikusan megjelennek az űrlap megfelelő mezőiben. Az adatlap feltöltése nélkül az előterjesztői űrlap kitöltése nem folytatható.",
             attribs: {
                 alwaysOpen: true
             },

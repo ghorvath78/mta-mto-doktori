@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, createContext, useContext } from "react";
+import { useState, useCallback, useRef, useEffect, createContext, useContext, Fragment } from "react";
 import { useAtomValue, atom } from "jotai";
 import {
     type GroupDescriptor,
@@ -21,6 +21,7 @@ import {
     useSensors,
     type DragEndEvent,
     type DragStartEvent,
+    type DragOverEvent,
     DragOverlay,
     useDroppable
 } from "@dnd-kit/core";
@@ -46,6 +47,8 @@ type CommitteeDndContextValue = {
     registerGroup: (keyPrefix: string, group: GroupDescriptor, formData: FormData) => void;
     unregisterGroup: (keyPrefix: string) => void;
     getGroups: () => Map<string, { group: GroupDescriptor; formData: FormData }>;
+    crossGroupOver: { targetPrefix: string; targetIndex: number } | null;
+    activeSourcePrefix: string | null;
 };
 
 const CommitteeDndReactContext = createContext<CommitteeDndContextValue | null>(null);
@@ -57,6 +60,8 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
     const groupsRef = useRef(new Map<string, { group: GroupDescriptor; formData: FormData }>());
     const [activeId, setActiveId] = useState<DndItemId | null>(null);
     const [activeRowData, setActiveRowData] = useState<RowData | null>(null);
+    const [crossGroupOver, setCrossGroupOver] = useState<{ targetPrefix: string; targetIndex: number } | null>(null);
+    const [activeSourcePrefix, setActiveSourcePrefix] = useState<string | null>(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -136,6 +141,7 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
             const id = event.active.id as string;
             setActiveId(id);
             const [prefix, idxStr] = parseItemId(id);
+            setActiveSourcePrefix(prefix);
             const entry = groupsRef.current.get(prefix);
             if (entry) {
                 setActiveRowData(readRow(prefix, parseInt(idxStr), entry.formData));
@@ -144,12 +150,116 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
         [readRow]
     );
 
+    /** Resolve target prefix + index from an over element, using pointer-vs-center heuristic.
+     *  When the primary `over` is a same-group item or container, we check if the pointer is
+     *  physically inside a foreign group's container and prefer that group's items instead.
+     *  This ensures first/last positions of foreign groups are reachable near group boundaries. */
+    const resolveTarget = useCallback(
+        (
+            active: DragOverEvent["active"],
+            over: NonNullable<DragOverEvent["over"]>,
+            delta: { x: number; y: number },
+            collisions: DragOverEvent["collisions"],
+            sourcePrefix: string
+        ): { targetPrefix: string; targetIdx: number } | null => {
+            let effectiveOver = over;
+            const overId = over.id as string;
+
+            // Compute active element's current center
+            const initialRect = active.rect.current.initial;
+            const activeCenter = initialRect ? initialRect.top + initialRect.height / 2 + delta.y : null;
+
+            // If primary hit belongs to the source group, check if the pointer is physically
+            // inside a different group's container — if so, prefer that container.
+            const overIsSourceItem = overId.includes("::") && parseItemId(overId)[0] === sourcePrefix;
+            const overIsSourceContainer = overId === sourcePrefix;
+            if ((overIsSourceItem || overIsSourceContainer) && collisions && activeCenter !== null) {
+                for (const collision of collisions) {
+                    const cid = collision.id as string;
+                    if (!cid.includes("::") && cid !== sourcePrefix) {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const containerRect = (collision as any).data?.droppableContainer?.rect?.current;
+                        if (containerRect && activeCenter >= containerRect.top && activeCenter <= containerRect.top + containerRect.height) {
+                            effectiveOver = { ...over, id: collision.id, rect: containerRect };
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // If effectiveOver is a container (not an item), find the closest item in that group
+            const effectiveId = effectiveOver.id as string;
+            if (!effectiveId.includes("::") && collisions) {
+                const containerPrefix = effectiveId;
+                for (const collision of collisions) {
+                    const cid = collision.id as string;
+                    if (cid.includes("::")) {
+                        const [itemPrefix] = parseItemId(cid);
+                        if (itemPrefix !== containerPrefix) continue;
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const rect = (collision as any).data?.droppableContainer?.rect?.current;
+                        if (rect) {
+                            effectiveOver = { ...effectiveOver, id: collision.id, rect };
+                        }
+                        break;
+                    }
+                }
+            }
+
+            const finalId = effectiveOver.id as string;
+            if (finalId.includes("::")) {
+                const [targetPrefix, idxStr] = parseItemId(finalId);
+                let targetIdx = parseInt(idxStr);
+                if (activeCenter !== null) {
+                    const overCenter = effectiveOver.rect.top + effectiveOver.rect.height / 2;
+                    if (activeCenter > overCenter) targetIdx += 1;
+                }
+                return { targetPrefix, targetIdx };
+            } else {
+                // Container hit with no item alternative (e.g., empty group)
+                const targetPrefix = finalId;
+                const targetEntry = groupsRef.current.get(targetPrefix);
+                if (!targetEntry) return null;
+                const lengthAtom = targetEntry.formData[`${targetPrefix}|_length`];
+                const targetIdx = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 0;
+                return { targetPrefix, targetIdx };
+            }
+        },
+        []
+    );
+
+    const handleDragOver = useCallback(
+        (event: DragOverEvent) => {
+            const { active, over, delta, collisions } = event;
+            if (!over) {
+                setCrossGroupOver(null);
+                return;
+            }
+
+            const [sourcePrefix] = parseItemId(active.id as string);
+            const resolved = resolveTarget(active, over, delta, collisions, sourcePrefix);
+            if (!resolved) {
+                setCrossGroupOver(null);
+                return;
+            }
+
+            if (sourcePrefix !== resolved.targetPrefix) {
+                setCrossGroupOver({ targetPrefix: resolved.targetPrefix, targetIndex: resolved.targetIdx });
+            } else {
+                setCrossGroupOver(null);
+            }
+        },
+        [resolveTarget]
+    );
+
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {
             setActiveId(null);
             setActiveRowData(null);
+            setCrossGroupOver(null);
+            setActiveSourcePrefix(null);
 
-            const { active, over } = event;
+            const { active, over, delta, collisions } = event;
             if (!over || active.id === over.id) return;
 
             const [sourcePrefix, sourceIdxStr] = parseItemId(active.id as string);
@@ -157,23 +267,9 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
             const sourceEntry = groupsRef.current.get(sourcePrefix);
             if (!sourceEntry) return;
 
-            // Determine target - "over" can be an item or a droppable container
-            let targetPrefix: string;
-            let targetIdx: number;
-
-            const overId = over.id as string;
-            if (overId.includes("::")) {
-                // Dropped over another item
-                [targetPrefix] = parseItemId(overId);
-                targetIdx = parseInt(parseItemId(overId)[1]);
-            } else {
-                // Dropped over a container (group droppable)
-                targetPrefix = overId;
-                const targetEntry = groupsRef.current.get(targetPrefix);
-                if (!targetEntry) return;
-                const lengthAtom = targetEntry.formData[`${targetPrefix}|_length`];
-                targetIdx = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 0;
-            }
+            const resolved = resolveTarget(active, over, delta, collisions, sourcePrefix);
+            if (!resolved) return;
+            const { targetPrefix, targetIdx } = resolved;
 
             const targetEntry = groupsRef.current.get(targetPrefix);
             if (!targetEntry) return;
@@ -184,22 +280,35 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
                 // Same group: reorder
                 if (sourceIdx === targetIdx) return;
                 removeRow(sourcePrefix, sourceIdx, sourceEntry.group, sourceEntry.formData);
-                const adjustedIdx = targetIdx > sourceIdx ? targetIdx - 1 : targetIdx;
-                insertRow(targetPrefix, adjustedIdx, targetEntry.group, targetEntry.formData, rowData);
+                insertRow(targetPrefix, targetIdx, targetEntry.group, targetEntry.formData, rowData);
             } else {
                 // Cross-group: remove from source, insert into target
                 removeRow(sourcePrefix, sourceIdx, sourceEntry.group, sourceEntry.formData);
                 insertRow(targetPrefix, targetIdx, targetEntry.group, targetEntry.formData, rowData);
             }
         },
-        [readRow, removeRow, insertRow]
+        [readRow, removeRow, insertRow, resolveTarget]
     );
 
-    const ctxValue: CommitteeDndContextValue = { registerGroup, unregisterGroup, getGroups };
+    const handleDragCancel = useCallback(() => {
+        setActiveId(null);
+        setActiveRowData(null);
+        setCrossGroupOver(null);
+        setActiveSourcePrefix(null);
+    }, []);
+
+    const ctxValue: CommitteeDndContextValue = { registerGroup, unregisterGroup, getGroups, crossGroupOver, activeSourcePrefix };
 
     return (
         <CommitteeDndReactContext.Provider value={ctxValue}>
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+                onDragCancel={handleDragCancel}
+            >
                 {children}
                 <DragOverlay dropAnimation={null}>
                     {activeId && activeRowData && (
@@ -246,7 +355,7 @@ const SortableRow = ({
     canDelete: boolean;
     colWidths: string[];
 }) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, animateLayoutChanges: () => false });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -495,6 +604,10 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
 
     const { setNodeRef, isOver } = useDroppable({ id: keyPrefix });
 
+    // Cross-group insertion indicator
+    const insertionIndex =
+        dndCtx?.crossGroupOver?.targetPrefix === keyPrefix && dndCtx?.activeSourcePrefix !== keyPrefix ? dndCtx.crossGroupOver.targetIndex : null;
+
     const handleEdit = (index: number) => {
         setEditIndex(index);
         setEditDialogOpen(true);
@@ -546,7 +659,7 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
     const colWidths = group.fields.filter((f) => !f.attribs?.noPrint).map((f) => f.attribs?.colWidth ?? "");
 
     return (
-        <div ref={setNodeRef} className={`transition-colors ${isOver ? "bg-primary/10 rounded" : ""}`}>
+        <div ref={setNodeRef} className={`transition-colors ${isOver && length === 0 ? "bg-primary/10 rounded" : ""}`}>
             <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
                 <table className="form-table w-full text-left border-collapse">
                     <thead>
@@ -569,18 +682,33 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
                     </thead>
                     <tbody>
                         {rows.map((row, i) => (
-                            <SortableRow
-                                key={itemIds[i]}
-                                id={itemIds[i]}
-                                row={row}
-                                index={i}
-                                onEdit={handleEdit}
-                                onDelete={handleDelete}
-                                canDelete={true}
-                                colWidths={colWidths}
-                            />
+                            <Fragment key={itemIds[i]}>
+                                {insertionIndex === i && (
+                                    <tr>
+                                        <td colSpan={6} className="p-0">
+                                            <div className="h-0.5 bg-primary mx-2 my-0.5 rounded-full" />
+                                        </td>
+                                    </tr>
+                                )}
+                                <SortableRow
+                                    id={itemIds[i]}
+                                    row={row}
+                                    index={i}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                    canDelete={true}
+                                    colWidths={colWidths}
+                                />
+                            </Fragment>
                         ))}
-                        {length === 0 && (
+                        {insertionIndex !== null && insertionIndex >= length && (
+                            <tr>
+                                <td colSpan={6} className="p-0">
+                                    <div className="h-0.5 bg-primary mx-2 my-0.5 rounded-full" />
+                                </td>
+                            </tr>
+                        )}
+                        {length === 0 && insertionIndex === null && (
                             <tr>
                                 <td colSpan={6} className="text-center text-sm text-muted-foreground py-3 italic">
                                     Üres lista.

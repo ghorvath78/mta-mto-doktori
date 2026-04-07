@@ -8,6 +8,8 @@ export const osszefoglalo: PageDescriptor = {
         {
             key: "Összefoglaló javaslat",
             label: "Összefoglaló javaslat: A kérelmező doktori habitusának megítélése",
+            helpText:
+                "Az előterjesztő összefoglaló véleménye a kérelmező doktori habitusáról, figyelembe véve tudományos eredményeit, publikációs és alkotási tevékenységét, tudományos tevékenységének visszhangját, tudományos közéleti munkásságát és a minimumkövetelmények teljesülését. A véleményt konkrét érvekkel és példákkal kell alátámasztani.",
             attribs: {
                 important: true,
                 alwaysOpen: true

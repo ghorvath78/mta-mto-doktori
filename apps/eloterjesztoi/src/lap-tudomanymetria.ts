@@ -11,6 +11,8 @@ export const tudomanymetria: PageDescriptor = {
     sections: [
         {
             key: "A kérelmezőre vonatkozó minimumkövetelmények",
+            helpText:
+                "A kérelmezőre vonatkozó kategória és a hozzá tartozó küszöbszámok. A kategóriát az illetékes tudományos bizottság határozza meg. A minimumfeltételeket a kérelmezőnek maradéktalanul teljesítenie kell. Ha az előírt minimumkövetelményekből csak egy is nem teljesül, a doktori habitus nem megfelelő.",
             groups: [
                 {
                     key: "A kérelmezőre vonatkozó minimumkövetelmények",
@@ -18,6 +20,7 @@ export const tudomanymetria: PageDescriptor = {
                         {
                             key: "Kategória",
                             type: "select",
+                            helpText: "A kérelmezőre vonatkozó követelménykategória (A, B vagy C), amelyet az illetékes tudományos bizottság határoz meg.",
                             attribs: {
                                 options: ["A", "B", "C"]
                             }
@@ -25,18 +28,22 @@ export const tudomanymetria: PageDescriptor = {
                         {
                             key: "Q küszöbszám",
                             type: "number",
+                            helpText: "A publikációs és alkotási teljesítményt mérő Q pontszám minimuma a kérelmező kategóriájában.",
                             readonly: true
                             //noPersist: true
                         },
                         {
                             key: "I küszöbszám",
                             type: "number",
+                            helpText: "Az idézettséget mérő I pontszám minimuma a kérelmező kategóriájában.",
                             readonly: true
                             //noPersist: true
                         },
                         {
                             key: "Tud. köz. szempontok",
                             type: "number",
+                            helpText:
+                                "A tudományos közéleti tevékenység értékelésénél megkövetelt minimális területek száma (alapesetben 5, rövid értekezésnél 6).",
                             readonly: true
                             //noPersist: true
                         }
@@ -47,6 +54,8 @@ export const tudomanymetria: PageDescriptor = {
         {
             key: "Q-szám",
             label: "Q-szám: A kérelmező publikációs és alkotási teljesítménye",
+            helpText:
+                "A publikációs teljesítményt mérő Q pontszám az MTMT adataiból kerül kiszámításra. A Q pontszámot növelik a kérelmező által megadott maximum 5 jelentős műszaki alkotásból származó pontok. Alkotásonként maximum 1 pont adható, a konkrét értéket befolyásolja a társalkotók száma és az alkotás színvonala.",
             groups: [
                 {
                     key: "A kérelmező publikációs teljesítménye",
@@ -72,7 +81,7 @@ export const tudomanymetria: PageDescriptor = {
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Műszaki alkotás megnevezése",
                             helpText:
-                                "A műszaki alkotás megnevezése. Csak kiemelkedő megvalósult műszaki alkotásra adható pont. Ezek jellemzője az, hogy vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá. Szóközökkel együtt legfeljebb 750 karakter terjedelemben.",
+                                "A kérelmező által megadott műszaki alkotás megnevezése. Csak kiemelkedő megvalósult műszaki alkotásra adható pont: vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá.",
                             attribs: {
                                 colWidth: "*"
                             }
@@ -96,8 +105,7 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó szabadalom",
-                            helpText:
-                                'A műszaki alkotáshoz kapcsolódó szabadalom MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.',
+                            helpText: "A műszaki alkotáshoz kapcsolódó szabadalom MTMT azonosítója a kérelmezői adatlapból.",
                             attribs: {
                                 noPrint: true
                             }
@@ -110,8 +118,7 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Kapcsolódó publikáció",
-                            helpText:
-                                'A műszaki alkotáshoz kapcsolódó publikáció MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.',
+                            helpText: "A műszaki alkotáshoz kapcsolódó publikáció MTMT azonosítója a kérelmezői adatlapból.",
                             attribs: {
                                 unique: true,
                                 noPrint: true
@@ -153,8 +160,7 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Egyéb alkotásra hivatkozás linkje",
-                            helpText:
-                                "Adja meg a műszaki alkotásra vonatkozó hivatkozás linkjét, ha nincsen az MTMT-ben. A mező végén az ikonra kattintva ellenőrizheti, hogy helyesen adta-e meg a linket.",
+                            helpText: "A kérelmező által megadott hivatkozás linkje a műszaki alkotásra, amennyiben az nem szerepel az MTMT-ben.",
                             attribs: {
                                 noPrint: true,
                                 short: true
@@ -168,7 +174,7 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Társalkotók",
-                            helpText: "Az építészeti alkotás társalkotóinak felsorolása, vesszővel elválasztva.",
+                            helpText: "A kérelmező által megadott társalkotók listája.",
                             attribs: {
                                 noPrint: true
                             }
@@ -181,7 +187,7 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Alkotás minősítése",
-                            helpText: "Az építészeti alkotás minősítésének megadása (pl. nívódíj, nemzetközi elismerés).",
+                            helpText: "A kérelmező által megadott minősítés (pl. nívódíj, nemzetközi elismerés).",
                             attribs: {
                                 noPrint: true
                             }
@@ -194,8 +200,7 @@ export const tudomanymetria: PageDescriptor = {
                             readonly: true,
                             noPersist: true,
                             valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Alkotás MTMT azonosítója",
-                            helpText:
-                                'Az építészeti alkotáshoz kapcsolódó publikáció MTMT azonosítója. A listában csak a "Fő adatok" szekcióban megadott MTMT azonosítóhoz tartozó közlemények választhatók.',
+                            helpText: "Az építészeti alkotáshoz kapcsolódó publikáció MTMT azonosítója a kérelmezői adatlapból.",
                             attribs: {
                                 noPrint: true
                             }
@@ -209,8 +214,7 @@ export const tudomanymetria: PageDescriptor = {
                             noPersist: true,
                             valueSource:
                                 "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Építészeti alkotásra hivatkozás linkje",
-                            helpText:
-                                "Adja meg az építészeti alkotásra vonatkozó hivatkozás linkjét, ha nincsen az MTMT-ben. A mező végén az ikonra kattintva ellenőrizheti, hogy helyesen adta-e meg a linket.",
+                            helpText: "A kérelmező által megadott hivatkozás linkje az építészeti alkotásra, amennyiben az nem szerepel az MTMT-ben.",
                             attribs: {
                                 noPrint: true,
                                 short: true
@@ -219,7 +223,8 @@ export const tudomanymetria: PageDescriptor = {
                         {
                             key: "Pontszám",
                             type: "number",
-                            helpText: "A műszaki alkotásra megítélt pontszám.",
+                            helpText:
+                                "Az előterjesztő által javasolt pontszám a műszaki alkotásra. Alkotásonként maximum 1 pont adható, a konkrét értéket befolyásolja a társalkotók száma és az alkotás színvonala.",
                             attribs: {
                                 fractional: true,
                                 colWidth: "50",
@@ -240,6 +245,8 @@ export const tudomanymetria: PageDescriptor = {
         {
             key: "I-szám",
             label: "I-szám: A kérelmező idézettsége",
+            helpText:
+                "A kérelmező idézettségét mérő mutatók az MTMT-ből kerülnek átvételre. Az I-szám a független hivatkozások számából számított mutató, amely a kérelmező tudományos munkásságának nemzetközi visszhangját tükrözi.",
             groups: [
                 {
                     key: "I-szám",
@@ -255,6 +262,7 @@ export const tudomanymetria: PageDescriptor = {
                         {
                             key: "I-szám",
                             type: "number",
+                            helpText: "A kérelmező idézettségét mérő I-szám, amely az MTMT-ben rögzített független hivatkozásokból kerül kiszámításra.",
                             attribs: {
                                 readonly: true
                             }
@@ -262,6 +270,7 @@ export const tudomanymetria: PageDescriptor = {
                         {
                             key: "WoS idézők száma",
                             type: "number",
+                            helpText: "A kérelmező Web of Science (WoS) szerinti független hivatkozásainak száma.",
                             attribs: {
                                 readonly: true
                             }
@@ -269,6 +278,7 @@ export const tudomanymetria: PageDescriptor = {
                         {
                             key: "H-index",
                             type: "number",
+                            helpText: "A kérelmező Hirsch-indexe az MTMT adatai alapján.",
                             attribs: {
                                 readonly: true
                             }
@@ -285,6 +295,8 @@ export const tudomanymetria: PageDescriptor = {
         },
         {
             key: "Tételes publikációs elvárások",
+            helpText:
+                "A tételes publikációs elvárások a kérelmező kategóriájához tartozó, egyenként ellenőrizendő publikációs követelményeket tartalmazzák. Ezek teljesülését az MTMT-ből kinyert adatok alapján kell ellenőrizni.",
             groups: [
                 {
                     key: "Táblázat",
@@ -296,6 +308,8 @@ export const tudomanymetria: PageDescriptor = {
         },
         {
             key: "Publikációs teljesítmény értékelése",
+            helpText:
+                "Az előterjesztő szöveges értékelése a kérelmező publikációs tevékenységéről. Térjen ki arra, hogy mennyire jellemző a rangos, a szakterületen elfogadott kiadóknál történő publikálás, kerüli-e a kérelmező a kifogásolható gyakorlatot folytató fórumokon történő publikálást. Általában a kevesebb, de színvonalas publikáció kedvezőbb elbírálás alá esik, mint a gyenge minőségű publikációkkal felhígított publikációs lista.",
             attribs: {
                 important: true,
                 alwaysOpen: true

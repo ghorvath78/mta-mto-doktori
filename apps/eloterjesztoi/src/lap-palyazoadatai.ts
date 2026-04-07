@@ -7,6 +7,7 @@ export const palyazoAdatai: PageDescriptor = {
     sections: [
         {
             key: "A pályázó személyes adatai",
+            helpText: "A kérelmező személyes adatai a kérelmezői adatlapból kerülnek átvételre. Az adatok ellenőrzése az előterjesztő feladata.",
             groups: [
                 {
                     key: "A pályázó személyes adatai",
@@ -57,8 +58,7 @@ export const palyazoAdatai: PageDescriptor = {
                         {
                             key: "Szervezeti egység",
                             type: "text",
-                            helpText:
-                                "A munkahely szervezeti egységének megnevezése. Egyetemi munkahely esetén kérjük a kar és a tanszék megnevezését is feltüntetni.",
+                            helpText: "A munkahely szervezeti egységének megnevezése. Egyetemi munkahely esetén a kar és a tanszék megnevezése is szerepel.",
                             readonly: true
                         },
                         {
@@ -73,6 +73,8 @@ export const palyazoAdatai: PageDescriptor = {
         },
         {
             key: "A doktori mű",
+            helpText:
+                "A doktori mű adatai a kérelmezői adatlapból kerülnek átvételre. Az MTA Doktori Szabályzata háromféle lehetőséget sorol fel a doktori műre: értekezés, könyv, vagy rövid értekezés. A benyújtott műnek megvitathatónak és egymagában alkalmasnak kell lennie a kérelmező tudományos eredményeinek megítélésére.",
             groups: [
                 {
                     key: "A doktori mű",
@@ -83,7 +85,7 @@ export const palyazoAdatai: PageDescriptor = {
                             key: "Formája",
                             type: "text",
                             helpText:
-                                "A doktori mű formája (pl. értekezés, rövid értekezés, monográfia vagy könyv. Vegye figyelembe, hogy különböző formájú művekre eltérő tudományos minimumkövetelmények vonatkoznak.",
+                                "A doktori mű formája (pl. értekezés, rövid értekezés, monográfia vagy könyv). Vegye figyelembe, hogy különböző formájú művekre eltérő tudományos minimumkövetelmények vonatkoznak.",
                             valueSource:
                                 "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája",
                             readonly: true
@@ -101,6 +103,7 @@ export const palyazoAdatai: PageDescriptor = {
         },
         {
             key: "A kérelmező által megnevezett szakterület és tudományos bizottság",
+            helpText: "A kérelmező által megnevezett szakterület és az illetékes tudományos bizottság, amelyben a doktori kérelem elbírálásra kerül.",
             groups: [
                 {
                     key: "A kérelmező által megnevezett szakterület és tudományos bizottság",

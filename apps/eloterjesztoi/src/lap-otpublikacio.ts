@@ -7,6 +7,8 @@ export const otPublikacio: PageDescriptor = {
     sections: [
         {
             key: "A kérelmező által megjelölt öt legfontosabb publikáció",
+            helpText:
+                "A kérelmező által megadott 5 kiemelt publikáció, amelyek közül ajánlatos, hogy legalább 3, de lehetőleg valamennyi a tézisekhez kapcsolódjék. Az adatok a kérelmezői adatlapból kerülnek átvételre.",
             attribs: {
                 alwaysOpen: true
             },
@@ -31,6 +33,8 @@ export const otPublikacio: PageDescriptor = {
         },
         {
             key: "Öt legfontosabb publikáció értékelése",
+            helpText:
+                "Az előterjesztő szöveges értékelése az 5 kiemelt publikációról. Vizsgálja meg, hogy az egyes publikációk:\n• megjelenési helye mennyire tekinthető az adott szakterületen kiemelkedően színvonalas, rangos fórumnak;\n• milyen (nemzetközi) együttműködést mutatnak;\n• milyen új tudományos eredményt tartalmaznak;\n• mennyire kapcsolódnak a tézisekhez.",
             attribs: {
                 important: true,
                 alwaysOpen: true

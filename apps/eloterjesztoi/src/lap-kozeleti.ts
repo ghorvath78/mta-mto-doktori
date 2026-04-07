@@ -743,7 +743,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "MTA doktora értekezés bírálója",
                             type: "number",
-                            helpText: "Adja meg, hány alkalommal bírált MTA doktora értekezést.",
+                            helpText: "A kérelmező által megadott alkalmak száma, ahányszor MTA doktora értekezést bírált.",
                             noPersist: true,
                             readonly: true,
                             valueSource:
@@ -752,7 +752,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "MTA doktori bírálóbizottság titkára",
                             type: "number",
-                            helpText: "Adja meg, hány alkalommal volt MTA doktori bírálóbizottság titkára.",
+                            helpText: "A kérelmező által megadott alkalmak száma, ahányszor MTA doktori bírálóbizottság titkára volt.",
                             noPersist: true,
                             readonly: true,
                             valueSource:
@@ -761,7 +761,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "PhD vagy kandidátusi értekezés bírálója",
                             type: "number",
-                            helpText: "Adja meg, hány alkalommal bírált PhD vagy kandidátusi értekezést.",
+                            helpText: "A kérelmező által megadott alkalmak száma, ahányszor PhD vagy kandidátusi értekezést bírált.",
                             noPersist: true,
                             readonly: true,
                             valueSource:
@@ -770,7 +770,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         {
                             key: "PhD bírálóbizottság titkára",
                             type: "number",
-                            helpText: "Adja meg, hány alkalommal volt PhD bírálóbizottság titkára.",
+                            helpText: "A kérelmező által megadott alkalmak száma, ahányszor PhD bírálóbizottság titkára volt.",
                             noPersist: true,
                             readonly: true,
                             valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben|Összesítés|PhD bírálóbizottság titkára"
@@ -814,6 +814,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
         },
         {
             key: "Elnyert tudományos pályázat",
+            helpText:
+                'Elnyert pályázatok témavezetőként. Minimum követelmény: legyen legalább\n• 2 db NKFIH által kezelt pályázat (pl. "OTKA" K, FK, PD; NKKP, PIAC, GINOP) témavezetője; vagy\n• 1 db Lendület csoport vezetője; vagy\n• 1 db rangos (ERC, HORIZON, HORIZON 2020) nemzetközi pályázat vezetője, alprojekt-/munkacsoport-munkaszakasz dokumentált vezetője.\n\nLegfeljebb 5 tétel adható meg.',
             groups: [
                 {
                     key: "Lista",
@@ -1103,6 +1105,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
         },
         {
             key: "Tudományos közéleti tevékenység értékelése",
+            helpText:
+                "A közéleti tevékenység pozitív megítéléséhez a 11 terület közül legalább 5-ben (rövid értekezéssel pályázók esetén legalább 6-ban) kell értékelhető tevékenységet felmutatni. Az előterjesztői értékelésben ki kell térni arra, hogy mely közéleti tevékenység elemeket tartja kiemelkedőeknek szakmai szempontból.",
             attribs: {
                 important: true,
                 alwaysOpen: true

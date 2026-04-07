@@ -1,0 +1,433 @@
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+Előterjesztői útmutató
+
+Tartalom
+1. A habitusra vonatkozó követelmények és elvárások ........................................................................ 2
+1.1. Általános követelmények és elvárások ..................................................................................... 2
+1.2. Rövid értekezéssel pályázókkal szemben támasztott követelmények és elvárások .................. 2
+2. Az előterjesztés elkészítéséhez rendelkezésre álló dokumentumok és az abban szereplő
+információk .......................................................................................................................................... 3
+2.1. Az előterjesztő összeférhetetlensége és illetékessége ............................................................... 3
+2.2. A pályázó által benyújtott dokumentumok listája ..................................................................... 3
+3. Az előterjesztés elkészítése és tartalmi elemei ................................................................................. 4
+3.1. Formai alkalmassági követelmények ........................................................................................ 4
+3.2. Tudománymetriai mutatók ........................................................................................................ 5
+3.3. A tudományos teljesítmény minőségi értékelése ...................................................................... 7
+3.4. Tudományos közéleti tevékenység............................................................................................ 8
+3.5. Rövid értekezéssel pályázók teljesítményének értékelése ........................................................ 9
+3.6. Javaslat a bírálókra és a bírálóbizottság tagjaira ....................................................................... 9
+
+Kapcsolódó dokumentumok
+1. Tájékoztató a Magyar Tudományos Akadémia (MTA) doktora tudományos cím
+megszerzésére irányuló pályázat benyújtásához
+https://mta.hu/doktori-tanacs/tajekoztato-az-mta-doktora-tudomanyos-cimre-tortenopalyazat-benyujtasahoz-105291
+2. Az MTA Műszaki Tudományok Osztályának hatályos doktori minimumkövetelményei („A
+Műszaki Tudományok Osztálya doktori eljárásra vonatkozó minimumkövetelményei”)
+3. A hatályos doktori ügyrend („Ügyrend az MTA Műszaki Tudományok Osztályának az MTA
+doktora tudományos cím megszerzéséért indított eljárásban való közreműködéséről”)
+4. Bizottsági útmutató
+5. Pályázói útmutató
+Ez az útmutató az MTA Műszaki Tudományok Osztálya (rövidítve MTO) hatályos doktori
+minimum-követelményei és doktori ügyrendje alapján készült. Kérdés vagy probléma esetén a
+MTO-t az MTA Doktori Tanácsában (rövidítve DT) képviselő tagokhoz lehet fordulni.
+A 2.-5. dokumentumok az MTO honlapjának „DOKTORI ÜGYEK” aloldaláról
+https://mta.hu/doktori-tanacs/a-vi-osztaly-doktori-kovetelmenyrendszere-105378
+tölthetők le.
+
+1
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+1. A habitusra vonatkozó követelmények és elvárások
+1.1. Általános követelmények és elvárások
+Az MTA doktora címre pályázók felé az MTA Műszaki Tudományok Osztály (MTO) tételes,
+számszerű minimumkövetelményeket és minőségi elvárásokat támaszt. A habitusvizsgálat sikeres
+lefolytatásához a tételes, számszerű minimumkövetelmények mindegyikének teljesülnie kell,
+ugyanakkor ezek teljesítése vagy akár túlteljesítése önmagában nem jelenti az elvárt habitus
+meglétét, ahhoz szükséges a magas szintű, önálló és kiemelkedően publikált tudományos
+teljesítmény, annak érdemi nemzetközi visszhangja, valamint az aktív és magas szintű részvétel a
+hazai és nemzetközi tudományos közéletben. A doktori cím odaítélésében az elért új tudományos
+eredmények a meghatározóak mind a habitusvizsgálati, mind a bírálati szakaszban. Habár a
+tudományos kiválóság nem objektíven, számszerűen mérhető, alább megadjuk azokat a
+szempontokat, amelyek a tudományos teljesítmény és habitus megítélésében szerepet kapnak.
+A tételes, számszerű minimumkövetelmények felsorolása megtalálható Az „A Műszaki
+Tudományok Osztálya doktori eljárásra vonatkozó minimumkövetelményei” dokumentumban.
+Rövid értekezéssel pályázók részére további követelmények is találhatóak ugyanitt. Fontos
+kiemelni, hogy a minimumkövetelmények teljesülésének ellenőrzésekor csak azok a publikációk és
+hivatkozások vehetők figyelembe, melyek az eljárás megindítása előtt az MTMT- ben rögzítésre
+kerültek.
+Amennyiben a minimumkövetelmények biztonságos teljesítése megállapítható, a felkért
+előterjesztők és a habitusvizsgálatot végző Tudományos Bizottság (TB) részletesen elemzi, hogy a
+pályázó megfelel-e az elvárt tudományos kiválóság kritériumainak, és ennek eredménye alapján
+alakítja ki véleményét a pályázó tudományos habitusáról.
+A habitusvizsgálat során hangsúlyosan figyelembe kell venni a pályázó
+- tudományos eredményeit (jelentenek-e érdemi hozzájárulást a pályázó szakterületéhez),
+- publikációs gyakorlatát (kellően hangsúlyos-e minőségi publikációk jelenléte a teljes publikációs
+listájában, van-e értékelhető nemzetközi együttműködése, közleményeinek jelentős része elismert
+és a szakterületen általánosan elfogadott fórumokon került-e publikálásra, kerüli-e a kifogásolható
+gyakorlatot folytató publikációs fórumokat),
+- hivatkozottságát, eredményeinek nemzetközi visszhangját (rangos, a szakterületen általánosan
+elfogadott fórumokon szerzett, nemzetközi szerzők által közölt hivatkozások mennyiségét, az
+olyan érdemi hivatkozások meglétét, amelyek eredményeit méltatják vagy ténylegesen
+alkalmazzák),
+- hazai és nemzetközi közéleti tevékenységét (a számszerűen teljesített követelmények teljesítése
+során megadott tevékenységek mennyire mutatnak tényleges és jelentős tudományos munkát és
+elismerést).
+A habitusvizsgálati szakasz során ezen szempontok megítélése a pályázó MTMT-be feltöltött
+publikációi, a pályázatban megadott 5 legfontosabb cikke (amelyek közül ajánlatos, hogy legalább 3
+a tézisekhez kapcsolódjék), 5 legfontosabbnak tartott hivatkozása, a doktori disszertációhoz
+kapcsolódó tudományos eredményeinek rövid bemutató leírása, valamint a pályázati anyagból
+kiolvasható tudományos tevékenysége és elismertsége alapján történik.
+
+1.2. Rövid értekezéssel pályázókkal szemben támasztott követelmények és elvárások
+Rövid értekezés benyújtásakor a kérelmezőnek lehetősége van a csupán néhány tíz (legfeljebb 30)
+oldalas rövid értekezéssel és az ahhoz csatolt, az eredményeket alátámasztó legfontosabb
+publikációival pályázni. A kérelmezőnek tisztában kell lennie vele, hogy ebben az esetben azt a
+munkát, amit az eredmények egységes szemléletben és jelölésrendszerben történő megfogalmazása
+és rendezése jelent, jórészt áthárítja a bírálókra. Ennek tudatában kell mindent megtennie a
+2
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+kérelmezőnek, hogy a bírálók a tőlük észszerűen elvárható munkaráfordítással is azonosítani és
+ellenőrizni tudják a tudományos eredményeit.
+Az MTA Doktori Tanácsa támogatja a rövid értekezéssel történő pályázási formát, amelyhez
+kiemelkedő tudományos teljesítményt vár el. A Műszaki Tudományok Osztálya csak a kiemelkedők
+között is kitűnő habitusú jelöltek esetében fogadja el ezt a formát, akik a habitusvizsgálati minimum
+követelményeket magasan teljesítik, és további, a tudományos teljesítményre vonatkozó szigorú
+minőségi követelményeknek is megfelelnek.
+A rövid értekezéssel pályázók értékelésénél – a többi pályázóhoz hasonló módon (lásd 1.1. pont) fokozott figyelmet kell fordítani arra, hogy a pályázatban foglalt tudományos tevékenység minősége
+mennyire magas színvonalú.
+Ezen túlmenően a Pályázó rövid értekezéséhez csatolt legfeljebb 6 cikkének minőségét, és a pályázó
+ezekben dokumentált tudományos hozzájárulását is értékeli az előterjesztő.
+
+2. Az előterjesztés elkészítéséhez rendelkezésre álló dokumentumok és az
+abban szereplő információk
+2.1. Az előterjesztő összeférhetetlensége és illetékessége
+Az ügykezelő Tudományos Bizottság (ÜTB) elnöke az előterjesztő felkérése során ügyel arra, hogy
+az előterjesztő ne legyen összeférhetetlen a pályázóval, és hogy kompetens véleményt tudjon
+alkotni a pályázó habitusáról annak szakterületén. A felkért előterjesztő azonban maga is köteles
+meggyőződni arról, hogy nem áll fenn összeférhetetlenség közte és a pályázó között. Az
+összeférhetetlenség szabályai részletesen megtalálhatók az MTA Doktori Szabályzatának
+(https://mta.hu/data/dokumentumok/doktori_tanacs/_Szabalyzatok/Doktori%20Szabalyzat_2_vegle
+ges20180507_1.pdf) 21§-ában.
+Amennyiben összeférhetetlenség, vagy bármely okból elfogultság áll fenn az előterjesztő és a
+pályázó között, illetve az előterjesztő úgy véli, hogy nem tud kompetens véleményt alkotni a
+pályázó habitusáról, akkor azt haladéktalanul (a felkérés megérkezése után 5 naptári napon belül)
+jelezze az ÜTB elnökének.
+
+2.2. A pályázó által benyújtott dokumentumok listája
+Az előterjesztés elkészítéséhez a pályázó által Az elektronikusan benyújtandó dokumentumokat az
+MTA doktori pályázati rendszerébe (https://dtt.mta.hu/mta_doktori/) feltöltött alábbi
+dokumentumok használhatóak:
+- Tudományos önéletrajz
+- Tudományos munkásság összefoglalása (2. sz. adatlap, legfeljebb 300 szó terjedelemben írt
+összefoglaló)
+- Öt jelentős publikáció listája
+- Az MTMT segítségével elkészített tudománymetriai táblázat
+- MTMT segítségével elkészített publikációs és hivatkozási lista a rövid idézőkkel
+- Kérelmezői adatlap (3. adatlap)
+A fentiek tartalmáról bővebb információt a Pályázói útmutató tartalmaz.
+
+3
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+3. Az előterjesztés elkészítése és tartalmi elemei
+Az előterjesztést a pályázó által az MTA doktori pályázati rendszerébe feltöltött dokumentumok (ld.
+2.2. alfejezet) alapján kell elkészíteni a habitusvizsgálati követelményeknek való megfelelés
+ellenőrzésével.
+Az előterjesztés elkészítéséhez egy űrlapkitöltő web-es alkalmazás áll rendelkezésre, amely az MTO
+honlapjának „DOKTORI ÜGYEK” aloldaláról elérhető. A kitöltés után a program egy pdf file-t
+generál, amelyet az ügykezelő TB elnökének kell elküldeni, és az MTA doktori pályázati rendszerébe
+is fel kell tölteni. Ha ez utóbbi nem sikerül, az ügykezelő TB elnöke vagy titkára tud segíteni.
+Fontos megjegyezni, hogy az előterjesztői értékelés űrlapkitöltő alkalmazásba a pályázónak az
+MTA doktori rendszerébe feltöltött anyagai közül a 3.sz adatlapot lehet feltölteni, amiből az
+előterjesztői űrlapkitöltő a pályázó alapadatait és tudománymetriai mutatóit is betölti az
+„Előterjesztői értékelés” űrlap megfelelő helyeire.
+A 2027. augusztus 31-ig benyújtott pályázati kérelmeknél átmenetileg még alkalmazhatóak a
+korábbi követelmények a pályázó kérésére. A korábbi követelmények szerinti eljárásnál azonban az
+azoknak megfelelő „Kérelmezői adatlap”-ot kell kitölteni és a pályázati rendszerbe feltölteni, és az
+értékelést is a korábbi követelményeknek megfelelő régi űrlapon kell benyújtani.
+
+3.1. Formai alkalmassági követelmények
+Az MTA Doktori Szabályzata háromféle lehetőséget sorol fel a kérelemhez mellékelendő doktori
+műre. Ezek:
+1. értekezés,
+2. könyv,
+3. rövid értekezés.
+Az MTA Doktori Szabályzata előírja, hogy bármelyik lehetőséget választja is a kérelmező, a
+benyújtott műnek megvitathatónak és egymagában alkalmasnak kell lennie a kérelmező tudományos
+eredményeinek megítélésére. A doktori mű mellett mindhárom esetben tézisfüzetet is be kell nyújtani.
+1. Értekezés
+Az értekezés benyújtásával a kérelmező többségében azokkal a jól elkülöníthető, saját eredményekkel
+pályázzon az MTA doktora cím elnyerésére, amelyeket már publikált a szakterület meghatározó
+nemzetközi folyóirataiban. Az értekezés ezeket az eredményeket egységes jelölésrendszerben és
+szemléletben foglalja össze, beleértve az eredmények előzményeit pontos irodalmi hivatkozásokkal,
+az eredmények helyét a szakterületen, valamint áttekinthető bizonyításukat, igazolásukat részletes
+levezetésekkel.
+Az értekezésnek az alábbi formai követelményeknek kell megfelelnie:
+(a) Az értekezés érdemi fejezeteinek terjedelme (nem számítva a köszönetnyilvánítást, az előszót, az
+irodalomjegyzéket, az esetleges függelékeket és mellékleteket) nem haladhatja meg a 100 oldalt A4es oldalmérettel, 12 pontnál nem kisebb betűmérettel, minimum 20, maximum 30 mm-es margókkal
+és minimum 1-es, maximum 1,5-es sortávolsággal.
+(b) Az értekezésnek tartalmaznia kell a tézisfüzetben külön összefoglalt téziseket is, velük azonos
+megfogalmazásban. A tézispontokat az értekezés „Összefoglalás” fejezete kell tartalmazza, vagy
+szétbontva, az értekezés egyes fejezeteinek végén kell megjelenniük, azok összefoglalásaiban. A
+tömören megfogalmazott éziseknek a szakterület kutatói közössége számára közérthetőeknek kell
+lenniük.
+2. Könyv
+Könyv benyújtásával a pályázó a kérelem benyújtása előtt legfeljebb 3 évvel megjelent, önálló
+könyvben közölt saját, jól azonosítható eredményeivel pályázhat az MTA doktora cím elnyerésére.
+4
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+Ebben az esetben is eredményeinek jelentős részét a könyv megjelenése előtt a szakterület
+meghatározó nemzetközi folyóirataiban publikálnia kell. A könyvet a tudományág meghatározó
+tudományos kiadóinak egyike kell, hogy megjelentesse, a pályázó egyszerzős monográfiájaként.
+Követelmény, hogy a bírálók a részletes levezetéseket megtalálják a műben.
+Lényeges, hogy a doktori mű bírálói nem magát a könyv egészét, hanem a pályázó abban foglalt
+eredményeit bírálják el, ezért ebben az esetben is fontos szerep jut a tézisfüzetnek. A tézispontok
+megfogalmazására, kialakítására ugyanazok a követelmények vonatkoznak, mint értekezés
+benyújtása esetén.
+3. Rövid értekezés
+Az alábbi formai követelményeknek kell eleget tenni:
+(1) A rövid értekezésnek is tartalmaznia kell a tézisfüzetben külön összefoglalt téziseket, akár
+fejezetenként, akár egy végső összefoglaló fejezetben, de a tézisfüzetben szereplő megfogalmazással
+azonosan. A tézispontok megfogalmazására, kialakítására ugyanazok a követelmények vonatkoznak,
+mint az értekezés esetében.
+(2) A téziseket alátámasztó csatolt cikkek száma ne legyen több 6-nál és ezek mindegyike legalább Q1
+besorolású legyen a Scimago Journal Ranking (SJR) alapján. A kérelmező olyan cikkeket válasszon
+ki, amelyek a szakterület meghatározó nemzetközi folyóirataiban jelentek meg.
+(3) Mindegyik rövid értekezéshez csatolt cikknél legfeljebb három szerző legyen úgy, hogy az egynél
+több szerzős cikkek esetén vagy a cikkben, vagy csatolt társszerzői nyilatkozatokban legyen
+egyértelmű, melyik szerzőnek mi volt a feladata (koncepció, számítások, mérések, statisztika,
+szövegezés stb.).
+(4) A rövid értekezésre is érvényesek az értekezéssel kapcsolatos formai előírások (tömör fogalmazás,
+12 pontos vagy nagyobb betűtípus stb.). Formailag jó megoldás az is, ha a csatolt publikációkat
+fénymásolatban, egységes lapelrendezéssel egy kötetbe kötik a rövid értekezéssel. A rövid
+értekezésből és a csatolt publikációkból összeállított pályázati anyag terjedelme ne haladja meg a
+150 oldalt.
+4. Tézisfüzet
+A 10-16 oldalas tézisfüzet a kérelmező doktori művében részletesen kifejtett új tudományos
+eredményeinek tömör, pontokba foglalt összefoglalóját tartalmazza. A tézisfüzet a témaválasztás
+indoklását, a téma újszerűségének bizonyítását, kapcsolódását mások vagy a kérelmező korábbi
+eredményeihez, a tézisek kifejtését, valamint az eredmények megtörtént vagy lehetséges
+hasznosítását tartalmazza.
+A tézisfüzetben fel kell sorolni a kérelmezőnek a tézisek témájában megjelent valamennyi
+publikációját, valamint a csatlakozó szakirodalom legfontosabb közleményeit is.
+
+3.2. Tudománymetriai mutatók
+A MTO doktori szabályzata a habitusvizsgálati szakaszban tudománymetriai minimumkövetelményeket támaszt a publikációs és alkotási tevékenységre (Q pontszám), az idézettségre (I
+pontszám), és a tételes publikációs elvárásokra vonatkozóan. A minimumfeltételeket a Kérelmezőnek
+maradéktalanul teljesítenie kell. Ha az előírt minimumkövetelményekből csak egy is nem teljesül, a
+doktori habitus nem megfelelő, és a doktori eljárás folytatását, azaz a doktori mű bírálatra
+bocsátását az előterjesztő és a habitusvizsgálatot végző Tudományos Bizottság nem javasolhatja.
+Ismételten hangsúlyozni kívánjuk, hogy ezek teljesítése vagy akár túlteljesítése önmagában nem
+jelenti az elvárt habitus meglétét.
+Az előterjesztői értékelésnél használt tudománymetriai mutatókat az MTMT-ből lehet kinyerni a
+https://support.mtmt.hu/doktori_minimum/256.php?author=12345678
+5
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+linkkel, ahol az „12345678” a pályázó MTMT azonosítója. Az 1. ábra mutat egy példát az ekkor
+kapott táblázatra.
+Az előterjesztői értékeléshez szükséges tudománymetriai mutatókat, valamint a pályázó alapadatait
+is a web-es előterjesztői értékelés űrlapkitöltő alkalmazás be is törlti az űrlapba, ha a pályázónak
+az MTA doktori rendszerébe feltöltött 3. sz adatlapját onnan letöltjük, és az űrlapkitöltőbe feltöltjük.
+
+1. ábra
+Példa az MTMT-ből előállítható táblázatra
+A publikációs teljesítményt mérő Q pontszámot növelik a pályázó által megadott maximum 5
+jelentős műszaki alkotásából származó pontok. Ezen műszaki alkotások jellege szakterülettől függ,
+értéküket a tudományos bizottság állapítja meg az előterjesztő javaslata alapján. Alkotásonként
+
+6
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+maximum 1 pont adható, a konkrét értékét befolyásolja a társalkotók száma és az alkotás
+színvonala. A műszaki alkotások közül kiemelt figyelmet kell fordítani az alábbiakra:
+1. Elfogadott hazai és nemzetközi szabadalmak.
+Itt a pályázónak meg kell adnia a társalkotóit, a szabadalom lajstrom számát, címét, MTMT
+linkjét.
+2. Jelentős építészeti alkotások (Az Építészeti Tudományos bizottsághoz tartozó C
+kategóriánál).
+A pályázónak meg kell adnia társalkotóit, az alkotás címét, jelentős minősítését (pl. Nívódíj,
+nemzetközi elismerés, stb.), MTMT linkjét.
+
+3.3. A tudományos teljesítmény minőségi értékelése
+A habitus megítélésének legfontosabb elemei a pályázati űrlapon megadott 5 kiemelt publikáció
+(amelyek közül ajánlatos, hogy legalább 3, de lehetőleg valamennyi a tézisekhez kapcsolódjék) és
+azok rövid szöveges összefoglalása, a pályázó által legjobbnak ítélt 5 hivatkozás és azok
+szövegkörnyezetének bemutatása, és az MTA doktori értekezéshez kapcsolódó tudományos
+eredmények rövid szöveges összefoglalója.
+Az 5 kiemelt publikáció esetében a habitusvizsgáló ülést előkészítő előterjesztők és a tudományos
+bizottság is azt vizsgálja, hogy az egyes publikációk
+- megjelenési helye mennyire tekinthető az adott szakterületen kiemelkedően színvonalas, rangos
+fórumnak (kiadó elfogadottsága összhangban az MTA állásfoglalásával,
+https://mta.hu/mta_hirei/javaslatok-a-kifogasolhato-gyakorlatot-folytato-folyoiratok-cikkeinekkezelesere-az-mta-ajanlasai-az-uj-tipusu-publikacios-visszaelesekkel-kapcsolatban-113234),
+- milyen (nemzetközi) együttműködést mutatnak,
+- milyen új tudományos eredményt tartalmaznak.
+Az 5 legfontosabbnak tartott hivatkozás kapcsán vizsgálat alá esik
+- a hivatkozó publikáció megjelenésének helye (rangos folyóirat, könyv),
+- a hivatkozó publikáció szerzőinek nemzetközisége,
+- a hivatkozó publikáció szerzőinek valódi függetlensége a hivatkozott publikáció szerzőitől,
+- a hivatkozás érdemi volta (azaz alkalmazza-e érdemben a hivatkozott publikáció eredményeit,
+elismeri-e azokat jelentős eredménynek).
+Az MTA doktori értekezéshez kapcsolódó tudományos eredmények rövid összefoglalójának
+világosan meg kell fogalmaznia, hogy a pályázónak melyek azok az új, önálló, nemzetközileg is
+meghatározó tudományos eredményei, amelyekre tekintettel az MTA doktori címre pályázik. Az
+eredmények jelentőségének, elismertségének a megfogalmazásból egyértelműen ki kell derülnie.
+Ezek azok az eredmények, amelyek igazolják, hogy a pályázó alkalmas a pályázott címre, így a
+habitusvizsgálat ezen szakaszában ez az egyik legfontosabb eleme a pályázatnak. A pályázati
+űrlapon megadott szövegnek meg kell győznie az előterjesztőket, a habitusvizsgálatot végző TB
+tagjait, a MTO tagjait és az MTA Doktori Tanácsának tagjait arról, hogy tudományos eredményei
+érdemi előrelépést jelentenek a pályázó szakterületén.
+A fentiek mellett a habitus megítélése kitér a pályázó általános publikációs tevékenységére is:
+mennyire jellemző a rangos, a szakterületen elfogadott kiadóknál történő publikálás, kerüli-e a
+kifogásolható gyakorlatot folytató fórumokon történő publikálást. Általában a kevesebb, de
+7
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+színvonalas publikáció kedvezőbb elbírálás alá esik, mint a gyenge minőségű publikációkkal
+felhígított publikációs lista.
+
+3.4. Tudományos közéleti tevékenység
+A tudományos közéleti tevékenységet az alábbi szempontok szerint értékeli az előterjesztő.
+A felsőoktatási és a doktori képzés területén végzett munka:
+1. TDK-téma vezetése (OTDK helyezés és különdíj): Csak az OTDK helyezéseket lehet figyelembe
+venni: a pályázónak legyen legalább (i) egy I. helyezett, vagy (ii) két II. helyezett vagy (iii) két III.
+helyezett vagy (iv) két különdíjas hallgatója (OTDT honlapon igazolt módon).
+2. Részvétel graduális és doktori képzésben (tárgyelőadó, tárgyfelelős): (i) Az elmúlt öt évben legyen
+legalább 2 graduális és 1 doktori képzésben meghirdetett tárgy felelőse/előadója vagy (ii) 5 graduális
+képzésben meghirdetett tárgy felelőse/előadója legalább három szemeszteren át (Neptunban történő
+vagy más hitelesen igazolt módon).
+3. Doktori témavezetés (fokozatszerzés): Legyen legalább (i) két sikeresen védett PhD hallgatója,
+mindkettő 100%-ban vagy (ii) 4 db 50%-ban, vagy (iii) 1 db 100%-ban és 2 db 50%-ban a
+https://doktori.hu/index.php honlapon igazolt módon.
+Megbízatások tudományos szervezetekben, testületekben:
+4. Részvétel tudományos zsűriben, kuratóriumban, jelentős tudományos presztízsű hazai vagy
+nemzetközi kutatási projekt- és ösztöndíjpályázatok bírálatában: Elfogadhatónak tekinthető (i) 1 db
+nemzetközi pályázat (pl. ERC, Horizon, MSCA, Fulbright stb.) bírálata vagy (ii) 5 db hazai pályázat
+(pl. OTKA, NKKP, TÉT, egyéb NKFIH pályázatok, Bolyai-, Magyar Állami Eötvös Ösztöndíj stb.)
+bírálata.
+5. Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében vagy azokon
+meghívott/plenáris előadó: A felkérésnek/megjelenésnek a konferencia, kongresszus honlapján,
+hivatalos programfüzetében láthatónak kell lennie vagy igazoló oklevelet kell mellékelni.
+6. Tisztség hazai és/vagy nemzetközi tudományos szervezetben legalább egy évig: Nem tagság,
+hanem tisztség, választott tagság fogadható el, mint például elnök, titkár, senior member, advisory
+committee/board member, president/chair, deputy president/chair, secretary.
+7. Folyóirat szerkesztőbizottsági tagság legalább 2 évig: A tagság időszakában a külföldi folyóirat
+legyen a norvég listában 1 vagy 2 besorolású és a Scopus-ban D1, Q1, Q2 minősítésű, a magyar
+nyelvű folyóirat A kategóriás minősítésű.
+8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági tagság): Legyen (i) legalább 3
+doktori (PhD) dolgozat bírálója vagy (ii) 1 MTA doktori értekezés bírálója vagy (iii) 2 MTA doktori
+bírálóbizottság titkára vagy (iv) 2 doktori (PhD) dolgozat bírálója és ezzel egyidejűleg 3 PhD
+bírálóbizottságban titkár.
+Tudományos elismerések, kitüntetések:
+9. Elnyert tudományos pályázat (témavezető): Legyen (i) legalább 2 db NKFIH által kezelt pályázat
+(pld. “OTKA” K, FK, PD; NKKP, PIAC, GINOP) témavezetője, vagy (ii) legalább 1 db Lendület
+csoport vezetője, vagy (iii) legalább 1 db rangos (ERC, HORIZON, HORIZON 2020) nemzetközi
+pályázat vezetője, alprojekt /munkacsoport munkaszakasz dokumentált vezetője.
+10. Külföldi szakmai tanulmányút vagy külföldi szakmai munkavállalás vagy külföldi
+vendégprofesszori/vendégkutatói megbízás (min. 3 hónap) vagy külföldi posztdoktori állás betöltése
+(a fogadó intézmény saját forrásból fedezi, a nyertest több jelöltből választják ki, a tartózkodás
+pedig min. 6 hónapos. Hallgatói (alap-, mester és doktori képzés alatti) féléváthallgatások nem
+számítanak.
+11. Állami vagy MTA által adományozott tudományos díj, kitüntetés: pl. Magyar Érdemrend és
+Érdemkereszt különböző fokozatai, Eötvös József-díj, Apáczai Csere János-díj, Trefort Ágoston-díj,
+Szent-Györgyi Albert-díj, Akadémiai Ifjúsági Díj, Akadémiai Díj, Bolyai-plakett, Széchenyi-díj,
+8
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+Kossuth-díj, Gábor Dénes-díj, illetve jelentős külföldi tudományos díj, amelynek elfogadásához a
+TB indoklása szükséges a habitus vizsgálat során (kari, egyetemi, vállalati kitüntetések nem
+számítanak).
+A kérelmező minden területen legfeljebb 5 tételt sorolhat fel a pályázatában. Ha több is van,
+célszerű előnyben részesíteni a nemzetközi és a magasabb szintű szerepeket. Ahol releváns, meg
+kell adnia az időtartamot és a szervezetet is.
+A közéleti tevékenység pozitív megítéléséhez a fenti 11 terület közül legalább 5-ben (rövid
+értekezéssel pályázók esetén legalább 6-ban) kell értékelhető tevékenységet felmutatni. Az
+előterjesztői értékelés „A vélemény indoklása” rovatában az előterjesztőnek ki kell térnie arra, hogy
+mely közéleti tevékenység elemeket tart kiemelkedőeknek szakmai szempontból.
+
+3.5. Rövid értekezéssel pályázók teljesítményének értékelése
+A rövid értekezéssel pályázóknak a „Kérelmezői adatlap”-on az alábbi, a többi pályázónál
+szükséges adatokon túlmenő adatokat is meg kell adniuk:
+(i) A Scimago Journal Ranking (SJR) szerint D1 besorolású tudományos közleményeinek listáját
+pontos publikációs adatokkal,
+(ii) független Web of Science (WoS) szerinti hivatkozásainak számát,
+(iii) a téziseket alátámasztó, legfeljebb 6 darab SJR Q1 besorolású cikk
+- pontos bibliográfiai adatait és SJR besorolását,
+- a cikkben publikált, a pályázó saját hozzájárulásának tekintett eredmény rövid tartalmi
+összefoglalását maximum 5 sorban,
+- a többi társzerzők feladatát/hozzájárulását a cikkhez maximum 5 sorban.
+Hasonlóan a nem rövid értekezéssel pályázók legjobb 5 közleményének értékeléséhez, a téziseket
+alátámasztó legfeljebb 6 darab SJR Q1 besorolású cikk minőségének értékelésénél az előterjesztő
+azt vizsgálja, hogy az egyes publikációk
+- megjelenési helye mennyire tekinthető az adott szakterületen kiemelkedően színvonalas, rangos
+fórumnak - milyen (nemzetközi) együttműködést mutatnak,
+- milyen új tudományos eredményt tartalmaznak.
+Ezen túlmenően az előterjesztő értékeli a többi társszerző hozzájárulását is az eredményekhez a
+pályázó saját hozzájárulásával összevetve.
+
+3.6. Javaslat a bírálókra és a bírálóbizottság tagjaira
+Az előterjesztő javaslatot tesz a doktori mű
+- 3 bírálójára és azok tartalékaira (ezek közül maximum 1 (és annak tartaléka) lehet PhD vagy
+kandidátusi fokozatú, mindenki másnak legalább MTA (vagy tudomány) doktora címmel kell
+rendelkeznie,
+valamint a doktori védési bizottság
+- elnökére és tartalékára (szokásosan az MTO akadémikus tagjai közül),
+- titkárára és annak tartalékára (szokásosan PhD vagy kandidátusi fokozatú),
+- tagjaira és tartalékaikra, az 5 tagból maximum egy lehet PhD vagy kandidátusi fokozattal
+rendelkező, de csak akkor, ha a bírálók és tartalékaik mind legalább MTA (vagy tudomány)
+doktora címmel rendelkeznek.
+
+9
+
+MTA Műszaki Tudományok Osztálya
+
+MTA Doktori pályázat 2025
+
+Fontos megjegyezni, hogy az 1. bíráló tartaléka az 1. tartalék bíráló, az első helyen megjelölt
+bizottsági tag tartaléka az első helyen megjelölt tartalék tag, stb.
+Az MTA Doktori Tanáccsal történt megállapodás alapján a javasolt védési bizottság tartalék elnökét
+mindenképpen felkéri a DT az ülésen történő részvételre bizottsági tagként, hogy váratlan
+akadályoztatás esetén is biztonságosan megtartható legyen a védés.
+Figyelni kell arra, hogy a
+- javasolt személyek valamennyien nem összeférhetetlenek legyenek a pályázóval és
+- tudományterületi kompetenciájuk lefedje a pályázat tudományterületeit a műszaki tudományon
+belüli és kívüli interdiszciplináris szempontokból is, és
+- munkahely szempontjából minél sokszínűbb legyen a bírálóbizottság és a bírálók.
+Ennek érdekében az MTO más tudományos bizottságainak szakterületéről, sőt, más osztályokról is
+lehet, illetve ajánlatos lehet bírálókat és/vagy bírálóbizottsági tagokat javasolni.
+
+A habitusvizsgálat menetéről és eredményeiről, valamint a doktori eljárás további lépéseiről
+a ”Bizottsági útmutató”-ban olvashatnak.
+
+10
+
+
