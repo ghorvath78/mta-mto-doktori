@@ -50,7 +50,6 @@ export const NumberInput = ({
             }
         }
         result = result.replaceAll(",", ".");
-        console.log("Max value:", maxValue, "Sanitized result before max check:", result);
         if (maxValue !== undefined && result !== "") {
             const num = parseFloat(result);
             if (!isNaN(num) && num > maxValue) {
