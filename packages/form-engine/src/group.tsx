@@ -71,11 +71,9 @@ export const GroupArrayPanel = ({
     const arrayLength = useAtomValue(group.lengthSource ? formData[group.lengthSource] : (formData[`${keyPrefix}|_length`] ?? oneAtom));
     const length = parseInt(arrayLength[0]);
 
-    const groups: JSX.Element[] = [];
-    if (group.label && length > 0) {
-        groups.push(<GroupLabel key={`${group.key}-label`} title={group.label} />);
-    }
+    const label: JSX.Element | null = group.label ? <GroupLabel title={group.label} /> : null;
 
+    const groups: JSX.Element[] = [];
     for (let i = 0; i < length; i++) {
         groups.push(
             <GroupPanel key={`${group.key}-${i}`} group={group} formData={formData} className="pb-1" noLabel={true}>
@@ -131,6 +129,7 @@ export const GroupArrayPanel = ({
 
     return (
         <div style={{ display: isVisible ? "block" : "none" }}>
+            {label && <div className="space-y-2 mb-1">{label}</div>}
             <div className="space-y-2 mb-1">{groups.length > 0 ? groups : <div className="italic text-muted-foreground">Nincs megjeleníthető blokk.</div>}</div>
             {!readonly && groups.length < (group.arrayMax ?? Infinity) && (
                 <div className="flex mb-1">
