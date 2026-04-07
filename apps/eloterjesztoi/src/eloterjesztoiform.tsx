@@ -133,6 +133,22 @@ export function getCommonPubsWithApplicant(mtid: string): string[] {
     return commonPubs;
 }
 
+export async function loadApplicantDataFromForm(applicantContent: string | undefined, mtmtContent: string | undefined) {
+    if (applicantContent) {
+        const applicantData = JSON.parse(applicantContent);
+        const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
+        if ("Adatlapon szereplő publikációk" in mtmtData && "Társszerzők" in mtmtData) {
+            loadPubItemSummary(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
+        } else {
+            const mtmtId = String(getByPath(applicantData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || "");
+            if (mtmtId) {
+                await loadMTMTPublications(mtmtId);
+            }
+        }
+        await loadApplicantData(applicantData, mtmtData);
+    }
+}
+
 // összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
 export const eloterjesztoiFormInfo: FormInfo = {
     name: formName,
@@ -184,22 +200,8 @@ export const eloterjesztoiFormInfo: FormInfo = {
 
                 const parsedContent = JSON.parse(formContent);
 
-                if (applicantContent) {
-                    const applicantData = JSON.parse(applicantContent);
-                    const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
-                    setDialogMessage("Publikációk és hivatkozások betöltése");
-                    if ("Adatlapon szereplő publikációk" in mtmtData && "Társszerzők" in mtmtData) {
-                        loadPubItemSummary(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
-                    } else {
-                        const mtmtId = String(
-                            getByPath(applicantData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || ""
-                        );
-                        if (mtmtId) {
-                            await loadMTMTPublications(mtmtId);
-                        }
-                    }
-                    await loadApplicantData(applicantData, mtmtData);
-                }
+                setDialogMessage("Publikációk és hivatkozások betöltése");
+                await loadApplicantDataFromForm(applicantContent, mtmtContent);
 
                 atomsFromJSON(parsedContent, formData);
                 setDialogMessage("");

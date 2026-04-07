@@ -90,7 +90,7 @@ const categoryMap: Record<string, string> = {
     "Metallurgiai Tudományos Bizottság": "A",
     "Szál- és Kompozittechnológiai Tudományos Bizottság": "B",
     "Szilárd Testek Mechanikája Tudományos Bizottság": "A",
-    "Távközlési Tudományos Bizottság": "A",
+    "Távközlési Tudományos Bizottság": "B",
     "Vízgazdálkodástudományi Bizottság": "A"
 };
 

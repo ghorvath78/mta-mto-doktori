@@ -37,6 +37,8 @@ export const MTMTCitationInput = ({
         const toLoad = pubMTMT[index];
         if (toLoad !== activePub.current) {
             if (readonly && mtmtPubSummaryCache[toLoad]) return;
+            console.log("cache:", mtmtPubSummaryCache);
+            console.log("readonly:", readonly, "mtmt:", toLoad, "cache hit:", Boolean(mtmtPubSummaryCache[toLoad]));
             console.log("Selected publication changed, loading citations for mtid:", toLoad);
             async function fetchCitations() {
                 if (!toLoad) {
