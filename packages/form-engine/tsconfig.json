@@ -1,7 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
             "@repo/ui": ["../../packages/ui/src/index.ts"],

@@ -336,7 +336,7 @@ export const getScientometricsPdfSection = (): Content[] => {
     }
 
     const links: Record<string, string> = {
-        plink: "https://m2.mtmt.hu/api/publication?sort=publishedYear,desc&sort=title,asc&size=5000&cond=mtid;in;",
+        plink: "https://m2.mtmt.hu/api/publication?sort=publishedYear,desc&sort=title,asc&cond=mtid;in;",
         alink: "https://m2.mtmt.hu/api/citation?cond=published;eq;true&cond=related.category;eq;1&cond=externalCitation;eq;true&cond=publication.mtid;in;",
         flink: "https://m2.mtmt.hu/api/citation?cond=published;eq;true&cond=related.category;eq;1&cond=related.type;ne;29&cond=externalCitation;eq;true&cond=publication.mtid;in;",
         wlink: "https://m2.mtmt.hu/api/citation?cond=publication.authors;eq;10002462&cond=related.identifiers.source;in;1,61&cond=related.type;ne;29&cond=related.category;eq;1&cond=externalCitation;eq;true&cond=publication.mtid;in;",
@@ -623,6 +623,32 @@ export function savePdfWithFormData(docDefinition: TDocumentDefinitions, fileNam
         }
         const uint8 = Uint8Array.from(finalPdf);
         const blob = new Blob([uint8], { type: "application/pdf" });
+
+        if ("showSaveFilePicker" in window) {
+            try {
+                const handle = await (window as any).showSaveFilePicker({
+                    suggestedName: fileName,
+                    types: [
+                        {
+                            description: "PDF Document",
+                            accept: { "application/pdf": [".pdf"] }
+                        }
+                    ]
+                });
+                const writable = await handle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                return;
+            } catch (err: any) {
+                // If user aborted, do nothing, otherwise fallback
+                if (err.name !== "AbortError") {
+                    console.error("Save file picker failed:", err);
+                    saveAs(blob, fileName);
+                }
+                return;
+            }
+        }
+
         saveAs(blob, fileName);
     });
 }

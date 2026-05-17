@@ -24,7 +24,7 @@ export const MTMTScientometrics = ({ fieldKey, formData }: { fieldKey: string; f
             if (!table) return;
 
             const links: Record<string, string> = {
-                plink: "https://m2.mtmt.hu/api/publication?sort=publishedYear,desc&sort=title,asc&size=5000&cond=mtid;in;",
+                plink: "https://m2.mtmt.hu/api/publication?sort=publishedYear,desc&sort=title,asc&cond=mtid;in;",
                 alink: "https://m2.mtmt.hu/api/citation?cond=published;eq;true&cond=related.category;eq;1&cond=externalCitation;eq;true&cond=publication.mtid;in;",
                 flink: "https://m2.mtmt.hu/api/citation?cond=published;eq;true&cond=related.category;eq;1&cond=related.type;ne;29&cond=externalCitation;eq;true&cond=publication.mtid;in;",
                 wlink: "https://m2.mtmt.hu/api/citation?cond=publication.authors;eq;10002462&cond=related.identifiers.source;in;1,61&cond=related.type;ne;29&cond=related.category;eq;1&cond=externalCitation;eq;true&cond=publication.mtid;in;",

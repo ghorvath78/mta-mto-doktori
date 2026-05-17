@@ -126,7 +126,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             { text: "8.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
             await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", ""),
             { text: "8.9. Elnyert tudományos pályázat (témavezető, résztvevő)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat (témavezető, résztvevő)", ""),
+            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat", ""),
             { text: "8.10. Külföldi tartózkodás", style: "subsection" },
             await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
             { text: "8.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
