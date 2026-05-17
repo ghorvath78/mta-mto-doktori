@@ -4,6 +4,7 @@ import { SciScoringTable } from "./customgroups/sciscoringtable";
 import { QScoreSummary } from "./customgroups/qscoresummary";
 import { IScoreSummary } from "./customgroups/iscoresummary";
 import { ItemizedRequirements } from "./customgroups/Itemizedrequirements";
+import { ShortThesisRequirements } from "./customgroups/shortthesisrequirements";
 
 export const tudomanymetria: PageDescriptor = {
     key: "Tudományos minimumkövetelmények",
@@ -48,6 +49,21 @@ export const tudomanymetria: PageDescriptor = {
                             //noPersist: true
                         }
                     ]
+                }
+            ]
+        },
+        {
+            key: "Rövid értekezésre vonatkozó minimumkövetelmények",
+            helpText:
+                "Rövid értekezés esetén a kérelmező SJR D1 cikkeinek összegzett szerzői aránya 3,00-nál több kell, hogy legyen. A legfeljebb 6, téziseket alátámasztó publikációból álló listán minden egyes publikációnak D1-es vagy Q1-es besorolásúnak kell lennie, és legfeljebb 3 szerzője lehet.",
+            conditionKey: "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája",
+            conditionValue: "rövid értekezés",
+            groups: [
+                {
+                    key: "Táblázat",
+                    customComponent: ShortThesisRequirements,
+                    noPersist: true,
+                    fields: []
                 }
             ]
         },

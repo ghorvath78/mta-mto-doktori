@@ -133,6 +133,20 @@ export function getCommonPubsWithApplicant(mtid: string): string[] {
     return commonPubs;
 }
 
+export function getNumOfAuthorsInPub(mtid: string): number {
+    if (!mtmtDataInForm) return 0;
+    const coAuthors = mtmtDataInForm["Társszerzők"] as Record<string, string[]>;
+    const authors = coAuthors[mtid] || [];
+    return authors.length;
+}
+
+export function getRatingOfPub(mtid: string): string {
+    if (!mtmtDataInForm) return "";
+    const pubSummaries = mtmtDataInForm["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>;
+    const summary = pubSummaries[mtid];
+    return summary ? summary.rating : "";
+}
+
 export async function loadApplicantDataFromForm(applicantContent: string | undefined, mtmtContent: string | undefined) {
     if (applicantContent) {
         const applicantData = JSON.parse(applicantContent);
