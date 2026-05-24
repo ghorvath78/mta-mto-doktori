@@ -307,7 +307,7 @@ export const Group = ({
                         fieldKey={field.valueSource ?? key}
                         key={key}
                         formData={formData}
-                        inline={!field.attribs || field.attribs?.["inline"] === "true"}
+                        inline={!field.attribs || field.attribs?.["inline"] !== "false"}
                         index={index}
                         onBlur={(value, setValue) => {
                             if (value && !value.includes("://")) {

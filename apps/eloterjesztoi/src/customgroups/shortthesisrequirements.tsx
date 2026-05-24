@@ -1,6 +1,6 @@
 import { useAtomValue, atom } from "jotai";
 import type { GroupDescriptor, FormData } from "@repo/form-engine";
-import { cD, invertedText } from "@repo/form-engine";
+import { invertedText } from "@repo/form-engine";
 import { getNumOfAuthorsInPub, getRatingOfPub } from "@/eloterjesztoiform";
 
 const emptyArrayAtom = atom<string[]>([]);
