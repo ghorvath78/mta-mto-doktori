@@ -18,7 +18,7 @@ import {
     AlertDialogTitle,
     AlertDialogDescription
 } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps, type FormData } from "../forms";
 import {
     activeMTMTUserIdAtom,
     getMTMTObject,
@@ -32,30 +32,18 @@ import { useAtom, useAtomValue } from "jotai";
 import { Search } from "lucide-react";
 import { useRef, useState, useCallback } from "react";
 
-export const MTMTUserInput = ({
-    label,
-    fieldKey,
-    formData,
-    index,
-    readonly = false,
-    onMTMTIdChange,
-    onBlur
-}: {
-    label: string;
-    fieldKey: string;
-    formData: FormData;
-    index: number;
-    readonly?: boolean;
-    onMTMTIdChange?: (id: string, formData: FormData, fieldKey: string, index: number) => void;
-    onBlur?: (value: string, setValue: (value: string) => void) => void;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const MTMTUserInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const readonly = isFieldReadonly(fieldDescr);
+    const onMTMTIdChange = fieldDescr.attribs?.onMTMTIdChange as ((id: string, formData: FormData, fieldKey: string, index: number) => void) | undefined;
     const [dialogOpen, setDialogOpen] = useState(false);
     const [activeMTMTUserId, setActiveMTMTUserId] = useAtom(activeMTMTUserIdAtom);
     const mtmtPubListStatus = useAtomValue(mtmtPubListStatusAtom);
     const mtmtScientometricsStatus = useAtomValue(mtmtScientometricsStatusAtom);
 
-    const fieldName = `${fieldKey}-${index}`;
+    const fieldName = `${resolvedFieldKey}-${index}`;
 
     return (
         <div className="flex items-baseline space-x-2">
@@ -89,14 +77,8 @@ export const MTMTUserInput = ({
                             }}
                             onBlur={(e) => {
                                 const id = e.target.value;
-                                if (onBlur)
-                                    onBlur(id, (val) => {
-                                        const newValue = [...value];
-                                        newValue[index] = val;
-                                        setValue(newValue);
-                                    });
                                 if (isValidMTMTId(id)) {
-                                    if (onMTMTIdChange) onMTMTIdChange(id, formData, fieldKey, index);
+                                    if (onMTMTIdChange) onMTMTIdChange(id, formData, resolvedFieldKey, index);
                                     else if (activeMTMTUserId !== id) {
                                         setActiveMTMTUserId(id);
                                         loadMTMTPublications(id).then(() => {
@@ -139,7 +121,7 @@ export const MTMTUserInput = ({
                             setValue(newValue);
                             setDialogOpen(false);
                             if (isValidMTMTId(id)) {
-                                if (onMTMTIdChange) onMTMTIdChange(id, formData, fieldKey, index);
+                                if (onMTMTIdChange) onMTMTIdChange(id, formData, resolvedFieldKey, index);
                                 else if (activeMTMTUserId !== id) {
                                     setActiveMTMTUserId(id);
                                     loadMTMTPublications(id).then(() => {

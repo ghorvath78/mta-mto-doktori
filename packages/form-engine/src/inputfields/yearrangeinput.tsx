@@ -1,19 +1,11 @@
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 
-export const YearRangeInput = ({
-    label,
-    formData,
-    fieldKey,
-    index
-}: {
-    label: string;
-    formData: FormData;
-    fieldKey: string;
-    index: number;
-    className?: string;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const readonly = isFieldReadonly(fieldDescr);
 
     const minYear = 1900;
     const maxYear = new Date().getFullYear();
@@ -44,7 +36,7 @@ export const YearRangeInput = ({
         if (text.includes("-")) e.preventDefault();
     };
 
-    const fieldName = `${fieldKey}-${index}`;
+    const fieldName = `${resolvedFieldKey}-${index}`;
 
     return (
         <div className="flex items-baseline space-x-2">
@@ -61,6 +53,7 @@ export const YearRangeInput = ({
                     id={`${fieldName}-from`}
                     name={`${fieldName}-from`}
                     value={start ?? ""}
+                    readOnly={readonly}
                     onKeyDown={preventDash}
                     onPaste={preventPasteWithDash}
                     onChange={(e) => {
@@ -93,6 +86,7 @@ export const YearRangeInput = ({
                     id={`${fieldName}-to`}
                     name={`${fieldName}-to`}
                     value={end ?? ""}
+                    readOnly={readonly}
                     onKeyDown={preventDash}
                     onPaste={preventPasteWithDash}
                     onChange={(e) => {

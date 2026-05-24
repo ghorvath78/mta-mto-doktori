@@ -1,29 +1,28 @@
 import { SimpleCombobox, SimpleComboboxContent, SimpleComboboxInput, SimpleComboboxItem, SimpleComboboxList } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 
-export const DecisionYesNoInput = ({
-    label,
-    fieldKey,
-    className = "",
-    formData,
-    index,
-    onChange
-}: {
-    label: string;
-    fieldKey: string;
-    className?: string;
-    formData: FormData;
-    index: number;
-    onChange?: (value: string) => void;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const DecisionYesNoInput = ({ formData, index, fieldKey, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const readonly = isFieldReadonly(fieldDescr);
     const items = ["igen", "nem"];
 
     const baseClass = "flex items-center gap-x-4";
     const labelClass = "block mb-1 font-medium text-start w-1/4 leading-[0.95em] flex-1 text-primary-foreground";
+
+    if (readonly) {
+        return (
+            <div className={baseClass}>
+                <div className={labelClass}>{label}</div>
+                <div className="py-1 px-2 flex-3">{value[index] || <span className="italic text-gray-500">Nincs megadva</span>}</div>
+            </div>
+        );
+    }
+
     return (
-        <div className={`${baseClass} ${className}`}>
+        <div className={baseClass}>
             <div className={labelClass}>{label}</div>
             <SimpleCombobox
                 items={items}
@@ -35,7 +34,6 @@ export const DecisionYesNoInput = ({
                     const newValue = [...value];
                     newValue[index] = nextValue;
                     setValue(newValue);
-                    onChange?.(nextValue);
                 }}
             >
                 <SimpleComboboxInput
@@ -46,10 +44,10 @@ export const DecisionYesNoInput = ({
                 />
                 <SimpleComboboxContent>
                     <SimpleComboboxList>
-                        <SimpleComboboxItem key={fieldKey + "-igen"} value={"igen"}>
+                        <SimpleComboboxItem key={resolvedFieldKey + "-igen"} value={"igen"}>
                             igen
                         </SimpleComboboxItem>
-                        <SimpleComboboxItem key={fieldKey + "-nem"} value={"nem"}>
+                        <SimpleComboboxItem key={resolvedFieldKey + "-nem"} value={"nem"}>
                             nem
                         </SimpleComboboxItem>
                     </SimpleComboboxList>

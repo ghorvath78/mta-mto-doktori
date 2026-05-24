@@ -1,9 +1,9 @@
-import type { FieldDescriptor, FormData } from "@repo/form-engine";
+import type { FieldInputProps } from "@repo/form-engine";
 import { getMinTotalI } from "@/requirements";
 import { invertedText } from "@repo/form-engine";
 import { useAtomValue } from "jotai";
 
-export const IScoreSummary = ({ formData }: { field: FieldDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
+export const IScoreSummary = ({ formData }: FieldInputProps) => {
     const category = useAtomValue(
         formData[
             "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"

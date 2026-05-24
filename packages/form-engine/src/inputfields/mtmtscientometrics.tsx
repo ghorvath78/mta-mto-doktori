@@ -1,12 +1,13 @@
 import { Button, Spinner } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { resolveFieldKey, type FieldInputProps } from "../forms";
 import { loadScientometrics, mtmtPubListStatusAtom, mtmtScientometricsAtom, mtmtScientometricsStatusAtom } from "../mtmt";
 import { useAtom, useAtomValue } from "jotai";
 import { ListRestart } from "lucide-react";
 import { useCallback, useEffect } from "react";
 
-export const MTMTScientometrics = ({ fieldKey, formData }: { fieldKey: string; formData: FormData }) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const MTMTScientometrics = ({ fieldKey, formData, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
     const data = useAtomValue(mtmtScientometricsAtom);
     const status = useAtomValue(mtmtScientometricsStatusAtom);
     const pubListStatus = useAtomValue(mtmtPubListStatusAtom);

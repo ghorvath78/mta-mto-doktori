@@ -1,75 +1,77 @@
-import { InputGroup, InputGroupInput, InputGroupAddon } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from "@repo/ui";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
+import { store } from "../atoms";
 import { useAtom } from "jotai";
+import { ExternalLink } from "lucide-react";
 
-export const TextInput = ({
-    label,
-    fieldKey,
-    inline = false,
-    numeric = false,
-    className = "",
-    children,
-    formData,
-    twoColumn = true,
-    index,
-    onBlur,
-    readonly = false,
-    important = false
-}: {
-    label: string;
-    fieldKey: string;
-    inline?: boolean;
-    numeric?: boolean;
-    className?: string;
-    children?: React.ReactNode;
-    formData: FormData;
-    twoColumn?: boolean;
-    index: number;
-    onBlur?: (value: string, setValue: (value: string) => void) => void;
-    readonly?: boolean;
-    important?: boolean;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const TextInput = ({ formData, index, fieldKey, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const inline = fieldDescr.attribs?.inline !== false;
+    const twoColumn = fieldDescr.attribs?.noAlign ? false : true;
+    const readonly = isFieldReadonly(fieldDescr);
+    const important = fieldDescr.attribs?.important === true;
+    const isLinkField = fieldDescr.type === "link";
+    const shortLinkLabel = fieldDescr.attribs?.short === true;
 
     const baseClass = inline ? "flex items-center space-x-2" : "";
     const labelClass = inline ? "leading-[0.95em]" + (twoColumn ? " text-end w-1/4" : "") : "";
 
-    const fieldName = `${fieldKey}-${index}`;
+    const fieldName = `${resolvedFieldKey}-${index}`;
+
+    const setIndexedValue = (nextValue: string) => {
+        const newValue = [...value];
+        newValue[index] = nextValue;
+        setValue(newValue);
+    };
 
     return (
-        <div className={`${baseClass} ${className}`}>
+        <div className={baseClass}>
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>
-            {readonly && (
+            {readonly && !isLinkField && (
                 <div id={fieldName} className="py-1 px-2 mb-1 flex-3">
                     {value[index]?.replaceAll("|", ", ") ?? ""}
                 </div>
             )}
+            {readonly && isLinkField && value[index] && (
+                <a id={fieldName} className="py-1 px-2 mb-1 flex-3 formlink" href={value[index]} target="_blank" rel="noopener noreferrer">
+                    {shortLinkLabel ? "link" : value[index]}
+                </a>
+            )}
+            {readonly && isLinkField && !value[index] && <div className="py-1 px-2 mb-1 flex-3 text-gray-500 italic">Nincs megadva</div>}
             {!readonly && (
                 <InputGroup className={`w-full border rounded py-1 px-2 flex-3 h-9 ${important ? "border-primary border-2" : "border-gray-300"}`}>
                     <InputGroupInput
                         className="h-[unset] px-0 py-0 md:text-base"
-                        type={numeric ? "number" : "text"}
+                        type="text"
                         id={fieldName}
                         name={fieldName}
                         value={value[index] ?? ""}
                         readOnly={readonly}
                         onChange={(e) => {
-                            const newValue = [...value];
-                            newValue[index] = e.target.value;
-                            setValue(newValue);
+                            setIndexedValue(e.target.value);
                         }}
                         onBlur={(e) => {
-                            if (onBlur)
-                                onBlur(e.target.value, (val) => {
-                                    const newValue = [...value];
-                                    newValue[index] = val;
-                                    setValue(newValue);
-                                });
+                            if (isLinkField && e.target.value && !e.target.value.includes("://")) {
+                                setIndexedValue(`https://${e.target.value}`);
+                            }
                         }}
                     />
-                    {children && <InputGroupAddon align="inline-end">{children}</InputGroupAddon>}
+                    {isLinkField && (
+                        <InputGroupAddon align="inline-end">
+                            <InputGroupButton
+                                variant="ghost"
+                                aria-label="Info"
+                                size="icon-xs"
+                                onClick={() => window.open(store.get(formData[resolvedFieldKey])[index], "_blank", "noopener")}
+                            >
+                                <ExternalLink />
+                            </InputGroupButton>
+                        </InputGroupAddon>
+                    )}
                 </InputGroup>
             )}
         </div>

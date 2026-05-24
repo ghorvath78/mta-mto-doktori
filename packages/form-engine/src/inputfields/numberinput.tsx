@@ -1,34 +1,18 @@
 import { InputGroup, InputGroupInput } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 import type React from "react";
 
-export const NumberInput = ({
-    label,
-    formData,
-    fieldKey,
-    index,
-    inline = false,
-    className = "",
-    fractional = false,
-    readonly = false,
-    twoColumn = true,
-    important = false,
-    maxValue
-}: {
-    label: string;
-    formData: FormData;
-    fieldKey: string;
-    index: number;
-    inline?: boolean;
-    className?: string;
-    fractional?: boolean;
-    readonly?: boolean;
-    twoColumn?: boolean;
-    important?: boolean;
-    maxValue?: number;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const NumberInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const inline = fieldDescr.attribs?.inline !== false;
+    const fractional = fieldDescr.attribs?.fractional === true;
+    const readonly = isFieldReadonly(fieldDescr);
+    const twoColumn = fieldDescr.attribs?.noAlign ? false : true;
+    const important = fieldDescr.attribs?.important === true;
+    const maxValue = fieldDescr.attribs?.maxValue as number | undefined;
 
     const baseClass = inline ? "flex items-center space-x-2" : "";
     const labelClass = inline ? (twoColumn ? "text-end w-1/4" : "") + " leading-[0.95em]" : "";
@@ -76,10 +60,10 @@ export const NumberInput = ({
         if (invalidPattern.test(text)) e.preventDefault();
     };
 
-    const fieldName = `${fieldKey}-${index}`;
+    const fieldName = `${resolvedFieldKey}-${index}`;
 
     return (
-        <div className={`${baseClass} ${className}`}>
+        <div className={baseClass}>
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>

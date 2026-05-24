@@ -1,10 +1,16 @@
-import { ArrowDown, ArrowUp, ExternalLink, Plus, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Trash } from "lucide-react";
 import { Button } from "@repo/ui";
 import { type JSX } from "react";
-import { appendToFormArray, deleteFromFormArray, moveDownInFormArray, moveUpInFormArray, type FormData, type GroupDescriptor } from "./forms";
+import {
+    appendToFormArray,
+    deleteFromFormArray,
+    moveDownInFormArray,
+    moveUpInFormArray,
+    type FieldDescriptor,
+    type FormData,
+    type GroupDescriptor
+} from "./forms";
 import { atom, useAtomValue } from "jotai";
-import { store } from "./atoms";
-import { InputGroupButton } from "@repo/ui";
 import { FieldWrapper } from "./fieldwrapper";
 import { BirthDataInput } from "./inputfields/birthdatainput";
 import { LongTextInput } from "./inputfields/longtextinput";
@@ -19,7 +25,6 @@ import { YearRangeInput } from "./inputfields/yearrangeinput";
 import { MTMTScientometrics } from "./inputfields/mtmtscientometrics";
 import { DecisionYesNoInput } from "./inputfields/decisionyesnoinput";
 import { DecisionTextInput } from "./inputfields/decisiontext";
-import { LinkDataDisplay } from "./inputfields/linkdatadisplay";
 
 const GroupLabel = ({ title }: { title: string }) => {
     return <div className="font-bold italic my-2">{title}</div>;
@@ -159,198 +164,57 @@ export const Group = ({
     for (const field of group.fields) {
         const key = `${keyPrefix}|${field.key}`;
         let component: JSX.Element | null = null;
-        const fieldReadonly = field.readonly === true; // || readonly;
+        const fieldDescr: FieldDescriptor = readonly && field.readonly !== true ? { ...field, readonly: true } : field;
+        const inputProps = { formData, fieldKey: key, index, fieldDescr };
         switch (field.type) {
             case "text":
-                component = (
-                    <TextInput
-                        inline={!field.attribs || field.attribs["inline"] !== false}
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        key={key}
-                        formData={formData}
-                        index={index}
-                        readonly={fieldReadonly}
-                        twoColumn={field.attribs?.noAlign ? false : true}
-                        important={field.attribs?.important === true}
-                    ></TextInput>
-                );
+                component = <TextInput {...inputProps} />;
                 break;
             case "birthYearPlace":
-                component = <BirthDataInput fieldKey={field.valueSource ?? key} key={key} formData={formData} index={index} readonly={readonly} />;
+                component = <BirthDataInput {...inputProps} />;
                 break;
             case "longtext":
-                component = (
-                    <LongTextInput
-                        inline={false}
-                        lines={(field.attribs?.["rows"] as number | undefined) ?? undefined}
-                        characters={(field.attribs?.["maxLength"] as number | undefined) ?? undefined}
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        key={key}
-                        formData={formData}
-                        index={index}
-                        readonly={fieldReadonly}
-                    />
-                );
+                component = <LongTextInput {...inputProps} />;
                 break;
             case "selectAddOther":
-                component = (
-                    <SelectOrAddInput
-                        label={field.label ?? field.key}
-                        fieldKey={key}
-                        key={key}
-                        formData={formData}
-                        choices={(field.attribs?.["options"] as string[] | undefined) ?? []}
-                        type={(field.attribs?.["type"] as string | undefined) ?? "elem"}
-                        index={index}
-                    />
-                );
+                component = <SelectOrAddInput {...inputProps} />;
                 break;
             case "select":
-                component = (
-                    <SelectOrAddInput
-                        label={field.label ?? field.key}
-                        fieldKey={key}
-                        key={key}
-                        formData={formData}
-                        addNew={false}
-                        choices={(field.attribs?.["options"] as string[] | undefined) ?? []}
-                        type={(field.attribs?.["type"] as string | undefined) ?? "elem"}
-                        index={index}
-                    />
-                );
+                component = <SelectOrAddInput {...inputProps} />;
                 break;
             case "number":
-                component = (
-                    <NumberInput
-                        inline={!field.attribs || field.attribs["inline"] !== false}
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        key={key}
-                        formData={formData}
-                        index={index}
-                        readonly={fieldReadonly}
-                        fractional={field.attribs?.["fractional"] === true}
-                        twoColumn={field.attribs?.noAlign ? false : true}
-                        important={field.attribs?.important === true}
-                        maxValue={field.attribs?.["maxValue"] as number | undefined}
-                    />
-                );
+                component = <NumberInput {...inputProps} />;
                 break;
             case "year":
-                component = (
-                    <YearInput
-                        inline={!field.attribs || field.attribs["inline"] !== false}
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        key={key}
-                        formData={formData}
-                        index={index}
-                        readonly={fieldReadonly}
-                    />
-                );
+                component = <YearInput {...inputProps} />;
                 break;
             case "mtmtUser":
-                component = (
-                    <MTMTUserInput
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        formData={formData}
-                        index={index}
-                        readonly={fieldReadonly}
-                        onMTMTIdChange={field.attribs?.onMTMTIdChange}
-                    />
-                );
+                component = <MTMTUserInput {...inputProps} />;
                 break;
             case "mtmtPub":
-                component = (
-                    <MTMTPubInput
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        formData={formData}
-                        index={index}
-                        attribs={field.attribs}
-                        readonly={fieldReadonly}
-                    />
-                );
+                component = <MTMTPubInput {...inputProps} />;
                 break;
             case "mtmtCitation":
-                component = (
-                    <MTMTCitationInput
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        formData={formData}
-                        index={index}
-                        attribs={field.attribs}
-                        readonly={fieldReadonly}
-                    />
-                );
+                component = <MTMTCitationInput {...inputProps} />;
                 break;
             case "mtmtTable":
-                component = <MTMTScientometrics fieldKey={field.valueSource ?? key} formData={formData} />;
+                component = <MTMTScientometrics {...inputProps} />;
                 break;
             case "link":
-                component = fieldReadonly ? (
-                    <LinkDataDisplay
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        key={key}
-                        formData={formData}
-                        index={index}
-                        twoColumn={field.attribs?.noAlign ? false : true}
-                        short={field.attribs?.short === true}
-                    />
-                ) : (
-                    <TextInput
-                        label={field.label ?? field.key}
-                        fieldKey={field.valueSource ?? key}
-                        key={key}
-                        formData={formData}
-                        inline={!field.attribs || field.attribs?.["inline"] !== "false"}
-                        index={index}
-                        onBlur={(value, setValue) => {
-                            if (value && !value.includes("://")) {
-                                setValue("https://" + value);
-                            }
-                        }}
-                    >
-                        <InputGroupButton
-                            variant="ghost"
-                            aria-label="Info"
-                            size="icon-xs"
-                            onClick={() => window.open(store.get(formData[field.valueSource ?? key])[index], "_blank", "noopener")}
-                        >
-                            <ExternalLink />
-                        </InputGroupButton>
-                    </TextInput>
-                );
+                component = <TextInput {...inputProps} />;
                 break;
             case "yearRange":
-                component = <YearRangeInput label={field.label ?? field.key} key={key} formData={formData} fieldKey={field.valueSource ?? key} index={index} />;
+                component = <YearRangeInput {...inputProps} />;
                 break;
             case "decisionYesNo":
-                component = (
-                    <DecisionYesNoInput label={field.label ?? field.key} key={key} formData={formData} fieldKey={field.valueSource ?? key} index={index} />
-                );
+                component = <DecisionYesNoInput {...inputProps} />;
                 break;
             case "decisionText":
-                component = (
-                    <DecisionTextInput
-                        label={field.label ?? field.key}
-                        key={key}
-                        formData={formData}
-                        fieldKey={field.valueSource ?? key}
-                        index={index}
-                        lines={(field.attribs?.["rows"] as number | undefined) ?? undefined}
-                        characters={(field.attribs?.["maxLength"] as number | undefined) ?? undefined}
-                        readonly={readonly || field.readonly}
-                    />
-                );
+                component = <DecisionTextInput {...inputProps} />;
                 break;
             case "custom":
                 if (field.customComponent) {
-                    component = <field.customComponent field={field} formData={formData} keyPrefix={key} index={index} />;
+                    component = <field.customComponent {...inputProps} />;
                 }
                 break;
             default:

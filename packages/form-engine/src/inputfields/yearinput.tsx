@@ -1,26 +1,14 @@
 import { InputGroup, InputGroupInput } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 import type React from "react";
 
-export const YearInput = ({
-    label,
-    formData,
-    fieldKey,
-    index,
-    inline = false,
-    className = "",
-    readonly = false
-}: {
-    label: string;
-    formData: FormData;
-    fieldKey: string;
-    index: number;
-    inline?: boolean;
-    className?: string;
-    readonly?: boolean;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const YearInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const inline = fieldDescr.attribs?.inline !== false;
+    const readonly = isFieldReadonly(fieldDescr);
 
     const minYear = 1900;
     const maxYear = new Date().getFullYear();
@@ -49,10 +37,10 @@ export const YearInput = ({
         if (text.includes("-")) e.preventDefault();
     };
 
-    const fieldName = `${fieldKey}-${index}`;
+    const fieldName = `${resolvedFieldKey}-${index}`;
 
     return (
-        <div className={`${baseClass} ${className}`}>
+        <div className={baseClass}>
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>

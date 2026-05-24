@@ -1,21 +1,13 @@
-import type { FormData } from "@/forms";
+import { isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 
-export const BirthDataInput = ({
-    fieldKey,
-    formData,
-    index,
-    readonly = false
-}: {
-    fieldKey: string;
-    formData: FormData;
-    index: number;
-    readonly?: boolean;
-}) => {
+export const BirthDataInput = ({ formData, index, fieldKey, fieldDescr }: FieldInputProps) => {
     const minYear = 1900;
     const maxYear = new Date().getFullYear();
+    const readonly = isFieldReadonly(fieldDescr);
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
 
-    const [value, setValue] = useAtom(formData[fieldKey]);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
     // Keep the place text as-is (including spaces). Only normalize the year.
     const raw = value[index] ?? "";
     const pipeIndex = raw.indexOf("|");
@@ -25,7 +17,7 @@ export const BirthDataInput = ({
     const year = rawYear.trim();
     const place = rawPlace;
 
-    const fieldName = fieldKey + "-" + index;
+    const fieldName = resolvedFieldKey + "-" + index;
 
     return (
         <div className="flex items-baseline space-x-2">

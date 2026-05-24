@@ -9,29 +9,28 @@ import {
     ComboboxList,
     ComboboxTrigger
 } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 
-export const SelectOrAddInput = ({
-    label,
-    choices,
-    type,
-    addNew = true,
-    fieldKey,
-    formData,
-    index
-}: {
-    label: string;
-    type: string;
-    addNew?: boolean;
-    choices: string[];
-    fieldKey: string;
-    formData: FormData;
-    index: number;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const SelectOrAddInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const readonly = isFieldReadonly(fieldDescr);
+    const choices = (fieldDescr.attribs?.options as string[] | undefined) ?? [];
+    const type = (fieldDescr.attribs?.type as string | undefined) ?? "elem";
+    const addNew = fieldDescr.type === "select" ? false : fieldDescr.attribs?.addNew !== false;
 
     const extChoices = !choices.includes(value[index]) && value[index] !== "" ? [...choices, value[index]] : choices;
+
+    if (readonly) {
+        return (
+            <div className="flex items-center space-x-2 min-w-0">
+                <div className="text-end w-1/4 shrink-0 font-medium leading-[0.95em]">{label}</div>
+                <div className="flex flex-1 min-w-0 py-1 px-2">{value[index] || <span className="italic text-gray-500">Nincs megadva</span>}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex items-center space-x-2 min-w-0">

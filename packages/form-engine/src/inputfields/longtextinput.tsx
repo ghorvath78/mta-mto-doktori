@@ -1,42 +1,26 @@
 import { Textarea } from "@repo/ui";
-import type { FormData } from "@/forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { useAtom } from "jotai";
 
-export const LongTextInput = ({
-    label,
-    lines = 2,
-    characters = 500,
-    inline = false,
-    className = "",
-    fieldKey,
-    formData,
-    index,
-    children,
-    readonly = false
-}: {
-    label: string;
-    lines?: number;
-    characters?: number;
-    inline?: boolean;
-    className?: string;
-    fieldKey: string;
-    formData: FormData;
-    index: number;
-    children?: React.ReactNode;
-    readonly?: boolean;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const LongTextInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const lines = (fieldDescr.attribs?.rows as number | undefined) ?? 2;
+    const characters = (fieldDescr.attribs?.maxLength as number | undefined) ?? 500;
+    const inline = fieldDescr.attribs?.inline === true;
+    const readonly = isFieldReadonly(fieldDescr);
 
     const baseClass = inline ? "flex items-baseline space-x-2" : "";
     const labelClass = inline ? "text-end w-1/4 leading-[0.95em]" : "";
 
-    const fieldName = `${fieldKey}-${index}`;
+    const fieldName = `${resolvedFieldKey}-${index}`;
 
     // Keep min height in sync with requested line count.
     // Approximation: 1.5em per line + vertical padding (py-1 => 0.5rem total).
     const minHeight = `calc(${lines} * 1.5em + 0.5rem)`;
     return (
-        <div className={`${baseClass} ${className}`}>
+        <div className={baseClass}>
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>
@@ -56,7 +40,6 @@ export const LongTextInput = ({
                 }}
                 readOnly={readonly}
             />
-            {children}
         </div>
     );
 };

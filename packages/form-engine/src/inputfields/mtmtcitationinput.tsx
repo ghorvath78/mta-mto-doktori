@@ -1,5 +1,5 @@
 import { Button, Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
-import type { AttribType, FormData } from "../forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { getRating, loadMTMTCitations, mtmtPubListAtom, mtmtPubSummaryCacheAtom, processMTMTTemplateLinks } from "../mtmt";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { Eraser } from "lucide-react";
@@ -9,22 +9,12 @@ type PubChoice = { mtid: string; title: string; template: string };
 
 const emptyConditionAtom = atom(new Array(100).fill(""));
 
-export const MTMTCitationInput = ({
-    label,
-    fieldKey,
-    formData,
-    index,
-    readonly,
-    attribs
-}: {
-    label: string;
-    fieldKey: string;
-    formData: FormData;
-    index: number;
-    readonly?: boolean;
-    attribs?: AttribType;
-}) => {
-    const [value, setValue] = useAtom(formData[fieldKey]);
+export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
+    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const label = getFieldLabel(fieldDescr);
+    const readonly = isFieldReadonly(fieldDescr);
+    const attribs = fieldDescr.attribs;
     const [choices, setChoices] = useState<PubChoice[]>([]);
     const mtmtPubList = useAtomValue(mtmtPubListAtom);
     const pubMTMT = useAtomValue(attribs?.pubKey ? (formData[String(attribs.pubKey)] ?? emptyConditionAtom) : emptyConditionAtom);

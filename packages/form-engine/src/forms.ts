@@ -15,41 +15,32 @@ export type CustomGroupComponent = ({
     index: number;
 }) => JSX.Element;
 
-export type CustomFieldComponent = ({
-    field,
-    formData,
-    keyPrefix,
-    index
-}: {
-    field: FieldDescriptor;
-    formData: FormData;
-    keyPrefix: string;
-    index: number;
-}) => JSX.Element;
-
 // export type AttribType = { [key: string]: string | number | boolean | string[] | any };
 export type AttribType = { [key: string]: any };
+
+export type InputFieldType =
+    | "text"
+    | "number"
+    | "year"
+    | "yearRange"
+    | "select"
+    | "selectAddOther"
+    | "longtext"
+    | "birthYearPlace"
+    | "mtmtUser"
+    | "mtmtPub"
+    | "mtmtCitation"
+    | "link"
+    | "mtmtTable"
+    | "decisionText"
+    | "decisionYesNo";
+
+export type FieldType = InputFieldType | "custom";
 
 export type FieldDescriptor = {
     label?: string;
     key: string;
-    type:
-        | "text"
-        | "number"
-        | "year"
-        | "yearRange"
-        | "select"
-        | "selectAddOther"
-        | "longtext"
-        | "birthYearPlace"
-        | "mtmtUser"
-        | "mtmtPub"
-        | "mtmtCitation"
-        | "link"
-        | "mtmtTable"
-        | "custom"
-        | "decisionText"
-        | "decisionYesNo";
+    type: FieldType;
     attribs?: AttribType;
     value?: string;
     conditionKey?: string;
@@ -111,6 +102,29 @@ export type FormDescriptor = {
 export type FormData = {
     [key: string]: PrimitiveAtom<string[]>;
 };
+
+export type FieldInputProps = {
+    formData: FormData;
+    fieldKey: string;
+    index: number;
+    fieldDescr: FieldDescriptor;
+};
+
+export type InputFieldComponent = (props: FieldInputProps) => JSX.Element;
+
+export type CustomFieldComponent = InputFieldComponent;
+
+export function resolveFieldKey(fieldKey: string, fieldDescr: FieldDescriptor): string {
+    return fieldDescr.valueSource ?? fieldKey;
+}
+
+export function getFieldLabel(fieldDescr: FieldDescriptor): string {
+    return fieldDescr.label ?? fieldDescr.key;
+}
+
+export function isFieldReadonly(fieldDescr: FieldDescriptor): boolean {
+    return fieldDescr.readonly === true;
+}
 
 export type FormInfo = {
     name: string;
