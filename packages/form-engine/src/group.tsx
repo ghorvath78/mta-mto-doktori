@@ -12,19 +12,7 @@ import {
 } from "./forms";
 import { atom, useAtomValue } from "jotai";
 import { FieldWrapper } from "./fieldwrapper";
-import { BirthDataInput } from "./inputfields/birthdatainput";
-import { LongTextInput } from "./inputfields/longtextinput";
-import { MTMTCitationInput } from "./inputfields/mtmtcitationinput";
-import { MTMTPubInput } from "./inputfields/mtmtpubinput";
-import { MTMTUserInput } from "./inputfields/mtmtuserinput";
-import { NumberInput } from "./inputfields/numberinput";
-import { SelectOrAddInput } from "./inputfields/selectoraddinput";
-import { TextInput } from "./inputfields/textinput";
-import { YearInput } from "./inputfields/yearinput";
-import { YearRangeInput } from "./inputfields/yearrangeinput";
-import { MTMTScientometrics } from "./inputfields/mtmtscientometrics";
-import { DecisionYesNoInput } from "./inputfields/decisionyesnoinput";
-import { DecisionTextInput } from "./inputfields/decisiontext";
+import { getInputFieldComponent } from "./inputfieldstore";
 
 const GroupLabel = ({ title }: { title: string }) => {
     return <div className="font-bold italic my-2">{title}</div>;
@@ -163,63 +151,10 @@ export const Group = ({
     const components: JSX.Element[] = [];
     for (const field of group.fields) {
         const key = `${keyPrefix}|${field.key}`;
-        let component: JSX.Element | null = null;
         const fieldDescr: FieldDescriptor = readonly && field.readonly !== true ? { ...field, readonly: true } : field;
         const inputProps = { formData, fieldKey: key, index, fieldDescr };
-        switch (field.type) {
-            case "text":
-                component = <TextInput {...inputProps} />;
-                break;
-            case "birthYearPlace":
-                component = <BirthDataInput {...inputProps} />;
-                break;
-            case "longtext":
-                component = <LongTextInput {...inputProps} />;
-                break;
-            case "selectAddOther":
-                component = <SelectOrAddInput {...inputProps} />;
-                break;
-            case "select":
-                component = <SelectOrAddInput {...inputProps} />;
-                break;
-            case "number":
-                component = <NumberInput {...inputProps} />;
-                break;
-            case "year":
-                component = <YearInput {...inputProps} />;
-                break;
-            case "mtmtUser":
-                component = <MTMTUserInput {...inputProps} />;
-                break;
-            case "mtmtPub":
-                component = <MTMTPubInput {...inputProps} />;
-                break;
-            case "mtmtCitation":
-                component = <MTMTCitationInput {...inputProps} />;
-                break;
-            case "mtmtTable":
-                component = <MTMTScientometrics {...inputProps} />;
-                break;
-            case "link":
-                component = <TextInput {...inputProps} />;
-                break;
-            case "yearRange":
-                component = <YearRangeInput {...inputProps} />;
-                break;
-            case "decisionYesNo":
-                component = <DecisionYesNoInput {...inputProps} />;
-                break;
-            case "decisionText":
-                component = <DecisionTextInput {...inputProps} />;
-                break;
-            case "custom":
-                if (field.customComponent) {
-                    component = <field.customComponent {...inputProps} />;
-                }
-                break;
-            default:
-                component = null;
-        }
+        const InputField = getInputFieldComponent(fieldDescr.type);
+        const component = InputField ? <InputField {...inputProps} /> : null;
         if (component) {
             components.push(
                 <FieldWrapper fieldDescriptor={field} formData={formData} key={key} index={index}>

@@ -2,7 +2,6 @@ import type { PageDescriptor } from "@repo/form-engine";
 import { applicantDataLoaded } from "./atoms";
 import { SciScoringTable } from "./customgroups/sciscoringtable";
 import { QScoreSummary } from "./customgroups/qscoresummary";
-import { IScoreSummary } from "./customgroups/iscoresummary";
 import { ItemizedRequirements } from "./customgroups/Itemizedrequirements";
 import { ShortThesisRequirements } from "./customgroups/shortthesisrequirements";
 
@@ -302,8 +301,7 @@ export const tudomanymetria: PageDescriptor = {
                         },
                         {
                             key: "Összegzés",
-                            type: "custom",
-                            customComponent: IScoreSummary,
+                            type: "iScoreSummary",
                             noPersist: true
                         }
                     ]

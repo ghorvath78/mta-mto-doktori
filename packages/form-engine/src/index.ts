@@ -1,5 +1,6 @@
 export * from "./formroot.tsx";
 export * from "./forms.ts";
+export * from "./inputfieldstore.ts";
 export { store } from "./atoms.ts";
 export {
     createAtomsFromDescriptor,

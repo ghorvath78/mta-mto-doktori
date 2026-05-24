@@ -33,14 +33,13 @@ export type InputFieldType =
     | "link"
     | "mtmtTable"
     | "decisionText"
-    | "decisionYesNo";
-
-export type FieldType = InputFieldType | "custom";
+    | "decisionYesNo"
+    | (string & {});
 
 export type FieldDescriptor = {
     label?: string;
     key: string;
-    type: FieldType;
+    type: InputFieldType;
     attribs?: AttribType;
     value?: string;
     conditionKey?: string;
@@ -49,7 +48,6 @@ export type FieldDescriptor = {
     noPersist?: boolean;
     readonly?: boolean;
     valueSource?: string;
-    customComponent?: CustomFieldComponent;
 };
 
 export type SectionDescriptor = {
@@ -111,8 +109,6 @@ export type FieldInputProps = {
 };
 
 export type InputFieldComponent = (props: FieldInputProps) => JSX.Element;
-
-export type CustomFieldComponent = InputFieldComponent;
 
 export function resolveFieldKey(fieldKey: string, fieldDescr: FieldDescriptor): string {
     return fieldDescr.valueSource ?? fieldKey;

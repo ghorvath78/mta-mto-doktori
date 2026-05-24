@@ -1,4 +1,4 @@
-import type { FieldInputProps } from "@repo/form-engine";
+import { registerInputField, type FieldInputProps } from "@repo/form-engine";
 import { getMinTotalI } from "@/requirements";
 import { invertedText } from "@repo/form-engine";
 import { useAtomValue } from "jotai";
@@ -16,3 +16,5 @@ export const IScoreSummary = ({ formData }: FieldInputProps) => {
 
     return <div className="font-bold">A kérelmező teljesítette az I ≥ Imin követelményt: {invertedText(iScore >= minIScore ? "IGEN" : "NEM")}</div>;
 };
+
+registerInputField("iScoreSummary", IScoreSummary);
