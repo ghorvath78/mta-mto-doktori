@@ -1,4 +1,4 @@
-import type { InputFieldComponent, InputFieldType } from "./forms";
+import type { InputFieldPrinter, InputFieldRegistration, InputFieldType } from "./forms";
 import { BirthDataInput } from "./inputfields/birthdatainput";
 import { DecisionTextInput } from "./inputfields/decisiontext";
 import { DecisionYesNoInput } from "./inputfields/decisionyesnoinput";
@@ -12,35 +12,51 @@ import { SelectOrAddInput } from "./inputfields/selectoraddinput";
 import { TextInput } from "./inputfields/textinput";
 import { YearInput } from "./inputfields/yearinput";
 import { YearRangeInput } from "./inputfields/yearrangeinput";
+import {
+    BirthYearPlaceFieldPrinter,
+    DecisionTextFieldPrinter,
+    DecisionYesNoFieldPrinter,
+    EmptyFieldPrinter,
+    LinkFieldPrinter,
+    LongTextFieldPrinter,
+    MTMTItemFieldPrinter,
+    MTMTUserFieldPrinter,
+    SimpleFieldPrinter,
+    YearRangeFieldPrinter
+} from "./inputfieldprinters.ts";
 
-export const inputFieldStore = new Map<string, InputFieldComponent>();
+export const inputFieldStore = new Map<string, InputFieldRegistration>();
 
-export function registerInputField(fieldType: InputFieldType, component: InputFieldComponent): void {
-    inputFieldStore.set(fieldType, component);
+export function registerInputField(fieldType: InputFieldType, registration: InputFieldRegistration): void {
+    inputFieldStore.set(fieldType, registration);
 }
 
-export function getInputFieldComponent(fieldType: InputFieldType): InputFieldComponent | undefined {
-    return inputFieldStore.get(fieldType);
+export function getInputFieldComponent(fieldType: InputFieldType) {
+    return inputFieldStore.get(fieldType)?.component;
 }
 
-const builtInInputFields: Array<[InputFieldType, InputFieldComponent]> = [
-    ["text", TextInput],
-    ["number", NumberInput],
-    ["year", YearInput],
-    ["yearRange", YearRangeInput],
-    ["select", SelectOrAddInput],
-    ["selectAddOther", SelectOrAddInput],
-    ["longtext", LongTextInput],
-    ["birthYearPlace", BirthDataInput],
-    ["mtmtUser", MTMTUserInput],
-    ["mtmtPub", MTMTPubInput],
-    ["mtmtCitation", MTMTCitationInput],
-    ["link", TextInput],
-    ["mtmtTable", MTMTScientometrics],
-    ["decisionText", DecisionTextInput],
-    ["decisionYesNo", DecisionYesNoInput]
+export function getInputFieldPrinter(fieldType: InputFieldType): InputFieldPrinter | undefined {
+    return inputFieldStore.get(fieldType)?.printer;
+}
+
+const builtInInputFields: Array<[InputFieldType, InputFieldRegistration]> = [
+    ["text", { component: TextInput, printer: SimpleFieldPrinter }],
+    ["number", { component: NumberInput, printer: SimpleFieldPrinter }],
+    ["year", { component: YearInput, printer: SimpleFieldPrinter }],
+    ["yearRange", { component: YearRangeInput, printer: YearRangeFieldPrinter }],
+    ["select", { component: SelectOrAddInput, printer: SimpleFieldPrinter }],
+    ["selectAddOther", { component: SelectOrAddInput, printer: SimpleFieldPrinter }],
+    ["longtext", { component: LongTextInput, printer: LongTextFieldPrinter }],
+    ["birthYearPlace", { component: BirthDataInput, printer: BirthYearPlaceFieldPrinter }],
+    ["mtmtUser", { component: MTMTUserInput, printer: MTMTUserFieldPrinter }],
+    ["mtmtPub", { component: MTMTPubInput, printer: MTMTItemFieldPrinter }],
+    ["mtmtCitation", { component: MTMTCitationInput, printer: MTMTItemFieldPrinter }],
+    ["link", { component: TextInput, printer: LinkFieldPrinter }],
+    ["mtmtTable", { component: MTMTScientometrics, printer: EmptyFieldPrinter }],
+    ["decisionText", { component: DecisionTextInput, printer: DecisionTextFieldPrinter }],
+    ["decisionYesNo", { component: DecisionYesNoInput, printer: DecisionYesNoFieldPrinter }]
 ];
 
-for (const [fieldType, component] of builtInInputFields) {
-    registerInputField(fieldType, component);
+for (const [fieldType, registration] of builtInInputFields) {
+    registerInputField(fieldType, registration);
 }

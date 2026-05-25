@@ -17,4 +17,7 @@ export const IScoreSummary = ({ formData }: FieldInputProps) => {
     return <div className="font-bold">A kérelmező teljesítette az I ≥ Imin követelményt: {invertedText(iScore >= minIScore ? "IGEN" : "NEM")}</div>;
 };
 
-registerInputField("iScoreSummary", IScoreSummary);
+registerInputField("iScoreSummary", {
+    component: IScoreSummary,
+    printer: () => []
+});

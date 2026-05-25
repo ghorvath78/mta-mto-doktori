@@ -1,5 +1,5 @@
 import { readJsonFromPdf, mtmtPubSummaryCacheAtom, store, type FormInfo, type AuthorData } from "@repo/form-engine";
-import { atomsFromJSON, createAtomsFromDescriptor, getByPath, type FormDescriptor } from "@repo/form-engine";
+import { atomsFromJSON, createAtomsFromDescriptor, getFromObjectByKey, type FormDescriptor } from "@repo/form-engine";
 import { getCategory, getMinCommunityCount, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, type PubItemSummary } from "@repo/form-engine";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
@@ -79,7 +79,7 @@ export async function loadApplicantData(data: Record<string, unknown>, mtmtData:
     applicantDataInForm = data;
     atomsFromJSON(data, eloterjesztoiFormData, "", true);
     // await new Promise((resolve) => setTimeout(resolve, 1000));
-    const committee = getByPath(
+    const committee = getFromObjectByKey(
         data,
         "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság"
     ) as string | undefined;
@@ -91,7 +91,7 @@ export async function loadApplicantData(data: Record<string, unknown>, mtmtData:
         [category]
     );
     const sciMetrics = JSON.parse(
-        getByPath(data, "Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") as string
+        getFromObjectByKey(data, "Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") as string
     );
     store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|Független idézők száma"], [sciMetrics[9][0] || "0"]);
     store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"], [sciMetrics[10][0] || "0"]);
@@ -100,7 +100,7 @@ export async function loadApplicantData(data: Record<string, unknown>, mtmtData:
 
     // load 5 most important citations
     const summaryCache = store.get(mtmtPubSummaryCacheAtom);
-    const citedPapers = getByPath(data, "Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|Hivatkozott közlemény") as
+    const citedPapers = getFromObjectByKey(data, "Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|Hivatkozott közlemény") as
         | string[]
         | undefined;
     if (citedPapers) {
@@ -154,7 +154,9 @@ export async function loadApplicantDataFromForm(applicantContent: string | undef
         if ("Adatlapon szereplő publikációk" in mtmtData && "Társszerzők" in mtmtData) {
             loadPubItemSummary(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
         } else {
-            const mtmtId = String(getByPath(applicantData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || "");
+            const mtmtId = String(
+                getFromObjectByKey(applicantData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || ""
+            );
             if (mtmtId) {
                 await loadMTMTPublications(mtmtId);
             }

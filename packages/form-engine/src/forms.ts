@@ -2,6 +2,7 @@ import { atom, type PrimitiveAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { store } from "./atoms";
 import type { JSX } from "react";
+import type { TableCell } from "pdfmake/interfaces";
 
 export type CustomGroupComponent = ({
     group,
@@ -101,6 +102,25 @@ export type FormData = {
     [key: string]: PrimitiveAtom<string[]>;
 };
 
+export type PdfPrintingContext = {
+    formData: FormData;
+    index: number;
+};
+
+export type PdfPrintingOptions = {
+    nolabel?: string;
+    bibLabel?: string;
+    bibLabels?: { [key: string]: string };
+    bibIndex?: string;
+    indexColWidth?: string | number;
+    firstColWidth?: string | number;
+    sectionIndex?: string | boolean;
+    useGroupLabelAsHeader?: string | boolean;
+    hideEmptyGroup?: string;
+    fieldContext?: PdfPrintingContext;
+    [key: string]: string | number | boolean | PdfPrintingContext | { [key: string]: string } | undefined;
+};
+
 export type FieldInputProps = {
     formData: FormData;
     fieldKey: string;
@@ -109,6 +129,18 @@ export type FieldInputProps = {
 };
 
 export type InputFieldComponent = (props: FieldInputProps) => JSX.Element;
+
+export type InputFieldPrinter = (
+    label: string,
+    value: string,
+    fieldDescr: FieldDescriptor,
+    options: PdfPrintingOptions
+) => TableCell[][] | Promise<TableCell[][]>;
+
+export type InputFieldRegistration = {
+    component: InputFieldComponent;
+    printer: InputFieldPrinter;
+};
 
 export function resolveFieldKey(fieldKey: string, fieldDescr: FieldDescriptor): string {
     return fieldDescr.valueSource ?? fieldKey;
@@ -327,14 +359,14 @@ export function atomsFromJSON(json: Record<string, unknown>, formData: FormData,
     flatten(json, []);
 }
 
-export function getByPath(obj: unknown, path: string): unknown {
+export function getFromObjectByKey(obj: unknown, path: string): unknown {
     const parts = path.split("|");
     let current: any = obj;
     for (let i = 0; i < parts.length; i++) {
         if (current == null) return undefined;
         if (Array.isArray(current)) {
             const remainingPath = parts.slice(i).join("|");
-            return current.map((item) => getByPath(item, remainingPath));
+            return current.map((item) => getFromObjectByKey(item, remainingPath));
         }
         // Skip redundant group key at position 3 when section (2) == group (3)
         if (i === 2 && parts[2] === parts[3]) {
