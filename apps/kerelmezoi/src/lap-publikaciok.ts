@@ -37,7 +37,7 @@ export const publikaciok: PageDescriptor = {
                             key: "Tartalmi összefoglaló",
                             type: "longtext",
                             helpText:
-                                "A publikációban közölt saját kutatási eredmények tömör összefoglalása, szóközökkel együtt legfeljebb 750 karakter terjedelemben.",
+                                "A publikációban közölt saját kutatási eredmények tömör összefoglalása, szóközökkel együtt legfeljebb 750 karakter terjedelemben. Ha több szerzője van a publikációnak, kérjük, hogy itt adja meg az egyéni hozzájárulását is.",
                             attribs: {
                                 maxLength: 750,
                                 rows: 5

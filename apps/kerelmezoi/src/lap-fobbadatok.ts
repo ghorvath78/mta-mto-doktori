@@ -92,8 +92,10 @@ export const fobbAdatok: PageDescriptor = {
                     fields: [
                         {
                             key: "Egyetem/TMB",
+                            label: "Egyetem/TMB/DI neve",
                             type: "text",
-                            helpText: "A tudományos fokozatot kiállító egyetem vagy tudományos minősítő bizottság megnevezése."
+                            helpText:
+                                "A tudományos fokozatot kiállító egyetem vagy tudományos minősítő bizottság megnevezése. A doktori iskola nevét is itt kell feltüntetni."
                         },
                         {
                             key: "Tudományterület",
@@ -167,7 +169,19 @@ export const fobbAdatok: PageDescriptor = {
                                 "A tudományos cím minősítése. Ha a listában nem szerepel a címen feltüntetett minősítés, a legördülő menüben új megnevezés is beírható, és a megjelenő 'Egyéb minősítés' gomb megnyomásával rögzíthető.",
                             attribs: {
                                 type: "minősítés",
-                                options: ["elégséges", "közepes", "jó", "jeles", "kiváló", "kitűnő", "kitüntetéses", "rite", "cum laude", "summa cum laude"]
+                                options: [
+                                    "elégséges",
+                                    "közepes",
+                                    "jó",
+                                    "jeles",
+                                    "kiváló",
+                                    "kitűnő",
+                                    "kitüntetéses",
+                                    "rite",
+                                    "cum laude",
+                                    "summa cum laude",
+                                    "nem releváns"
+                                ]
                             }
                         }
                     ]
@@ -197,6 +211,11 @@ export const fobbAdatok: PageDescriptor = {
                             key: "Beosztás",
                             type: "text",
                             helpText: "A munkahelyen betöltött beosztás megnevezése."
+                        },
+                        {
+                            key: "Kezdete",
+                            type: "year",
+                            helpText: "A munkahelyen töltött időszak kezdő éve."
                         }
                     ]
                 }
@@ -239,10 +258,10 @@ export const fobbAdatok: PageDescriptor = {
             ]
         },
         {
-            key: "Nyelvismeret",
+            key: "Nyelvvizsgák",
             groups: [
                 {
-                    key: "Nyelvismeret",
+                    key: "Nyelvvvizsgák",
                     isArray: true,
                     arrayAddLabel: "Új nyelv hozzáadása",
                     fields: [
@@ -291,7 +310,7 @@ export const fobbAdatok: PageDescriptor = {
                             label: "Szakterületek felsorolása (max. 500 karakter)",
                             type: "longtext",
                             helpText:
-                                "A szakterületek, kutatási területek megnevezése, vesszővel elválasztva, szóközökkel együtt legfeljebb 500 karakter hosszúságban.",
+                                "A szakterületek, kutatási területek megnevezése, vesszővel elválasztva, szóközökkel együtt legfeljebb 500 karakter hosszúságban. Szabadszöveges mező, nem előre definiált értékekkel, de kérjük, hogy a megnevezések egyértelműek és lehetőleg minél beszédesebbek legyenek.",
                             attribs: {
                                 maxLength: 500,
                                 rows: 3

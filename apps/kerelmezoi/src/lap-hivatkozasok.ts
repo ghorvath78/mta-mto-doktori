@@ -41,8 +41,10 @@ export const hivatkozasok: PageDescriptor = {
                         },
                         {
                             key: "Fordítás",
+                            label: "Fordítás (opcionális)",
                             type: "longtext",
-                            helpText: "A hivatkozás szövegkörnyezetének fordítása magyar nyelvre, szóközökkel együtt legfeljebb 1500 karakter terjedelemben.",
+                            helpText:
+                                "A hivatkozás szövegkörnyezetének fordítása magyar nyelvre, szóközökkel együtt legfeljebb 1500 karakter terjedelemben. Ha a szövegkörnyezet eredeti nyelve magyar vagy angol, akkor ezt a mezőt nem szükséges kitölteni.",
                             attribs: {
                                 maxLength: 1500,
                                 rows: 5

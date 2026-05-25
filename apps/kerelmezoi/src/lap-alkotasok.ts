@@ -15,10 +15,10 @@ export const alkotasok: PageDescriptor = {
                     arrayMax: 5,
                     fields: [
                         {
-                            key: "Műszaki alkotás megnevezése",
+                            key: "Műszaki alkotás leírása",
                             type: "longtext",
                             helpText:
-                                "A műszaki alkotás megnevezése. Csak kiemelkedő megvalósult műszaki alkotásra adható pont. Ezek jellemzője az, hogy vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá. Szóközökkel együtt legfeljebb 750 karakter terjedelemben.",
+                                "A műszaki alkotás rövid leírása. Csak kiemelkedő megvalósult műszaki alkotásra adható pont. Ezek jellemzője az, hogy vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá. Szóközökkel együtt legfeljebb 750 karakter terjedelemben.",
                             attribs: {
                                 maxLength: 750,
                                 rows: 3

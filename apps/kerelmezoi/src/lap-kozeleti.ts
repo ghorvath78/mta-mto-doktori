@@ -148,8 +148,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Tevékenység igazoló linkje",
-                            label: "Adjon meg linket, ahol a megadott információk ellenőrizhetők",
+                            key: "Igazoló link",
                             helpText:
                                 "Kérjük, adjon meg egy érvényes URL-t, amely alátámasztó információkat tartalmazó weblapra mutat, vagy az információkat összefűzve tartalmazó PDF-dokumentum letöltési helyére.",
                             type: "link",
@@ -165,7 +164,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
             key: "Doktori fokozatot szerzett hallgatók",
             label: "Részvétel doktori témavezetésben (fokozatot szerzett hallgatók)",
             helpText:
-                "Fokozatot szerzett hallgatók. Legyen (témavezetői arányokkal súlyozva):\n• két sikeresen védett PhD hallgatója, mindkettő 100%-ban; vagy\n• 4 db 50%-ban; vagy\n• 1 db 100%-ban és 2 db 50%-ban.\n\nMagyarországon kiadott PhD esetében a https://doktori.hu/index.php honlapon igazoltan, külföldi PhD esetében az ottani doktori iskola/egyetem igazolása szükséges.\n\nLegfeljebb 5 tétel adható meg.",
+                "Fokozatot szerzett hallgatók. Legyen (témavezetői arányokkal súlyozva):\n• két sikeresen védett PhD hallgatója, mindkettő 100%-ban; vagy\n• 4 db 50%-ban; vagy\n• 1 db 100%-ban és 2 db 50%-ban.\n\nMagyarországon kiadott PhD esetében a https://doktori.hu honlapon igazoltan, külföldi PhD esetében az ottani doktori iskola/egyetem igazolása szükséges.\n\nLegfeljebb 5 tétel adható meg.",
             groups: [
                 {
                     key: "Lista",
@@ -204,6 +203,15 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             type: "year",
                             attribs: {
                                 colWidth: "80"
+                            }
+                        },
+                        {
+                            key: "Igazoló link",
+                            type: "link",
+                            helpText:
+                                "Kérjük, adjon meg egy érvényes URL-t, ahol a megadott információk ellenőrizhetők. Magyarországi PhD esetében a https://doktori.hu honlapon a témavezetés linkje (https://doktori.hu/doktori-kepzes/temavezetesek/ kezdetű), külföldi PhD esetében az ottani doktori iskola/egyetem igazolása szükséges.",
+                            attribs: {
+                                colWidth: "40"
                             }
                         }
                     ]
@@ -280,8 +288,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
-                            label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             helpText:
                                 "Kérjük, adjon meg egy érvényes URL-t, mely alátámasztó információkat tartalmazó weblapra mutat, vagy az információkat összefűzve tartalmazó pdf dokumentum letöltési helyére.",
                             type: "link",
@@ -330,14 +338,14 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Alátámasztó weblink",
+                            key: "Igazoló link",
                             type: "link",
                             attribs: {
                                 colWidth: "60"
                             }
                         }
                     ]
-                },
+                } /*,
                 {
                     key: "Link",
                     label: "",
@@ -356,7 +364,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         }
                     ]
-                }
+                }*/
             ]
         },
         {
@@ -405,7 +413,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Tagság",
+                            key: "Tisztség",
                             type: "yearRange",
                             attribs: {
                                 colWidth: "80"
@@ -420,8 +428,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
-                            label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             helpText:
                                 "Adja meg a linket, ahol a megadott információk elérhetők (vagy adjon meg egy linket, ahol a megadott anyagok igazolása megtalálható, pl. felkérő levelek).",
                             type: "link",
@@ -476,14 +484,23 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Mettől-meddig",
-                            type: "text",
+                            key: "Időszak",
+                            type: "yearRange",
                             attribs: {
                                 colWidth: "80"
                             }
+                        },
+                        {
+                            key: "Igazoló link",
+                            type: "link",
+                            helpText:
+                                "Kérjük, adjon meg egy érvényes URL-t, ahol a megadott információk ellenőrizhetők. Különösen fontos, hogy a folyóirat honlapján látható legyen a szerkesztőbizottság összetétele és a pályázó neve is szerepeljen rajta.",
+                            attribs: {
+                                colWidth: "40"
+                            }
                         }
                     ]
-                },
+                } /*,
                 {
                     key: "Link",
                     label: "",
@@ -492,7 +509,6 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Alátámasztó link",
-                            label: "Ha nem szerepel a folyóirat honlapján, adjon meg alátámasztó linket",
                             helpText:
                                 "Ha nem szerepel a folyóirat honlapján (pl. a folyóirat megszűnt), adjon meg linket, ahol megtalálható az információ, vagy amivel igazolni tudja a megadott információkat.",
                             type: "link",
@@ -501,7 +517,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         }
                     ]
-                }
+                }*/
             ]
         },
         {
@@ -534,8 +550,10 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             helpText: "Adja meg, hány alkalommal volt PhD bírálóbizottság titkára."
                         },
                         {
-                            key: "Alátámasztó link",
-                            label: "Adja meg a linket, ahol a részvételét tudományos minősítésben tudja igazolni (pl. felkérőlevelek másolatai)",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
+                            helpText:
+                                "Kérjük, adjon meg egy online tárhelyre (pl. Google Drive) mutató linket, ahol igazolni tudja a részvételét a fent összesített tudományos minősítési eljárásokban (pl. a felkérőlevelek másolatai elérhetők).",
                             type: "link",
                             attribs: {
                                 inline: "false"
@@ -613,8 +631,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
-                            label: "Adja meg a linket, ahol az elnyert tudományos pályázatot tudja igazolni",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             helpText:
                                 "Adja meg a linket, ahol az elnyert tudományos pályázatot tudja igazolni (vagy ahonnan a vonatkozó dokumentumokat egybefűzve le lehet tölteni).",
                             type: "link",
@@ -682,8 +700,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
-                            label: "Adja meg a linket, ahol a külföldi tartózkodást tudja igazolni",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             helpText:
                                 "Adja meg a linket, ahol a tanulmányutat, külföldi szakmai munkavállalás, külföldi vendégprofesszori/vendégkutatói megbízás vagy külföldi posztdoktori állás betöltése tudja igazolni (pl. igazolás, meghívólevél).",
                             type: "link",
@@ -698,7 +716,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
         {
             key: "Állami vagy MTA által adományozott tudományos díj, kitüntetés",
             helpText:
-                "Pl. Magyar Érdemrend és Érdemkereszt különböző fokozatai, Eötvös József-díj, Apáczai Csere János-díj, Trefort Ágoston-díj, Szent-Györgyi Albert-díj, Akadémiai Ifjúsági Díj, Akadémiai Díj, Bolyai-plakett, Széchenyi-díj, Kossuth-díj, Gábor Dénes-díj, illetve jelentős külföldi tudományos díj, amelynek elfogadásához a TB indoklása szükséges a habitus vizsgálat során (kari, egyetemi, vállalati kitüntetések nem számítanak).\n\nLegfeljebb 5 tétel adható meg.",
+                "Pl. Magyar Érdemrend és Érdemkereszt különböző fokozatai, Eötvös József-díj, Apáczai Csere János-díj, Trefort Ágoston-díj, Szent-Györgyi Albert-díj, Akadémiai Ifjúsági Díj, Akadémiai Díj, Bolyai-plakett, Széchenyi-díj, Kossuth-díj, Gábor Dénes-díj, illetve jelentős külföldi tudományos díj, amelynek elfogadásához a Tudományos Bizottság indoklása szükséges a habitus vizsgálat során (kari, egyetemi, vállalati kitüntetések nem számítanak).\n\nKivételes esetben egyéb kiemelkedő hazai (tipikusan jelentős, országos szervezet által adományozott) díj is figyelembe vehető lehet, a Tudományos Bizottság ajánlása alapján.\n\nLegfeljebb 5 tétel adható meg.",
             groups: [
                 {
                     key: "Lista",
@@ -750,8 +768,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
-                            label: "Adja meg a linket, ahol az elnyert állami vagy MTA által adományozott tudományos díjakat, kitüntetéseket igazolni tudja",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             helpText:
                                 "Adja meg a linket, ahol az elnyert állami vagy MTA által adományozott tudományos díjakat, kitüntetéseket igazolni tudja (pl. a vonatkozó dokumentumokat összefűzve).",
                             type: "link",
