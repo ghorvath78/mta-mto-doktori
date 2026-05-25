@@ -1,12 +1,14 @@
 import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from "@repo/ui";
 import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
 import { store } from "../atoms";
-import { useAtom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { ExternalLink } from "lucide-react";
+
+const emptyValueAtom = atom<string[]>([]);
 
 export const TextInput = ({ formData, index, fieldKey, fieldDescr }: FieldInputProps) => {
     const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey] ?? emptyValueAtom);
     const label = getFieldLabel(fieldDescr);
     const inline = fieldDescr.attribs?.inline !== false;
     const twoColumn = fieldDescr.attribs?.noAlign ? false : true;

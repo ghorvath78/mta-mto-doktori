@@ -66,6 +66,11 @@ export const palyazoAdatai: PageDescriptor = {
                             type: "text",
                             helpText: "A munkahelyen betöltött beosztás megnevezése.",
                             readonly: true
+                        },
+                        {
+                            key: "Kezdete",
+                            type: "year",
+                            helpText: "A munkahelyen töltött időszak kezdő éve."
                         }
                     ]
                 }

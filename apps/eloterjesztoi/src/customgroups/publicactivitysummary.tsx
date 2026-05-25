@@ -1,9 +1,10 @@
+import { getMinCommunityCount } from "@/requirements";
 import type { FormData, GroupDescriptor } from "@repo/form-engine";
 import { invertedText } from "@repo/form-engine";
 import { atom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-const emptyAtom = atom([""]);
+const emptyAtom = atom(["A"]);
 
 const activityRequirementSectionKeys = [
     "TDK témavezetés",
@@ -20,11 +21,7 @@ const activityRequirementSectionKeys = [
 ] as const;
 
 export const PublicActivitySummary = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
-    const minimumRequired = useAtomValue(
-        formData[
-            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Tud. köz. szempontok"
-        ] || emptyAtom
-    )[0];
+    const minimumRequired = getMinCommunityCount();
 
     const actualCountAtom = useMemo(
         () =>

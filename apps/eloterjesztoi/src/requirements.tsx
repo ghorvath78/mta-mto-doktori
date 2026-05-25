@@ -67,12 +67,12 @@ export function getMinHIndex(category: string) {
 }
 
 export function getMinCommunityCount() {
-    const format = store.get(
+    /*const format = store.get(
         eloterjesztoiFormData["Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája"]
     );
     if (format[0] === "rövid értekezés") {
         return 6;
-    }
+    }*/
     return 5;
 }
 

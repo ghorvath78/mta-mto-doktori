@@ -1,6 +1,6 @@
 import { readJsonFromPdf, mtmtPubSummaryCacheAtom, store, type FormInfo, type AuthorData } from "@repo/form-engine";
 import { atomsFromJSON, createAtomsFromDescriptor, getFromObjectByKey, type FormDescriptor } from "@repo/form-engine";
-import { getCategory, getMinCommunityCount, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
+import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, type PubItemSummary } from "@repo/form-engine";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
@@ -60,12 +60,6 @@ function onCategoryChange() {
                 "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|I küszöbszám"
             ],
             [String(getMinTotalI(category))]
-        );
-        store.set(
-            eloterjesztoiFormData[
-                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Tud. köz. szempontok"
-            ],
-            [String(getMinCommunityCount())]
         );
     }
 }

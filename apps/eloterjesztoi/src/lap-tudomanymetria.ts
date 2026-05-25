@@ -30,22 +30,12 @@ export const tudomanymetria: PageDescriptor = {
                             type: "number",
                             helpText: "A publikációs és alkotási teljesítményt mérő Q pontszám minimuma a kérelmező kategóriájában.",
                             readonly: true
-                            //noPersist: true
                         },
                         {
                             key: "I küszöbszám",
                             type: "number",
                             helpText: "Az idézettséget mérő I pontszám minimuma a kérelmező kategóriájában.",
                             readonly: true
-                            //noPersist: true
-                        },
-                        {
-                            key: "Tud. köz. szempontok",
-                            type: "number",
-                            helpText:
-                                "A tudományos közéleti tevékenység értékelésénél megkövetelt minimális területek száma (alapesetben 5, rövid értekezésnél 6).",
-                            readonly: true
-                            //noPersist: true
                         }
                     ]
                 }
@@ -90,13 +80,13 @@ export const tudomanymetria: PageDescriptor = {
                     },
                     fields: [
                         {
-                            key: "Műszaki alkotás megnevezése",
+                            key: "Műszaki alkotás leírása",
                             type: "text",
                             readonly: true,
                             noPersist: true,
-                            valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Műszaki alkotás megnevezése",
+                            valueSource: "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Műszaki alkotás leírása",
                             helpText:
-                                "A kérelmező által megadott műszaki alkotás megnevezése. Csak kiemelkedő megvalósult műszaki alkotásra adható pont: vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá.",
+                                "A kérelmező által megadott műszaki alkotás leírása. Csak kiemelkedő megvalósult műszaki alkotásra adható pont: vagy beszámolt az alkotásban megvalósult tudományos eredményről legalább egy lektorált folyóiratcikkben, melyre legalább két komoly hivatkozást is kapott, vagy megvalósított szabadalom fűződik hozzá.",
                             attribs: {
                                 colWidth: "*"
                             }
@@ -240,6 +230,7 @@ export const tudomanymetria: PageDescriptor = {
                             type: "number",
                             helpText:
                                 "Az előterjesztő által javasolt pontszám a műszaki alkotásra. Alkotásonként maximum 1 pont adható, a konkrét értéket befolyásolja a társalkotók száma és az alkotás színvonala.",
+                            readonly: false,
                             attribs: {
                                 fractional: true,
                                 colWidth: "50",
@@ -271,33 +262,25 @@ export const tudomanymetria: PageDescriptor = {
                             key: "Független idézők száma",
                             type: "number",
                             helpText: "A kérelmező független idézőinek száma (összes, egyéb típusúakkal együtt).",
-                            attribs: {
-                                readonly: true
-                            }
+                            readonly: true
                         },
                         {
                             key: "I-szám",
                             type: "number",
                             helpText: "A kérelmező idézettségét mérő I-szám, amely az MTMT-ben rögzített független hivatkozásokból kerül kiszámításra.",
-                            attribs: {
-                                readonly: true
-                            }
+                            readonly: true
                         },
                         {
                             key: "WoS idézők száma",
                             type: "number",
                             helpText: "A kérelmező Web of Science (WoS) szerinti független hivatkozásainak száma.",
-                            attribs: {
-                                readonly: true
-                            }
+                            readonly: true
                         },
                         {
                             key: "H-index",
                             type: "number",
                             helpText: "A kérelmező Hirsch-indexe az MTMT adatai alapján.",
-                            attribs: {
-                                readonly: true
-                            }
+                            readonly: true
                         },
                         {
                             key: "Összegzés",

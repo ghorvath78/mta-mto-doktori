@@ -413,7 +413,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Tisztség",
+                            key: "Tisztség időszaka",
+                            label: "Tisztség",
                             type: "yearRange",
                             attribs: {
                                 colWidth: "80"

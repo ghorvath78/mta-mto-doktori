@@ -151,7 +151,7 @@ export const Group = ({
     const components: JSX.Element[] = [];
     for (const field of group.fields) {
         const key = `${keyPrefix}|${field.key}`;
-        const fieldDescr: FieldDescriptor = readonly && field.readonly !== true ? { ...field, readonly: true } : field;
+        const fieldDescr: FieldDescriptor = readonly && field.readonly === undefined ? { ...field, readonly: true } : field;
         const inputProps = { formData, fieldKey: key, index, fieldDescr };
         const InputField = getInputFieldComponent(fieldDescr.type);
         const component = InputField ? <InputField {...inputProps} /> : null;

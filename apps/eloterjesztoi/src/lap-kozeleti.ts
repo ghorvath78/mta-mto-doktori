@@ -107,7 +107,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -190,9 +190,9 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Tevékenység igazoló linkje",
+                            key: "Igazoló link",
                             type: "link",
-                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Link|Tevékenység igazoló linkje",
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Link|Igazoló link",
                             readonly: true,
                             attribs: {
                                 noAlign: true,
@@ -209,7 +209,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -273,6 +273,13 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             attribs: {
                                 colWidth: "80"
                             }
+                        },
+                        {
+                            key: "Igazoló link",
+                            type: "link",
+                            attribs: {
+                                colWidth: "40"
+                            }
                         }
                     ]
                 },
@@ -305,7 +312,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -380,9 +387,9 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
+                            key: "Igazoló link",
                             valueSource:
-                                "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Link|Alátámasztó link",
+                                "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Link|Igazoló link",
                             type: "link",
                             readonly: true,
                             attribs: {
@@ -400,7 +407,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -460,7 +467,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Alátámasztó weblink",
+                            key: "Igazoló link",
                             type: "link",
                             attribs: {
                                 colWidth: "60",
@@ -469,7 +476,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                         }
                     ]
                 },
-                {
+                /*{
                     key: "Link",
                     label: "",
                     readonly: true,
@@ -491,7 +498,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Link|További információ"
                         }
                     ]
-                },
+                },*/
                 {
                     key: "Értékelés",
                     label: "",
@@ -501,7 +508,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -568,7 +575,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Tagság",
+                            key: "Tisztség időszaka",
                             type: "text",
                             attribs: {
                                 colWidth: "80"
@@ -585,8 +592,8 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
-                            label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
+                            key: "Igazoló link",
+                            // label: "Alátámasztó link, ahol a megadott információk igazolása megtalálható",
                             type: "link",
                             readonly: true,
                             attribs: {
@@ -594,7 +601,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                                 short: true
                             },
                             valueSource:
-                                "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Link|Alátámasztó link"
+                                "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Link|Igazoló link"
                         }
                     ]
                 },
@@ -606,7 +613,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -671,15 +678,24 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Mettől-meddig",
-                            type: "text",
+                            key: "Időszak",
+                            type: "yearRange",
                             attribs: {
                                 colWidth: "80"
+                            }
+                        },
+                        {
+                            key: "Igazoló link",
+                            type: "link",
+                            helpText:
+                                "Kérjük, adjon meg egy érvényes URL-t, ahol a megadott információk ellenőrizhetők. Különösen fontos, hogy a folyóirat honlapján látható legyen a szerkesztőbizottság összetétele és a pályázó neve is szerepeljen rajta.",
+                            attribs: {
+                                colWidth: "40"
                             }
                         }
                     ]
                 },
-                {
+                /*{
                     key: "Link",
                     label: "",
                     readonly: true,
@@ -700,7 +716,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                                 "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Link|Alátámasztó link"
                         }
                     ]
-                },
+                },*/
                 {
                     key: "Értékelés",
                     label: "",
@@ -709,7 +725,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -776,11 +792,11 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                             valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben|Összesítés|PhD bírálóbizottság titkára"
                         },
                         {
-                            key: "Alátámasztó link",
+                            key: "Igazoló link",
                             type: "link",
                             noPersist: true,
                             readonly: true,
-                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben|Összesítés|Alátámasztó link",
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben|Összesítés|Igazoló link",
                             attribs: {
                                 short: true
                             }
@@ -793,7 +809,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -875,14 +891,14 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
+                            key: "Igazoló link",
                             type: "link",
                             readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
                             },
-                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Link|Alátámasztó link"
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Link|Igazoló link"
                         }
                     ]
                 },
@@ -894,7 +910,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -970,14 +986,14 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
+                            key: "Igazoló link",
                             type: "link",
                             readonly: true,
                             attribs: {
                                 noAlign: true,
                                 short: true
                             },
-                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Link|Alátámasztó link"
+                            valueSource: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Link|Igazoló link"
                         }
                     ]
                 },
@@ -989,7 +1005,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -1064,7 +1080,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     conditionValue: "1",
                     fields: [
                         {
-                            key: "Alátámasztó link",
+                            key: "Igazoló link",
                             type: "link",
                             readonly: true,
                             attribs: {
@@ -1072,7 +1088,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                                 short: true
                             },
                             valueSource:
-                                "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Link|Alátámasztó link"
+                                "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Link|Igazoló link"
                         }
                     ]
                 },
@@ -1084,7 +1100,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a szempontnak megfelel",
                             type: "decisionYesNo"
                         },
                         {
@@ -1123,7 +1139,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     fields: [
                         {
                             key: "Követelmény teljesül",
-                            label: "A kérelmező a minimumkövetelményeknek megfelel",
+                            label: "A kérelmező a követelménynek megfelel",
                             type: "decisionYesNo"
                         },
                         {

@@ -9,7 +9,13 @@ export const TabularList = ({ group, formData }: { group: GroupDescriptor; formD
     const colIsLink = group.fields.map((f) => f.type === "link");
 
     const tableData = Array.from({ length }).map((_, i) =>
-        group.fields.map((f) => f.key).map((col) => store.get(formData[`${group.valueSource}|${col}`])[i] ?? "")
+        group.fields
+            .map((f) => f.key)
+            .map((col) => {
+                const val = formData[`${group.valueSource}|${col}`];
+                if (!val) return "";
+                return store.get(val)[i] ?? "";
+            })
     );
 
     if (length === 0) {
@@ -35,10 +41,12 @@ export const TabularList = ({ group, formData }: { group: GroupDescriptor; formD
                                 <td key={j} style={{ width: colWidths[j] === "*" ? "auto" : `${colWidths[j]}pt` }} className={j === 0 ? "form-table-fcol" : ""}>
                                     {!colIsLink[j] ? (
                                         tableData[i][j]
-                                    ) : (
+                                    ) : tableData[i][j] ? (
                                         <a href={tableData[i][j]} target="_blank" rel="noopener noreferrer" className="formlink">
                                             link
                                         </a>
+                                    ) : (
+                                        "-"
                                     )}
                                 </td>
                             ))}

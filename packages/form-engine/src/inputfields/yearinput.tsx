@@ -44,33 +44,40 @@ export const YearInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputP
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
                 {label}
             </label>
-            <InputGroup className="w-full border border-gray-300 rounded py-1 px-2 flex-3 h-9">
-                <InputGroupInput
-                    className="h-[unset] px-0 py-0 md:text-base"
-                    type="number"
-                    min={minYear}
-                    max={maxYear}
-                    step={1}
-                    id={fieldName}
-                    name={fieldName}
-                    value={value[index] ?? ""}
-                    readOnly={readonly}
-                    onKeyDown={preventDash}
-                    onPaste={preventPasteWithDash}
-                    onChange={(e) => {
-                        const sanitized = e.target.value.replaceAll("-", "");
-                        const newValue = [...value];
-                        newValue[index] = sanitized;
-                        setValue(newValue);
-                    }}
-                    onBlur={(e) => {
-                        const normalized = normalizeYear(e.target.value);
-                        const newValue = [...value];
-                        newValue[index] = normalized;
-                        setValue(newValue);
-                    }}
-                />
-            </InputGroup>
+            {readonly && (
+                <div id={fieldName} className="py-1 px-2 mb-1 flex-3">
+                    {value[index] ?? ""}
+                </div>
+            )}
+            {!readonly && (
+                <InputGroup className="w-full border border-gray-300 rounded py-1 px-2 flex-3 h-9">
+                    <InputGroupInput
+                        className="h-[unset] px-0 py-0 md:text-base"
+                        type="number"
+                        min={minYear}
+                        max={maxYear}
+                        step={1}
+                        id={fieldName}
+                        name={fieldName}
+                        value={value[index] ?? ""}
+                        readOnly={readonly}
+                        onKeyDown={preventDash}
+                        onPaste={preventPasteWithDash}
+                        onChange={(e) => {
+                            const sanitized = e.target.value.replaceAll("-", "");
+                            const newValue = [...value];
+                            newValue[index] = sanitized;
+                            setValue(newValue);
+                        }}
+                        onBlur={(e) => {
+                            const normalized = normalizeYear(e.target.value);
+                            const newValue = [...value];
+                            newValue[index] = normalized;
+                            setValue(newValue);
+                        }}
+                    />
+                </InputGroup>
+            )}
         </div>
     );
 };
