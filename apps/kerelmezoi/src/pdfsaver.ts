@@ -52,7 +52,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData) =>
             await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Tudományos fokozatok", "Tudományos fokozat:"),
             await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Tudományos címek", "Tudományos cím:"),
             await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Aktuális munkahelyek", "Munkahely (a benyújtáskor):"),
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Nyelvismeret", "Nyelvtudás:"),
+            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Nyelvvizsgák", "Nyelvvizsga:"),
             { text: "2. A kérelmező szakterületei", style: "section" },
             await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Szakterületek", ""),
             {

@@ -1,11 +1,13 @@
 import { InputGroup, InputGroupInput } from "@repo/ui";
 import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
-import { useAtom } from "jotai";
+import { atom, useAtom } from "jotai";
 import type React from "react";
+
+const emptyValueAtom = atom<string[]>([]);
 
 export const YearInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
     const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+    const [value, setValue] = useAtom(formData[resolvedFieldKey] ?? emptyValueAtom);
     const label = getFieldLabel(fieldDescr);
     const inline = fieldDescr.attribs?.inline !== false;
     const readonly = isFieldReadonly(fieldDescr);

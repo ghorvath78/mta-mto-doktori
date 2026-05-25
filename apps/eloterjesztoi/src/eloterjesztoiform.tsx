@@ -172,10 +172,6 @@ export const eloterjesztoiFormInfo: FormInfo = {
             icon: <FileDown />,
             onClick: async (formData, setDialogMessage: (message: string) => void) => {
                 setDialogMessage("Adatlap mentése");
-                for (const key in formData) {
-                    console.log(key);
-                }
-
                 await savePDF(eloterjesztoiFormDescriptor, formData, formName, {
                     "kerelmezo_form.json": JSON.stringify(applicantDataInForm, null, 4),
                     "kerelmezo_mtmt.json": JSON.stringify(mtmtDataInForm, null, 4)
@@ -216,6 +212,8 @@ export const eloterjesztoiFormInfo: FormInfo = {
 
                 atomsFromJSON(parsedContent, formData);
                 setDialogMessage("");
+
+                console.log("Betöltött form adatok:", formData);
             }
         }
     ]

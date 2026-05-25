@@ -22,7 +22,7 @@ export const palyazoAdatai: PageDescriptor = {
                         },
                         {
                             key: "Születési adatok",
-                            type: "text",
+                            type: "birthYearPlace",
                             helpText: "A pályázó születési helye és ideje.",
                             readonly: true,
                             valueSource: "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|Születési adatok"

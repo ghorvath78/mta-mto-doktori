@@ -38,6 +38,41 @@ export const osszefoglalo: PageDescriptor = {
                     }
                 }
             ]
+        },
+        {
+            key: "Javaslat a rövid értekezés benyújtásáról",
+            label: "Összefoglaló javaslat: A rövid értekezés benyújtásáról",
+            helpText: "Az előterjesztő összefoglaló véleménye arról, hogy a kérelem elbírálható-e rövid értekezés benyújtásával.",
+            conditionKey: "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája",
+            conditionValue: "rövid értekezés",
+            attribs: {
+                important: true,
+                alwaysOpen: true
+            },
+            groups: [
+                {
+                    key: "Javaslat a rövid értekezés benyújtásáról",
+                    fields: [
+                        {
+                            key: "Javaslat",
+                            label: "Az előterjesztő javasolja a doktori mű bírálatra bocsátását rövid értekezés formában",
+                            type: "decisionYesNo"
+                        },
+                        {
+                            key: "Indoklás",
+                            label: "Indoklás (legfeljebb 2500 karakter terjedelemben)",
+                            type: "decisionText",
+                            attribs: {
+                                maxLength: 2500,
+                                rows: 6
+                            }
+                        }
+                    ],
+                    attribs: {
+                        important: true
+                    }
+                }
+            ]
         }
     ]
 };

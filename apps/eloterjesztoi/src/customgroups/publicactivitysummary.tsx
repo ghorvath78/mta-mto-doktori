@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 const emptyAtom = atom(["A"]);
 
-const activityRequirementSectionKeys = [
+export const activityRequirementSectionKeys = [
     "TDK témavezetés",
     "Részvétel graduális és doktori képzésben",
     "Doktori fokozatot szerzett hallgatók",

@@ -10,12 +10,20 @@ import {
     type FormDescriptor
 } from "@repo/form-engine";
 import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
-import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ } from "./requirements";
+import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ, getMinCommunityCount } from "./requirements";
 import { biraloBizottsag } from "./lap-biralobizottsag";
+import { getNumOfAuthorsInPub, getRatingOfPub } from "./eloterjesztoiform";
+import { activityRequirementSectionKeys } from "./customgroups/publicactivitysummary";
 
 declare const BUILD_DATE: string;
 
 export const savePDF = async (descriptor: FormDescriptor, formData: FormData, formName: string, additionalData: Record<string, unknown>) => {
+    const hasKerelmezoData = Object.keys(formData).some((key) => key.startsWith("Kérelmezői"));
+    if (!hasKerelmezoData) {
+        window.alert("A PDF exportálásához előbb be kell tölteni a kérelmező adatait.");
+        return;
+    }
+
     const name = store.get(formData["Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|Név"])?.[0] || "Név";
     const bizottsag =
         store.get(
@@ -23,6 +31,17 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
         )?.[0] || "Bizottság";
     const eloterjesztoNeve = store.get(formData["Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Előterjesztő neve"])?.[0] || "";
     const eloterjesztoFokozata = store.get(formData["Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Tudományos fokozat"])?.[0] || "";
+
+    const rovidErtekezes =
+        store.get(formData["Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája"])?.[0] ===
+        "rövid értekezés";
+    const rovidErtekezesSection = rovidErtekezes
+        ? [
+              { text: "Rövid értekezésre vonatkozó minimumkövetelmények", style: "subsection" },
+              getShortThesisRequirementsSection(descriptor, formData),
+              await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos minimumkövetelmények|Rövid értekezésre vonatkozó értékelés", "")
+          ]
+        : [];
 
     const tudomanyMetria = descriptor["Tudománymetria"];
     const qSection = tudomanyMetria.sections.find((s) => s.key === "Q-szám");
@@ -55,7 +74,6 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
             { text: "C. A tudományos minimumkövetelmények teljesítésének ellenőrzése", style: "section" },
             { text: "1. A kérelmező publikációs és alkotási teljesítménye (Q-szám)", style: "subsection" },
             getQScoringTableSection(formData),
-
             {
                 stack: [
                     alkGroup && alkNum
@@ -70,7 +88,6 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
                 ],
                 margin: [0, 5, 0, 0]
             },
-
             { text: "Q értékszám összesítő", style: "grouplabel" },
             getQScoreSummarySection(formData),
             { text: "2. A kérelmező idézettsége (I-szám)", style: "subsection" },
@@ -78,76 +95,83 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
             getIScoreSummarySection(formData),
             { text: "3. A tételes publikációs elvárások teljesülése", style: "subsection" },
             await getItemizedRequirementsSection(descriptor, formData),
-            { text: "A kérelmező öt legfontosabb publikációja", style: "grouplabel" },
+            { text: "4. A publikációs teljesítmény értékelése", style: "subsection" },
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos minimumkövetelmények|Publikációs teljesítmény értékelése", ""),
+            [...rovidErtekezesSection],
+            { text: "5. A kérelmező öt legfontosabb publikációja", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt publikáció|A kérelmező által megjelölt öt legfontosabb publikáció", "", {
                 bibIndex: "true",
                 bibLabel: ""
             }),
             await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt publikáció|Öt legfontosabb publikáció értékelése", "", {}),
-            { text: "A kérelmező öt legfontosabb hivatkozása", style: "grouplabel" },
+            { text: "6. A kérelmező öt legfontosabb hivatkozása", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt hivatkozás|A kérelmező által megjelölt öt legfontosabb hivatkozás", "", {
                 bibIndex: "true",
                 bibLabels: { "Hivatkozott közlemény": "Hivatkozott\nközlemény", "Hivatkozó közlemény": "Hivatkozó\nközlemény" },
                 indexColWidth: "75"
             }),
             await getPdfSection(descriptor, formData, "Előterjesztői|Öt kiemelt hivatkozás|Öt legfontosabb hivatkozás értékelése", "", {}),
-            { text: "4. A tudományos közéleti tevékenység értékelése", style: "subsection" },
-            { text: "4.1. TDK témavezetés", style: "subsection" },
+            { text: "7. Tudományos közéleti tevékenység", style: "subsection" },
+            { text: "7.1. TDK témavezetés", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
                 useGroupLabelAsHeader: "true"
             }),
-            { text: "4.2. Részvétel graduális és doktori képzésben (tárgyelőadó, tárgyfelelős)", style: "subsection" },
+            { text: "7.2. Részvétel graduális és doktori képzésben (tárgyelőadó, tárgyfelelős)", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", ""),
-            { text: "4.3. Részvétel doktori témavezetésben (fokozatot szerzett hallgatók)", style: "subsection" },
+            { text: "7.3. Részvétel doktori témavezetésben (fokozatot szerzett hallgatók)", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók", ""),
-            { text: "4.4. Részvétel tudományos zsűriben, kuratóriumban, bírálatokban", style: "subsection" },
+            { text: "7.4. Részvétel tudományos zsűriben, kuratóriumban, bírálatokban", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban",
                 ""
             ),
-            { text: "4.5. Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében, plenáris előadások", style: "subsection" },
+            { text: "7.5. Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében, plenáris előadások", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében",
                 ""
             ),
-            { text: "4.6. Tisztség, kiemelt/választott tagság hazai és/vagy nemzetközi tudományos szervezetben", style: "subsection" },
+            { text: "7.6. Tisztség, kiemelt/választott tagság hazai és/vagy nemzetközi tudományos szervezetben", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben",
                 ""
             ),
-            { text: "4.7. Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", style: "subsection" },
+            { text: "7.7. Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig",
                 ""
             ),
-            { text: "4.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
+            { text: "7.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", "", {
                 firstColWidth: "200",
                 hideEmptyGroup: "true"
             }),
-            { text: "4.9. Elnyert tudományos pályázat (témavezető, résztvevő)", style: "subsection" },
+            { text: "7.9. Elnyert tudományos pályázat (témavezető, résztvevő)", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat", ""),
-            { text: "4.10. Külföldi tartózkodás", style: "subsection" },
+            { text: "7.10. Külföldi tartózkodás", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
-            { text: "4.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
+            { text: "7.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
             await getPdfSection(
                 descriptor,
                 formData,
                 "Előterjesztői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés",
                 ""
             ),
-            { text: "5. A tudományos minimumkövetelmények teljesítésének összesítése", style: "subsection" },
+            { text: "7.12. Tudományos közéleti tevékenység értékelése", style: "subsection" },
+            getPublicActivitySummarySection(formData),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Tudományos közéleti tevékenység|Tudományos közéleti tevékenység értékelése", ""),
+            { text: "8. A tudományos minimumkövetelmények teljesítésének összesítése", style: "subsection" },
             await getPdfSection(descriptor, formData, "Előterjesztői|A tudományos minimumkövetelmények teljesítésének összesítése|Összesítés", ""),
             { text: "D. Összefoglaló javaslat: A kérelmező doktori habitusának megítélése", style: "section" },
             await getPdfSection(descriptor, formData, "Előterjesztői|Összefoglaló javaslat|Összefoglaló javaslat", ""),
+            await getPdfSection(descriptor, formData, "Előterjesztői|Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról", ""),
             { text: "E. Javaslat a bírálókra és a bíráló bizottság tagjaira", style: "section" },
             ...(await getBiraloBizottsagSection(formData))
         ]
@@ -316,10 +340,7 @@ const getIScoreSummarySection = (formData: FormData): Content => {
     const minIScore = getMinTotalI(category);
     const satisfied = iScore >= minIScore;
     return {
-        text: [
-            "A kérelmező teljesítette az I \u2265 Imin követelményt: ",
-            { text: satisfied ? "IGEN" : "NEM", bold: true }
-        ],
+        text: ["A kérelmező teljesítette az I \u2265 Imin követelményt: ", { text: satisfied ? "IGEN" : "NEM", bold: true }],
         bold: true,
         margin: [20, 5, 0, 5]
     };
@@ -458,11 +479,109 @@ const getItemizedRequirementsSection = async (_descriptor: FormDescriptor, formD
             }
         },
         {
-            text: [
-                "A kérelmező maradéktalanul teljesítette a tételes publikációs elvárásokat: ",
-                { text: allSatisfied ? "IGEN" : "NEM", bold: true }
-            ],
+            text: ["A kérelmező maradéktalanul teljesítette a tételes publikációs elvárásokat: ", { text: allSatisfied ? "IGEN" : "NEM", bold: true }],
             margin: [20, 5, 0, 5]
+        }
+    ];
+};
+
+const getShortThesisRequirementsSection = (_descriptor: FormDescriptor, formData: FormData): Content[] => {
+    const d1PubsAtom = formData["Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója"];
+    const d1Pubs = d1PubsAtom ? store.get(d1PubsAtom) : [];
+    const thesisPubsAtom = formData["Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"];
+    const thesisPubs = thesisPubsAtom ? store.get(thesisPubsAtom) : [];
+    const d1Share = d1Pubs.reduce((sum, mtmt) => {
+        const numAuthors = getNumOfAuthorsInPub(mtmt);
+        return sum + (numAuthors > 0 ? 1 / numAuthors : 0);
+    }, 0);
+
+    const rawDataAtom = formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"];
+    const rawData = rawDataAtom ? store.get(rawDataAtom) : [];
+    const data = JSON.parse(rawData[0] || "[]");
+    const wosNumber = cD(data[11]?.[0] ?? 0);
+    const numericalRequirementsMet = d1Share >= 3 && wosNumber >= 750;
+
+    const thesisPubRows = thesisPubs.map((mtmt, index) => {
+        const rating = getRatingOfPub(mtmt);
+        const numAuthors = getNumOfAuthorsInPub(mtmt);
+        const satisfies = (rating === "D1" || rating === "Q1") && numAuthors <= 3;
+        return [
+            { text: `${index + 1}.` },
+            {
+                text: mtmt,
+                link: `https://m2.mtmt.hu/api/publication/${mtmt}`,
+                color: "#1d4ed8",
+                decoration: "underline" as const
+            },
+            { text: rating, alignment: "center" as const },
+            { text: String(numAuthors), alignment: "center" as const },
+            { text: satisfies ? "✓" : "✗", alignment: "center" as const }
+        ];
+    });
+
+    return [
+        {
+            margin: [20, 5, 0, 0],
+            table: {
+                widths: ["*", 80],
+                body: [
+                    [{ text: "SJR D1 cikkek összegzett szerzői részaránya:" }, { text: d1Share.toFixed(3), alignment: "right" as const }],
+                    [{ text: "Független WoS hivatkozások száma:" }, { text: String(wosNumber), alignment: "right" as const }],
+                    [
+                        { text: "A kérelmező teljesítette a rövid értekezés speciális számszerű követelményeit:" },
+                        { text: numericalRequirementsMet ? "IGEN" : "NEM", bold: true, alignment: "right" as const }
+                    ]
+                ]
+            },
+            layout: { defaultBorder: false }
+        },
+        { text: "A kérelmező által megjelölt téziseket alátámasztó publikációk:", margin: [20, 8, 0, 4] },
+        {
+            margin: [20, 0, 0, 0],
+            table: {
+                widths: [25, "*", 60, 60, 50],
+                body: [
+                    [
+                        { text: "", bold: true, fillColor: "#dddddd" },
+                        { text: "MTMT azonosító", bold: true, fillColor: "#dddddd" },
+                        { text: "Besorolás", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+                        { text: "Szerzőszám", bold: true, alignment: "center" as const, fillColor: "#dddddd" },
+                        { text: "Teljesül", bold: true, alignment: "center" as const, fillColor: "#dddddd" }
+                    ],
+                    ...thesisPubRows
+                ]
+            }
+        }
+    ];
+};
+
+const getPublicActivitySummarySection = (formData: FormData): Content[] => {
+    const minimumRequired = getMinCommunityCount();
+    let actualCount = 0;
+
+    for (const sectionKey of activityRequirementSectionKeys) {
+        const key = `Előterjesztői|Tudományos közéleti tevékenység|${sectionKey}|Értékelés|Követelmény teljesül`;
+        const value = store.get(formData[key])?.[0] ?? "";
+
+        if (value.toLowerCase() === "igen") {
+            actualCount++;
+        }
+    }
+
+    return [
+        {
+            margin: [20, 5, 0, 0],
+            table: {
+                widths: ["*", 60],
+                body: [
+                    [
+                        { text: "Teljesítendő tudományos közéleti szempontok száma:" },
+                        { text: String(minimumRequired), bold: true, alignment: "right" as const }
+                    ],
+                    [{ text: "Teljesített tudományos közéleti szempontok száma:" }, { text: String(actualCount), bold: true, alignment: "right" as const }]
+                ]
+            },
+            layout: { defaultBorder: false }
         }
     ];
 };

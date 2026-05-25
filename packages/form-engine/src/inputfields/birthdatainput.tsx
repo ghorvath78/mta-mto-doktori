@@ -16,8 +16,20 @@ export const BirthDataInput = ({ formData, index, fieldKey, fieldDescr }: FieldI
 
     const year = rawYear.trim();
     const place = rawPlace;
+    const readonlyValue = [year, place].filter(Boolean).join(", ");
 
     const fieldName = resolvedFieldKey + "-" + index;
+
+    if (readonly) {
+        return (
+            <div className="flex items-baseline space-x-2">
+                <label className="text-end w-1/4 font-medium leading-[0.95em] min-w-1/4">Születési adatok</label>
+                <div className="flex flex-grow">
+                    <div className="py-1 px-2">{readonlyValue}</div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex items-baseline space-x-2">

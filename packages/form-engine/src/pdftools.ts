@@ -23,6 +23,9 @@ export const groupToPdfDocDefinition = async (
         if (field.attribs?.noPrint) continue;
         if (!isDescriptorVisible(field, formData, index)) continue;
         const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
+        if (formData[fieldKey] === undefined) {
+            continue;
+        }
         const fieldValue = store.get(formData[fieldKey])[index] ?? "";
         const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
         const printer = getInputFieldPrinter(field.type);
@@ -123,6 +126,7 @@ export const getPdfSection = async (
     if (!page) return [];
     const section = page.sections.find((s) => s.key === parts[2]);
     if (!section) return [];
+    if (!isDescriptorVisible(section, formData, 0)) return [];
     for (const group of section.groups) {
         const groupKeyPrefix = `${sectionKey}|${group.key}`;
         if (!isDescriptorVisible(group, formData, 0)) continue;

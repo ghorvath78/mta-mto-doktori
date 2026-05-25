@@ -19,8 +19,8 @@ export const QScoreSummary = ({ formData }: { group: GroupDescriptor; formData: 
 
     const minPaperQ = getMinPaperQ(category);
     const maxBookQ = getMaxBookQ();
-    const maxAchievementQ = getMaxAchievementQ(category);
-    const totalQ = paperQValue + Math.min(bookQValue, maxBookQ) + Math.min(achievementQValue, maxAchievementQ);
+    const maxAchievementQ = Math.round(1000 * getMaxAchievementQ(category)) / 1000;
+    const totalQ = Math.round(10000 * (paperQValue + Math.min(bookQValue, maxBookQ) + Math.min(achievementQValue, maxAchievementQ))) / 10000;
     const minTotalQ = getMinTotalQ(category);
 
     return (
