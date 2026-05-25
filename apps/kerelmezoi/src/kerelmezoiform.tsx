@@ -126,6 +126,7 @@ export const kerelmezoiFormInfo: FormInfo = {
                 if (!content) return;
                 setDialogMessage("Adatlap betöltése");
                 const parsedContent = JSON.parse(content);
+                createAtomsFromDescriptor(formName, kerelmezoiFormDescriptor);
                 setDialogMessage("Pubikációk és hivatkozások betöltése");
                 await beforeLoad(parsedContent);
                 atomsFromJSON(parsedContent, formData);

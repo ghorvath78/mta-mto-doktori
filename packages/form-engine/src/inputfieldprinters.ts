@@ -153,7 +153,7 @@ export const MTMTItemFieldPrinter: InputFieldPrinter = async (label, value, fiel
                   }
               ]
           ];
-    const indexColWidth = options.indexColWidth ? parseInt(String(options.indexColWidth)) : 20;
+    const indexColWidth = options.indexColWidth ? parseInt(String(options.indexColWidth)) : 24;
 
     return [
         [
