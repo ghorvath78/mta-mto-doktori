@@ -832,7 +832,6 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
             [grp("Bíráló bizottság tartalék tagjai"), "Bíráló bizottság tartalék tagjai", 5]
         ];
         for (const [key, label, expected] of countChecks) {
-            console.log("Checking count for", label, "with key", key, "group length:", grpLength(formData, key));
             const n = grpLength(formData, key);
             if (n === expected) {
                 result.push({ text: `${label}: ${n} fő ✓`, status: "ok" });
@@ -961,6 +960,10 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
 
         // ── Affiliation overlap checks ────────────────────────────────────────────────
         result.push({ text: "── Intézményi összeférhetetlenség ──", status: "" });
+        result.push({
+            text: "Ellenőrizze manuálisan, hogy a jelzett szervezeti szintig fennálló munkahelyi átfedés összeférhetetlenséget jelent-e.",
+            status: ""
+        });
         const applicantData = getApplicantAuthorRecord();
         const applicantAffiliations = applicantData?.affiliations ?? [];
         if (applicantAffiliations.length === 0) {
