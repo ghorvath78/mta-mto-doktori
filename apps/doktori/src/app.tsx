@@ -1,4 +1,5 @@
 import { landingButtons, type LandingButton } from "./landing-buttons";
+import { recentChanges, type ChangeEntry } from "./recent-changes";
 
 const Header = () => (
     <header className="flex items-center bg-primary text-primary-foreground p-4">
@@ -45,6 +46,20 @@ const LandingButtonCard = ({ button }: { button: LandingButton }) => {
     );
 };
 
+const RecentChanges = ({ entries }: { entries: ChangeEntry[] }) => (
+    <div className="rounded-lg border border-border bg-background shadow-sm p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4">Legutóbbi változások</h3>
+        <ul className="divide-y divide-border">
+            {entries.map((entry) => (
+                <li key={entry.date + entry.description} className="flex gap-4 py-3 first:pt-0 last:pb-0">
+                    <time className="shrink-0 w-28 text-sm font-medium text-muted-foreground tabular-nums">{entry.date}</time>
+                    <span className="text-sm text-foreground">{entry.description}</span>
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+
 export const App = () => (
     <div className="flex min-h-svh flex-col bg-muted">
         <Header />
@@ -56,6 +71,7 @@ export const App = () => (
                         <LandingButtonCard key={button.title} button={button} />
                     ))}
                 </div>
+                <RecentChanges entries={recentChanges} />
             </div>
         </main>
     </div>
