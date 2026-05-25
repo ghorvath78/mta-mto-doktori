@@ -1,5 +1,7 @@
+import { Download } from "lucide-react";
 import { landingButtons, type LandingButton } from "./landing-buttons";
 import { recentChanges, type ChangeEntry } from "./recent-changes";
+import { sampleDownloads, type SampleDownload } from "./sample-downloads";
 
 const Header = () => (
     <header className="flex items-center bg-primary text-primary-foreground p-4">
@@ -46,6 +48,26 @@ const LandingButtonCard = ({ button }: { button: LandingButton }) => {
     );
 };
 
+const SampleDownloads = ({ downloads }: { downloads: SampleDownload[] }) => (
+    <div className="rounded-lg border border-border bg-background shadow-sm p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4">Letölthető minták</h3>
+        <ul className="divide-y divide-border">
+            {downloads.map((item) => (
+                <li key={item.path} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+                    <Download className="shrink-0 h-5 w-5 text-primary" strokeWidth={1.5} />
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground">{item.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                    </div>
+                    <a href={item.path} download className="shrink-0 text-xs font-medium text-primary hover:underline">
+                        Letöltés
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+
 const RecentChanges = ({ entries }: { entries: ChangeEntry[] }) => (
     <div className="rounded-lg border border-border bg-background shadow-sm p-6">
         <h3 className="text-base font-semibold text-foreground mb-4">Legutóbbi változások</h3>
@@ -71,6 +93,7 @@ export const App = () => (
                         <LandingButtonCard key={button.title} button={button} />
                     ))}
                 </div>
+                <SampleDownloads downloads={sampleDownloads} />
                 <RecentChanges entries={recentChanges} />
             </div>
         </main>
