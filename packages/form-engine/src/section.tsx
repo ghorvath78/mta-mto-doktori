@@ -3,7 +3,7 @@ import { type PrimitiveAtom, useAtom, useSetAtom, useAtomValue, atom } from "jot
 import { ChevronRight } from "lucide-react";
 import { infoSectionAtom } from "./atoms";
 import { Button } from "@repo/ui";
-import type { AttribType, FormData, SectionDescriptor } from "./forms";
+import { isConditionSatisfied, type AttribType, type FormData, type SectionDescriptor } from "./forms";
 import { Group, GroupPanel, GroupArrayPanel } from "./group";
 import { Fragment } from "react/jsx-runtime";
 import { TabularList } from "./inputfields/tabularlist";
@@ -11,8 +11,8 @@ import { TabularList } from "./inputfields/tabularlist";
 const trueConditionAtom = atom(["true"]);
 
 export const Section = ({ section, formData, keyPrefix }: { section: SectionDescriptor; formData: FormData; keyPrefix: string }) => {
-    const conditionValue = useAtomValue(section.conditionKey ? formData[section.conditionKey] : trueConditionAtom);
-    const isVisible = !section.conditionKey || (conditionValue && conditionValue[0] === (section.conditionValue ?? "true"));
+    const conditionValues = useAtomValue(section.conditionKey ? formData[section.conditionKey] : trueConditionAtom);
+    const isVisible = isConditionSatisfied(conditionValues, 0, section.conditionValue ?? "true");
     const openAtom = formData[`${keyPrefix}|_open`];
 
     return (

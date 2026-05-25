@@ -102,6 +102,11 @@ export type FormData = {
     [key: string]: PrimitiveAtom<string[]>;
 };
 
+export type ConditionalDescriptor = {
+    conditionKey?: string;
+    conditionValue?: string;
+};
+
 export type PdfPrintingContext = {
     formData: FormData;
     index: number;
@@ -152,6 +157,61 @@ export function getFieldLabel(fieldDescr: FieldDescriptor): string {
 
 export function isFieldReadonly(fieldDescr: FieldDescriptor): boolean {
     return fieldDescr.readonly === true;
+}
+
+export function getConditionInputValue(values: string[] | undefined, index: number = 0): string {
+    return values?.[index] ?? values?.[0] ?? "";
+}
+
+export function matchesConditionValue(value: string, conditionValue: string = "true"): boolean {
+    const normalizedCondition = conditionValue.trim();
+
+    if (normalizedCondition.startsWith("!")) {
+        return !matchesConditionValue(value, normalizedCondition.slice(1));
+    }
+
+    const comparisonMatch = normalizedCondition.match(/^(<=|>=|<|>)(.*)$/);
+    if (comparisonMatch) {
+        const [, operator, rawExpected] = comparisonMatch;
+        const actualNumber = Number(value);
+        const expectedNumber = Number(rawExpected.trim());
+
+        if (Number.isNaN(actualNumber) || Number.isNaN(expectedNumber)) {
+            return false;
+        }
+
+        switch (operator) {
+            case "<":
+                return actualNumber < expectedNumber;
+            case ">":
+                return actualNumber > expectedNumber;
+            case "<=":
+                return actualNumber <= expectedNumber;
+            case ">=":
+                return actualNumber >= expectedNumber;
+            default:
+                return false;
+        }
+    }
+
+    return normalizedCondition
+        .split("|")
+        .map((option) => option.trim())
+        .includes(value);
+}
+
+export function isConditionSatisfied(conditionValues: string[] | undefined, index: number, conditionValue: string = "true"): boolean {
+    return matchesConditionValue(getConditionInputValue(conditionValues, index), conditionValue);
+}
+
+export function isDescriptorVisible(descriptor: ConditionalDescriptor, formData: FormData, index: number = 0): boolean {
+    if (!descriptor.conditionKey) {
+        return true;
+    }
+
+    const conditionAtom = formData[descriptor.conditionKey];
+    const conditionValues = conditionAtom ? store.get(conditionAtom) : undefined;
+    return isConditionSatisfied(conditionValues, index, descriptor.conditionValue ?? "true");
 }
 
 export type FormInfo = {

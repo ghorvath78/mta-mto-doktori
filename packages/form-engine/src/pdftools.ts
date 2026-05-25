@@ -1,6 +1,6 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import { store } from "./atoms";
-import { type FormData, type FormDescriptor, type GroupDescriptor, type PdfPrintingOptions } from "./forms";
+import { isDescriptorVisible, type FormData, type FormDescriptor, type GroupDescriptor, type PdfPrintingOptions } from "./forms";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 import { saveAs } from "file-saver";
 import { PDFDocument } from "pdf-lib";
@@ -21,14 +21,10 @@ export const groupToPdfDocDefinition = async (
     const groupKeyPrefix = `${keyPrefix}|${group.key}`;
     for (const field of fields) {
         if (field.attribs?.noPrint) continue;
+        if (!isDescriptorVisible(field, formData, index)) continue;
         const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
         const fieldValue = store.get(formData[fieldKey])[index] ?? "";
         const fieldLabel = options.nolabel === "true" ? "" : (field.label || field.key) + ":";
-        // handle conditional fields
-        if (field.conditionKey && field.conditionValue) {
-            const val = store.get(formData[field.conditionKey])[index];
-            if (val !== field.conditionValue) continue;
-        }
         const printer = getInputFieldPrinter(field.type);
         if (!printer) {
             continue;
@@ -71,10 +67,16 @@ export const groupToPdfTableDefinition = async (
     const colWidths: (string | number)[] = [];
     for (const field of fields) {
         if (field.attribs?.noPrint) continue;
+        const rowVisibility = Array.from({ length }, (_, index) => isDescriptorVisible(field, formData, index));
+        if (!rowVisibility.some(Boolean)) continue;
         const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
         const fieldLabel = options.nolabel === "true" ? "" : field.label || field.key;
         rows[0].push({ text: fieldLabel, bold: true, style: "tableHeader", fontSize: 11 });
         for (let index = 0; index < length; index++) {
+            if (!rowVisibility[index]) {
+                rows[index + 1].push({ text: "-" });
+                continue;
+            }
             const fieldValue = store.get(formData[fieldKey])[index] ?? "";
             if (field.type === "link" || fieldValue.startsWith("http")) {
                 rows[index + 1].push({
@@ -123,19 +125,18 @@ export const getPdfSection = async (
     if (!section) return [];
     for (const group of section.groups) {
         const groupKeyPrefix = `${sectionKey}|${group.key}`;
-        if (group.conditionKey && group.conditionValue) {
-            const val = store.get(formData[group.conditionKey]);
-            const isVisible = val && parseInt(val[0]) >= parseInt(group.conditionValue ?? "0");
-            if (!isVisible) continue;
-        }
+        if (!isDescriptorVisible(group, formData, 0)) continue;
         const lengthAtom = group.lengthSource ? formData[group.lengthSource] : formData[`${groupKeyPrefix}|_length`];
         const length = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 1;
         if (group.isArray !== true && options.hideEmptyGroup === "true") {
             let isEmpty = true;
             for (const field of group.fields || []) {
+                const visibleIndexes = Array.from({ length }, (_, index) => isDescriptorVisible(field, formData, index));
+                if (!visibleIndexes.some(Boolean)) continue;
                 const fieldKey = field.valueSource ? field.valueSource : `${group.valueSource ? group.valueSource : groupKeyPrefix}|${field.key}`;
                 const values = store.get(formData[fieldKey]);
                 for (let i = 0; i < length; i++) {
+                    if (!visibleIndexes[i]) continue;
                     if (values[i] && values[i].toString().trim() !== "") {
                         isEmpty = false;
                         break;

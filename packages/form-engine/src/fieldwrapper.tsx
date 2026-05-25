@@ -1,5 +1,5 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import type { FieldDescriptor, FormData } from "./forms";
+import { getConditionInputValue, isConditionSatisfied, type FieldDescriptor, type FormData } from "./forms";
 import { infoFieldAtom } from "./atoms";
 
 const trueConditionAtom = atom(["true"]);
@@ -16,8 +16,8 @@ export const FieldWrapper = ({
     children: React.ReactNode;
 }) => {
     const setInfoField = useSetAtom(infoFieldAtom);
-    const conditionValue = useAtomValue(fieldDescriptor.conditionKey ? formData[fieldDescriptor.conditionKey] : trueConditionAtom);
-    const isVisible = !fieldDescriptor.conditionKey || (conditionValue && conditionValue[index] === (fieldDescriptor.conditionValue ?? "true"));
+    const conditionValues = useAtomValue(fieldDescriptor.conditionKey ? formData[fieldDescriptor.conditionKey] : trueConditionAtom);
+    const isVisible = isConditionSatisfied(conditionValues, index, fieldDescriptor.conditionValue ?? getConditionInputValue(["true"], 0));
 
     return (
         <div

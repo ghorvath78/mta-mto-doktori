@@ -60,7 +60,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Összesítés",
                     label: "OTDK-n díjazott dolgozatok száma összesen:",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "I. díjas",
@@ -145,7 +145,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Igazoló link",
@@ -220,7 +220,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Összes",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Fokozatott szerzett doktoranduszok száma",
@@ -285,7 +285,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Igazoló link",
@@ -351,7 +351,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     label: "",
                     conditionKey:
                         "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "További információ",
@@ -426,7 +426,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Igazoló link",
@@ -506,7 +506,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Alátámasztó link",
@@ -629,7 +629,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Igazoló link",
@@ -698,7 +698,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Igazoló link",
@@ -766,7 +766,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
                     key: "Link",
                     label: "",
                     conditionKey: "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés|Lista|_length",
-                    conditionValue: "1",
+                    conditionValue: ">=1",
                     fields: [
                         {
                             key: "Igazoló link",

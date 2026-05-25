@@ -4,6 +4,8 @@ import { type JSX } from "react";
 import {
     appendToFormArray,
     deleteFromFormArray,
+    getConditionInputValue,
+    isConditionSatisfied,
     moveDownInFormArray,
     moveUpInFormArray,
     type FieldDescriptor,
@@ -18,7 +20,7 @@ const GroupLabel = ({ title }: { title: string }) => {
     return <div className="font-bold italic my-2">{title}</div>;
 };
 
-const oneAtom = atom(["1"]);
+const trueConditionAtom = atom(["true"]);
 
 export const GroupPanel = ({
     group,
@@ -33,8 +35,8 @@ export const GroupPanel = ({
     noLabel?: boolean;
     className?: string;
 }) => {
-    const conditionValue = useAtomValue(group.conditionKey ? formData[group.conditionKey] : oneAtom);
-    const isVisible = !group.conditionKey || (conditionValue && parseInt(conditionValue[0]) >= parseInt(group.conditionValue ?? "0"));
+    const conditionValues = useAtomValue(group.conditionKey ? formData[group.conditionKey] : trueConditionAtom);
+    const isVisible = isConditionSatisfied(conditionValues, 0, group.conditionValue ?? getConditionInputValue(["true"], 0));
     const isImportant = group.attribs?.important === true;
 
     return (
@@ -59,9 +61,9 @@ export const GroupArrayPanel = ({
     source?: string;
     readonly?: boolean;
 }) => {
-    const conditionValue = useAtomValue(group.conditionKey ? formData[group.conditionKey] : oneAtom);
-    const isVisible = !group.conditionKey || (conditionValue && parseInt(conditionValue[0]) >= parseInt(group.conditionValue ?? "0"));
-    const arrayLength = useAtomValue(group.lengthSource ? formData[group.lengthSource] : (formData[`${keyPrefix}|_length`] ?? oneAtom));
+    const conditionValues = useAtomValue(group.conditionKey ? formData[group.conditionKey] : trueConditionAtom);
+    const isVisible = isConditionSatisfied(conditionValues, 0, group.conditionValue ?? getConditionInputValue(["true"], 0));
+    const arrayLength = useAtomValue(group.lengthSource ? formData[group.lengthSource] : (formData[`${keyPrefix}|_length`] ?? trueConditionAtom));
     const length = parseInt(arrayLength[0]);
 
     const label: JSX.Element | null = group.label ? <GroupLabel title={group.label} /> : null;
