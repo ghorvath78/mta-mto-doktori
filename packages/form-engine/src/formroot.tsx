@@ -1,18 +1,17 @@
 import { Provider } from "jotai";
 import { StrictMode } from "react";
 import type { FormInfo } from "./forms.ts";
-import { formInfoAtom, store } from "./atoms.ts";
+import { store } from "./atoms.ts";
 import { MainScreen } from "./mainscreen.tsx";
 
 export function createForm(formInfo: FormInfo) {
-    store.set(formInfoAtom, formInfo);
-    return <FormRoot />;
+    return <FormRoot formInfo={formInfo} />;
 }
 
-export const FormRoot = () => (
+export const FormRoot = ({ formInfo }: { formInfo: FormInfo }) => (
     <StrictMode>
         <Provider store={store}>
-            <MainScreen />
+            <MainScreen formInfo={formInfo} />
         </Provider>
     </StrictMode>
 );

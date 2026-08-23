@@ -3,10 +3,6 @@ import { BirthDataInput } from "./inputfields/birthdatainput";
 import { DecisionTextInput } from "./inputfields/decisiontext";
 import { DecisionYesNoInput } from "./inputfields/decisionyesnoinput";
 import { LongTextInput } from "./inputfields/longtextinput";
-import { MTMTCitationInput } from "./inputfields/mtmtcitationinput";
-import { MTMTPubInput } from "./inputfields/mtmtpubinput";
-import { MTMTScientometrics } from "./inputfields/mtmtscientometrics";
-import { MTMTUserInput } from "./inputfields/mtmtuserinput";
 import { NumberInput } from "./inputfields/numberinput";
 import { SelectOrAddInput } from "./inputfields/selectoraddinput";
 import { TextInput } from "./inputfields/textinput";
@@ -16,11 +12,8 @@ import {
     BirthYearPlaceFieldPrinter,
     DecisionTextFieldPrinter,
     DecisionYesNoFieldPrinter,
-    EmptyFieldPrinter,
     LinkFieldPrinter,
     LongTextFieldPrinter,
-    MTMTItemFieldPrinter,
-    MTMTUserFieldPrinter,
     SimpleFieldPrinter,
     YearRangeFieldPrinter
 } from "./inputfieldprinters.ts";
@@ -48,11 +41,7 @@ const builtInInputFields: Array<[InputFieldType, InputFieldRegistration]> = [
     ["selectAddOther", { component: SelectOrAddInput, printer: SimpleFieldPrinter }],
     ["longtext", { component: LongTextInput, printer: LongTextFieldPrinter }],
     ["birthYearPlace", { component: BirthDataInput, printer: BirthYearPlaceFieldPrinter }],
-    ["mtmtUser", { component: MTMTUserInput, printer: MTMTUserFieldPrinter }],
-    ["mtmtPub", { component: MTMTPubInput, printer: MTMTItemFieldPrinter }],
-    ["mtmtCitation", { component: MTMTCitationInput, printer: MTMTItemFieldPrinter }],
     ["link", { component: TextInput, printer: LinkFieldPrinter }],
-    ["mtmtTable", { component: MTMTScientometrics, printer: EmptyFieldPrinter }],
     ["decisionText", { component: DecisionTextInput, printer: DecisionTextFieldPrinter }],
     ["decisionYesNo", { component: DecisionYesNoInput, printer: DecisionYesNoFieldPrinter }]
 ];

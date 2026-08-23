@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@repo/form-engine": "workspace:*",
+        "@repo/mtmt-tools": "workspace:*",
         "@repo/ui": "workspace:*",
         "@types/pako": "^2.0.4",
         "@types/pdfmake": "^0.2.11",

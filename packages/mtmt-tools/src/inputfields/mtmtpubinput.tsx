@@ -1,5 +1,5 @@
 import { Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "@repo/form-engine";
 import {
     activeMTMTUserIdAtom,
     getIndependentCitationCount,

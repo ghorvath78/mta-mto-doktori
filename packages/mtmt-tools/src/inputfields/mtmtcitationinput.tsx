@@ -1,5 +1,5 @@
 import { Button, Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
+import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "@repo/form-engine";
 import { getRating, loadMTMTCitations, mtmtPubListAtom, mtmtPubSummaryCacheAtom, processMTMTTemplateLinks } from "../mtmt";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { Eraser } from "lucide-react";

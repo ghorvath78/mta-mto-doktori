@@ -1,18 +1,5 @@
-import {
-    activeMTMTUserIdAtom,
-    atomsToJSON,
-    getAuthorRecord,
-    getPdfDocumentStyles,
-    getPdfSection,
-    loadMTMTCitations,
-    mtmtPubListAtom,
-    mtmtScientometricsAtom,
-    savePdfWithFormData,
-    savePubItemSummary,
-    store,
-    type FormData,
-    type FormDescriptor
-} from "@repo/form-engine";
+import { atomsToJSON, getPdfDocumentStyles, getPdfSection, savePdfWithFormData, store, type FormData, type FormDescriptor } from "@repo/form-engine";
+import { activeMTMTUserIdAtom, getAuthorRecord, loadMTMTCitations, mtmtPubListAtom, mtmtScientometricsAtom, savePubItemSummary } from "@repo/mtmt-tools";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
 export const savePDF = async (descriptor: FormDescriptor, formData: FormData) => {

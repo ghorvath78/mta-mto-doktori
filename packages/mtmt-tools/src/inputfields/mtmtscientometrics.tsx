@@ -1,5 +1,5 @@
 import { Button, Spinner } from "@repo/ui";
-import { resolveFieldKey, type FieldInputProps } from "../forms";
+import { resolveFieldKey, type FieldInputProps } from "@repo/form-engine";
 import { loadScientometrics, mtmtPubListStatusAtom, mtmtScientometricsAtom, mtmtScientometricsStatusAtom } from "../mtmt";
 import { useAtom, useAtomValue } from "jotai";
 import { ListRestart } from "lucide-react";

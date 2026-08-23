@@ -1,11 +1,11 @@
 import { Info } from "lucide-react";
-import { useAtom, useAtomValue } from "jotai";
-import { formInfoAtom, infoPanelOpenAtom } from "./atoms.ts";
+import { useAtom } from "jotai";
+import { infoPanelOpenAtom } from "./atoms.ts";
 import { useMemo, useState } from "react";
 import { Button, Spinner, AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@repo/ui";
+import type { FormInfo } from "./index.ts";
 
-export const ButtonPanel = () => {
-    const formInfo = useAtomValue(formInfoAtom);
+export const ButtonPanel = ({ formInfo }: { formInfo: FormInfo }) => {
     const [infoOpen, setInfoOpen] = useAtom(infoPanelOpenAtom);
     const [dialogText, setDialogText] = useState("");
 

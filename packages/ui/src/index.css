@@ -3,6 +3,7 @@
 
 @source "../src";
 @source "../../form-engine/src";
+@source "../../mtmt-tools/src";
 @source "../../../apps/kerelmezoi/src";
 @source "../../../apps/eloterjesztoi/src";
 

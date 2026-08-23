@@ -99,6 +99,9 @@ importers:
       '@repo/form-engine':
         specifier: workspace:*
         version: link:../../packages/form-engine
+      '@repo/mtmt-tools':
+        specifier: workspace:*
+        version: link:../../packages/mtmt-tools
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -163,6 +166,9 @@ importers:
       '@repo/form-engine':
         specifier: workspace:*
         version: link:../../packages/form-engine
+      '@repo/mtmt-tools':
+        specifier: workspace:*
+        version: link:../../packages/mtmt-tools
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -255,6 +261,40 @@ importers:
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.12.0
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
+
+  packages/mtmt-tools:
+    dependencies:
+      '@repo/form-engine':
+        specifier: workspace:*
+        version: link:../form-engine
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../ui
+      jotai:
+        specifier: ^2.18.0
+        version: 2.18.0(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.4)
+      lucide-react:
+        specifier: ^0.545.0
+        version: 0.545.0(react@19.2.4)
+      react:
+        specifier: ^19.1.1
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
       '@types/node':
         specifier: ^24.7.0
         version: 24.12.0

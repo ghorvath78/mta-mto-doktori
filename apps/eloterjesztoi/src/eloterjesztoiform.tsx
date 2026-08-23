@@ -1,7 +1,7 @@
-import { readJsonFromPdf, mtmtPubSummaryCacheAtom, store, type FormInfo, type AuthorData } from "@repo/form-engine";
+import { readJsonFromPdf, store, type FormInfo } from "@repo/form-engine";
 import { atomsFromJSON, createAtomsFromDescriptor, getFromObjectByKey, type FormDescriptor } from "@repo/form-engine";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
-import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, type PubItemSummary } from "@repo/form-engine";
+import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, mtmtPubSummaryCacheAtom, type AuthorData, type PubItemSummary } from "@repo/mtmt-tools";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
