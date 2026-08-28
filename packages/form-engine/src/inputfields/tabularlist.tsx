@@ -1,22 +1,16 @@
-import { store } from "@repo/form-engine";
-import type { FormData, GroupDescriptor } from "@repo/form-engine";
-import { useAtomValue } from "jotai";
+import { useFieldValue, useValueStore } from "../hooks";
+import type { FieldDescriptor, GroupDescriptor } from "../types";
 
-export const TabularList = ({ group, formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
-    const length = parseInt(useAtomValue(formData[group.lengthSource ?? ""] || [0])[0] || "0");
-    const colNames = group.fields.map((f) => f.label ?? f.key);
-    const colWidths = group.fields.map((f) => f.attribs?.colWidth ?? "");
-    const colIsLink = group.fields.map((f) => f.type === "link");
+export const TabularList = ({ group, keyPrefix }: { group: GroupDescriptor; keyPrefix: string; index: number }) => {
+    const store = useValueStore();
+    const valueSource = group.valueSource ?? keyPrefix;
+    const lengthSource = group.lengthSource ?? `${keyPrefix}|_length`;
+    const length = parseInt(useFieldValue(lengthSource)) || 0;
+    const colNames = group.fields.map((f: FieldDescriptor) => f.label ?? f.key);
+    const colWidths = group.fields.map((f: FieldDescriptor) => f.attribs?.colWidth ?? "");
+    const colIsLink = group.fields.map((f: FieldDescriptor) => f.type === "link");
 
-    const tableData = Array.from({ length }).map((_, i) =>
-        group.fields
-            .map((f) => f.key)
-            .map((col) => {
-                const val = formData[`${group.valueSource}|${col}`];
-                if (!val) return "";
-                return store.get(val)[i] ?? "";
-            })
-    );
+    const tableData = Array.from({ length }).map((_, i) => group.fields.map((f: FieldDescriptor) => store.getField(`${valueSource}[[${i}]]|${f.key}`)));
 
     if (length === 0) {
         return <div className="italic text-gray-500">Nincs ilyen tevékenység megadva</div>;

@@ -1,29 +1,16 @@
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { getConditionInputValue, isConditionSatisfied, type FieldDescriptor, type FormData } from "./forms";
-import { infoFieldAtom } from "./atoms";
+import type { FieldDescriptor } from "./types";
+import { useCondition } from "./conditions";
+import { useSetInfoState } from "./infostate";
 
-const trueConditionAtom = atom(["true"]);
-
-export const FieldWrapper = ({
-    fieldDescriptor,
-    formData,
-    index,
-    children
-}: {
-    fieldDescriptor: FieldDescriptor;
-    formData: FormData;
-    index: number;
-    children: React.ReactNode;
-}) => {
-    const setInfoField = useSetAtom(infoFieldAtom);
-    const conditionValues = useAtomValue(fieldDescriptor.conditionKey ? formData[fieldDescriptor.conditionKey] : trueConditionAtom);
-    const isVisible = isConditionSatisfied(conditionValues, index, fieldDescriptor.conditionValue ?? getConditionInputValue(["true"], 0));
+export const FieldWrapper = ({ fieldDescriptor, children }: { fieldDescriptor: FieldDescriptor; children: React.ReactNode }) => {
+    const isVisible = useCondition(fieldDescriptor);
+    const setInfoField = useSetInfoState();
 
     return (
         <div
             style={{ display: isVisible ? "block" : "none" }}
-            onMouseEnter={() => setInfoField(fieldDescriptor.helpText ?? "")}
-            onMouseLeave={() => setInfoField("")}
+            onMouseEnter={() => setInfoField({ field: fieldDescriptor.helpText ?? "" })}
+            onMouseLeave={() => setInfoField({ field: "" })}
         >
             {children}
         </div>

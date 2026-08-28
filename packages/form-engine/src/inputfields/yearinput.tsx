@@ -1,13 +1,11 @@
+import { useFieldWithValueSource } from "@/hooks";
+import type { FieldInputProps } from "@/types";
+import { getFieldLabel, isFieldReadonly } from "@/utils";
 import { InputGroup, InputGroupInput } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
-import { atom, useAtom } from "jotai";
 import type React from "react";
 
-const emptyValueAtom = atom<string[]>([]);
-
-export const YearInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey] ?? emptyValueAtom);
+export const YearInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const inline = fieldDescr.attribs?.inline !== false;
     const readonly = isFieldReadonly(fieldDescr);
@@ -39,16 +37,14 @@ export const YearInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputP
         if (text.includes("-")) e.preventDefault();
     };
 
-    const fieldName = `${resolvedFieldKey}-${index}`;
-
     return (
         <div className={baseClass}>
-            <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldName}>
+            <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldKey}>
                 {label}
             </label>
             {readonly && (
-                <div id={fieldName} className="py-1 px-2 mb-1 flex-3">
-                    {value[index] ?? ""}
+                <div id={fieldKey} className="py-1 px-2 mb-1 flex-3">
+                    {value ?? ""}
                 </div>
             )}
             {!readonly && (
@@ -59,23 +55,19 @@ export const YearInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputP
                         min={minYear}
                         max={maxYear}
                         step={1}
-                        id={fieldName}
-                        name={fieldName}
-                        value={value[index] ?? ""}
+                        id={fieldKey}
+                        name={fieldKey}
+                        value={value ?? ""}
                         readOnly={readonly}
                         onKeyDown={preventDash}
                         onPaste={preventPasteWithDash}
                         onChange={(e) => {
                             const sanitized = e.target.value.replaceAll("-", "");
-                            const newValue = [...value];
-                            newValue[index] = sanitized;
-                            setValue(newValue);
+                            setValue(sanitized);
                         }}
                         onBlur={(e) => {
                             const normalized = normalizeYear(e.target.value);
-                            const newValue = [...value];
-                            newValue[index] = normalized;
-                            setValue(newValue);
+                            setValue(normalized);
                         }}
                     />
                 </InputGroup>

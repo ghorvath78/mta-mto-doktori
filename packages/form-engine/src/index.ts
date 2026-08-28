@@ -1,19 +1,9 @@
 export * from "./formroot.tsx";
-export * from "./forms.ts";
+export * from "./hooks.tsx";
 export * from "./inputfieldstore.ts";
 export * from "./inputfieldprinters.ts";
-export { store } from "./atoms.ts";
-export {
-    createAtomsFromDescriptor,
-    atomsToJSON,
-    atomsFromJSON,
-    getFromObjectByKey,
-    deleteFromFormArray,
-    appendToFormArray,
-    moveUpInFormArray,
-    moveDownInFormArray
-} from "./forms.ts";
-export type { FormDescriptor, FormData, FormInfo, FieldDescriptor, GroupDescriptor, PageDescriptor, PageWrapperComponent } from "./forms.ts";
+export type { FormDescriptor, FormInfo, FieldDescriptor, GroupDescriptor, PageDescriptor, PageWrapperComponent } from "./types.ts";
+export { FormStore } from "./formstore.ts";
 export { invertedText, cD } from "./utils.tsx";
 export { SelectOrAddField } from "./inputfields/selectoraddinput.tsx";
 export { readJsonFromPdf, chooseAndLoadPdf, chooseAndLoadJSON } from "./pdfloader.ts";

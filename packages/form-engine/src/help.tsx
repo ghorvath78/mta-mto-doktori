@@ -1,6 +1,5 @@
-import { useAtomValue } from "jotai";
-import { infoFieldAtom, infoSectionAtom } from "./atoms";
 import { Info } from "lucide-react";
+import { useInfoState } from "./infostate";
 
 const generalHelpText = `Űrlap mentése / betöltése\n\nAz Űrlap mentése” gomb egy PDF-et készít és tölt le, amelyet kétféleképpen használhat:\n• Csatolható a doktori pályázathoz.\n• Később visszatölthető („Űrlap betöltése” gomb), és folytatható a kitöltés és szerkesztés.\n\nFontos: csak azt a PDF-et lehet betölteni, amit ez a program készített (más forrásból származó PDF-ekből a kitöltött adatok nem tölthetők vissza megbízhatóan).\n\nTipp: őrizze meg a mentett PDF-et, ez a szerkeszthető „munkapéldány”.`;
 
@@ -18,8 +17,7 @@ const InfoBlock = ({ text }: { text: string }) => {
 };
 
 export const Help = () => {
-    const infoField = useAtomValue(infoFieldAtom);
-    const infoSection = useAtomValue(infoSectionAtom);
+    const { infoField, infoSection } = useInfoState();
 
     return (
         <div className="flex-1 border-l p-4 max-w-[480px] bg-background border-l-1 border-primary space-y-4 overflow-y-auto">

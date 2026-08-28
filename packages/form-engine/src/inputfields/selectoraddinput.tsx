@@ -9,25 +9,25 @@ import {
     ComboboxList,
     ComboboxTrigger
 } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
-import { useAtom } from "jotai";
+import { useFieldWithValueSource } from "..";
+import type { FieldInputProps } from "@/types";
+import { getFieldLabel, isFieldReadonly } from "@/utils";
 
-export const SelectOrAddInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+export const SelectOrAddInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const readonly = isFieldReadonly(fieldDescr);
     const choices = (fieldDescr.attribs?.options as string[] | undefined) ?? [];
     const type = (fieldDescr.attribs?.type as string | undefined) ?? "elem";
     const addNew = fieldDescr.type === "select" ? false : fieldDescr.attribs?.addNew !== false;
 
-    const extChoices = !choices.includes(value[index]) && value[index] !== "" ? [...choices, value[index]] : choices;
+    const extChoices = !choices.includes(value) && value !== "" ? [...choices, value] : choices;
 
     if (readonly) {
         return (
             <div className="flex items-center space-x-2 min-w-0">
                 <div className="text-end w-1/4 shrink-0 font-medium leading-[0.95em]">{label}</div>
-                <div className="flex flex-1 min-w-0 py-1 px-2">{value[index] || <span className="italic text-gray-500">Nincs megadva</span>}</div>
+                <div className="flex flex-1 min-w-0 py-1 px-2">{value || <span className="italic text-gray-500">Nincs megadva</span>}</div>
             </div>
         );
     }
@@ -37,13 +37,11 @@ export const SelectOrAddInput = ({ formData, fieldKey, index, fieldDescr }: Fiel
             <div className="text-end w-1/4 shrink-0 font-medium leading-[0.95em]">{label}</div>
             <SelectOrAddField
                 className="flex flex-1 min-w-0"
-                value={value[index] ?? ""}
+                value={value ?? ""}
                 type={type}
                 choices={extChoices}
                 onChange={(newValue) => {
-                    const newValues = [...value];
-                    newValues[index] = newValue;
-                    setValue(newValues);
+                    setValue(newValue);
                 }}
                 addNew={addNew}
             />

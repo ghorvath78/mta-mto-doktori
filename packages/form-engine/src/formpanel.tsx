@@ -1,13 +1,16 @@
 import { useState } from "react";
-import type { FormData, FormDescriptor, PageDescriptor } from "./forms";
 import { Page } from "./page";
 import { atom, useAtomValue } from "jotai";
+import { useFormInfo } from "./hooks";
+import type { FormDescriptor, PageDescriptor } from "./types";
 
 declare const BUILD_DATE: string;
 
 const trueAtom = atom(true);
 
-export const FormPanel = ({ formName, descriptor, formData }: { formName: string; descriptor: FormDescriptor; formData: FormData }) => {
+export const FormPanel = () => {
+    const formInfo = useFormInfo();
+    const { formName, descriptor } = formInfo;
     const [activePage, setActivePage] = useState(descriptor ? Object.keys(descriptor)[0] : "");
 
     return (
@@ -16,7 +19,7 @@ export const FormPanel = ({ formName, descriptor, formData }: { formName: string
                 <PageSelector activePage={activePage} setActivePage={setActivePage} pages={descriptor} />
                 <div className="w-[1px] bg-primary" />
                 <div className="flex-3 flex min-h-0 min-w-0 overflow-y-auto overflow-x-hidden relative">
-                    <Page descriptor={descriptor[activePage]} formData={formData} keyPrefix={`${formName}|${descriptor[activePage].key}`} />
+                    <Page descriptor={descriptor[activePage]} keyPrefix={`${formName}|${descriptor[activePage].key}`} />
                 </div>
             </div>
             <div className="fixed bottom-1 left-1 text-xs text-muted-foreground">v{BUILD_DATE}</div>
@@ -58,7 +61,7 @@ export const PageSelector = ({ activePage, setActivePage, pages }: { activePage:
     return (
         <nav className="w-1/4 border-r pr-4">
             <ul className="space-y-2">
-                {Object.entries(pages).map(([pageKey, page]) => (
+                {Object.entries(pages).map(([pageKey, page]: [string, PageDescriptor]) => (
                     <PageSelectorItem key={pageKey} pageKey={pageKey} page={page} active={activePage === pageKey} setActivePage={setActivePage} />
                 ))}
             </ul>

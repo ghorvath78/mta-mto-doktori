@@ -1,42 +1,30 @@
 import { ArrowDown, ArrowUp, Plus, Trash } from "lucide-react";
 import { Button } from "@repo/ui";
 import { type JSX } from "react";
-import {
-    appendToFormArray,
-    deleteFromFormArray,
-    getConditionInputValue,
-    isConditionSatisfied,
-    moveDownInFormArray,
-    moveUpInFormArray,
-    type FieldDescriptor,
-    type FormData,
-    type GroupDescriptor
-} from "./forms";
-import { atom, useAtomValue } from "jotai";
 import { FieldWrapper } from "./fieldwrapper";
 import { getInputFieldComponent } from "./inputfieldstore";
+import { useCondition } from "./conditions";
+import { useFieldValue, useValueStore } from "./hooks";
+import type { FieldDescriptor, GroupDescriptor } from "./types";
 
 const GroupLabel = ({ title }: { title: string }) => {
     return <div className="font-bold italic my-2">{title}</div>;
 };
 
-const trueConditionAtom = atom(["true"]);
-
 export const GroupPanel = ({
     group,
-    formData,
     children,
+    index = -1,
     noLabel = false,
     className
 }: {
     group: GroupDescriptor;
-    formData: FormData;
     children: React.ReactNode;
+    index?: number;
     noLabel?: boolean;
     className?: string;
 }) => {
-    const conditionValues = useAtomValue(group.conditionKey ? formData[group.conditionKey] : trueConditionAtom);
-    const isVisible = isConditionSatisfied(conditionValues, 0, group.conditionValue ?? getConditionInputValue(["true"], 0));
+    const isVisible = useCondition(group, index);
     const isImportant = group.attribs?.important === true;
 
     return (
@@ -47,41 +35,20 @@ export const GroupPanel = ({
     );
 };
 
-export const GroupArrayPanel = ({
-    Component,
-    group,
-    formData,
-    keyPrefix,
-    readonly
-}: {
-    Component: React.FC<{ group: typeof group; formData: typeof formData; keyPrefix: string; index: number; readonly?: boolean; attribs?: any }>;
-    group: GroupDescriptor;
-    formData: FormData;
-    keyPrefix: string;
-    source?: string;
-    readonly?: boolean;
-}) => {
-    const conditionValues = useAtomValue(group.conditionKey ? formData[group.conditionKey] : trueConditionAtom);
-    const isVisible = isConditionSatisfied(conditionValues, 0, group.conditionValue ?? getConditionInputValue(["true"], 0));
-    const arrayLength = useAtomValue(group.lengthSource ? formData[group.lengthSource] : (formData[`${keyPrefix}|_length`] ?? trueConditionAtom));
-    const length = parseInt(arrayLength[0]);
+export const GroupArrayPanel = ({ group, keyPrefix, readonly }: { group: GroupDescriptor; keyPrefix: string; source?: string; readonly?: boolean }) => {
+    const store = useValueStore();
+    const isVisible = useCondition(group);
+    const arrayLengthSource = group.lengthSource ? group.lengthSource : `${keyPrefix}|_length`;
+    const length = parseInt(useFieldValue(arrayLengthSource));
 
     const label: JSX.Element | null = group.label ? <GroupLabel title={group.label} /> : null;
 
     const groups: JSX.Element[] = [];
     for (let i = 0; i < length; i++) {
         groups.push(
-            <GroupPanel key={`${group.key}-${i}`} group={group} formData={formData} className="pb-1" noLabel={true}>
+            <GroupPanel key={`${group.key}-${i}`} group={group} index={i} className="pb-1" noLabel={true}>
                 <div className="space-y-1">
-                    <Component
-                        group={group}
-                        formData={formData}
-                        keyPrefix={keyPrefix}
-                        index={i}
-                        key={`${group.key}-${i}-comp`}
-                        readonly={readonly}
-                        attribs={group.attribs}
-                    />
+                    <Group group={group} keyPrefix={`${keyPrefix}[[${i}]]`} key={`${group.key}-${i}-comp`} readonly={readonly} />
                     <div className="absolute top-0 left-0 flex flex-col translate-x-[-100%]">
                         {!readonly && length > (group.arrayMin ?? 0) && (
                             <Button
@@ -89,7 +56,7 @@ export const GroupArrayPanel = ({
                                 variant="ghost"
                                 size="sm"
                                 title="Blokk törlése"
-                                onClick={() => deleteFromFormArray(group, formData, keyPrefix, i)}
+                                onClick={() => store.deleteFromFormArray(group, keyPrefix, i)}
                             >
                                 <Trash />
                             </Button>
@@ -100,7 +67,7 @@ export const GroupArrayPanel = ({
                                 variant="ghost"
                                 size="sm"
                                 title="Blokk feljebb mozgatása"
-                                onClick={() => moveUpInFormArray(group, formData, keyPrefix, i)}
+                                onClick={() => store.moveUpInFormArray(group, keyPrefix, i)}
                             >
                                 <ArrowUp />
                             </Button>
@@ -111,7 +78,7 @@ export const GroupArrayPanel = ({
                                 variant="ghost"
                                 size="sm"
                                 title="Blokk lejjebb mozgatása"
-                                onClick={() => moveDownInFormArray(group, formData, keyPrefix, i)}
+                                onClick={() => store.moveDownInFormArray(group, keyPrefix, i)}
                             >
                                 <ArrowDown />
                             </Button>
@@ -128,7 +95,7 @@ export const GroupArrayPanel = ({
             <div className="space-y-2 mb-1">{groups.length > 0 ? groups : <div className="italic text-muted-foreground">Nincs megjeleníthető blokk.</div>}</div>
             {!readonly && groups.length < (group.arrayMax ?? Infinity) && (
                 <div className="flex mb-1">
-                    <Button variant="outline" onClick={() => appendToFormArray(group, formData, keyPrefix)} className="ml-auto w-64">
+                    <Button variant="outline" onClick={() => store.appendToFormArray(group, keyPrefix)} className="ml-auto w-64">
                         <Plus /> {group.arrayAddLabel ?? "Új blokk hozzáadása"}
                     </Button>
                 </div>
@@ -137,29 +104,17 @@ export const GroupArrayPanel = ({
     );
 };
 
-export const Group = ({
-    group,
-    formData,
-    keyPrefix,
-    index,
-    readonly = false
-}: {
-    group: GroupDescriptor;
-    formData: FormData;
-    keyPrefix: string;
-    index: number;
-    readonly?: boolean;
-}) => {
+export const Group = ({ group, keyPrefix, readonly = false }: { group: GroupDescriptor; keyPrefix: string; readonly?: boolean }) => {
     const components: JSX.Element[] = [];
     for (const field of group.fields) {
         const key = `${keyPrefix}|${field.key}`;
         const fieldDescr: FieldDescriptor = readonly && field.readonly === undefined ? { ...field, readonly: true } : field;
-        const inputProps = { formData, fieldKey: key, index, fieldDescr };
+        const inputProps = { fieldKey: key, fieldDescr };
         const InputField = getInputFieldComponent(fieldDescr.type);
         const component = InputField ? <InputField {...inputProps} /> : null;
         if (component) {
             components.push(
-                <FieldWrapper fieldDescriptor={field} formData={formData} key={key} index={index}>
+                <FieldWrapper fieldDescriptor={field} key={key}>
                     {component}
                 </FieldWrapper>
             );

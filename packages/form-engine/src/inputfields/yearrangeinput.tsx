@@ -1,9 +1,9 @@
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
-import { useAtom } from "jotai";
+import { useFieldWithValueSource } from "@/hooks";
+import type { FieldInputProps } from "@/types";
+import { getFieldLabel, isFieldReadonly } from "@/utils";
 
-export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+export const YearRangeInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const readonly = isFieldReadonly(fieldDescr);
 
@@ -24,7 +24,7 @@ export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldI
         return String(clamped);
     };
 
-    const rawRange = value?.[index] ?? "";
+    const rawRange = value ?? "";
     const [start, end] = rawRange.split("-").map((v) => v.trim());
 
     const preventDash = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -36,11 +36,9 @@ export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldI
         if (text.includes("-")) e.preventDefault();
     };
 
-    const fieldName = `${resolvedFieldKey}-${index}`;
-
     return (
         <div className="flex items-baseline space-x-2">
-            <label className="text-end w-1/4 font-medium leading-[0.95em]" htmlFor={`${fieldName}-from`}>
+            <label className="text-end w-1/4 font-medium leading-[0.95em]" htmlFor={`${fieldKey}-from`}>
                 {label} kezdete:
             </label>
             <div className="flex flex-grow items-baseline space-x-2">
@@ -50,17 +48,15 @@ export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldI
                     min={minYear}
                     max={maxYear}
                     step={1}
-                    id={`${fieldName}-from`}
-                    name={`${fieldName}-from`}
+                    id={`${fieldKey}-from`}
+                    name={`${fieldKey}-from`}
                     value={start ?? ""}
                     readOnly={readonly}
                     onKeyDown={preventDash}
                     onPaste={preventPasteWithDash}
                     onChange={(e) => {
                         const sanitized = e.target.value.replaceAll("-", "");
-                        const newValue = [...value];
-                        newValue[index] = `${sanitized}-${end ?? ""}`;
-                        setValue(newValue);
+                        setValue(`${sanitized}-${end ?? ""}`);
                     }}
                     onBlur={(e) => {
                         const normalizedStart = normalizeYear(e.target.value);
@@ -69,12 +65,10 @@ export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldI
                         const nextEnd =
                             normalizedStart !== "" && normalizedEnd !== "" && Number(normalizedEnd) < Number(normalizedStart) ? normalizedStart : normalizedEnd;
 
-                        const newValue = [...value];
-                        newValue[index] = `${normalizedStart}-${nextEnd}`;
-                        setValue(newValue);
+                        setValue(`${normalizedStart}-${nextEnd}`);
                     }}
                 />
-                <label className="flex-0 mb-1 font-medium" htmlFor={`${fieldName}-to`}>
+                <label className="flex-0 mb-1 font-medium" htmlFor={`${fieldKey}-to`}>
                     vége:
                 </label>
                 <input
@@ -83,17 +77,15 @@ export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldI
                     min={minYear}
                     max={maxYear}
                     step={1}
-                    id={`${fieldName}-to`}
-                    name={`${fieldName}-to`}
+                    id={`${fieldKey}-to`}
+                    name={`${fieldKey}-to`}
                     value={end ?? ""}
                     readOnly={readonly}
                     onKeyDown={preventDash}
                     onPaste={preventPasteWithDash}
                     onChange={(e) => {
                         const sanitized = e.target.value.replaceAll("-", "");
-                        const newValue = [...value];
-                        newValue[index] = `${start ?? ""}-${sanitized}`;
-                        setValue(newValue);
+                        setValue(`${start ?? ""}-${sanitized}`);
                     }}
                     onBlur={(e) => {
                         const normalizedStart = normalizeYear(start ?? "");
@@ -102,9 +94,7 @@ export const YearRangeInput = ({ formData, fieldKey, index, fieldDescr }: FieldI
                         const nextEnd =
                             normalizedStart !== "" && normalizedEnd !== "" && Number(normalizedEnd) < Number(normalizedStart) ? normalizedStart : normalizedEnd;
 
-                        const newValue = [...value];
-                        newValue[index] = `${normalizedStart}-${nextEnd}`;
-                        setValue(newValue);
+                        setValue(`${normalizedStart}-${nextEnd}`);
                     }}
                 />
             </div>

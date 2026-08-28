@@ -1,20 +1,24 @@
 import { Button, Spinner } from "@repo/ui";
-import { resolveFieldKey, type FieldInputProps } from "@repo/form-engine";
-import { loadScientometrics, mtmtPubListStatusAtom, mtmtScientometricsAtom, mtmtScientometricsStatusAtom } from "../mtmt";
-import { useAtom, useAtomValue } from "jotai";
 import { ListRestart } from "lucide-react";
 import { useCallback, useEffect } from "react";
+import { useMTMTScientometrics } from "../scientometrics";
+import { useMTMTPubList } from "../publist";
+import type { FieldInputProps } from "@repo/form-engine/types";
+import { useFieldWithValueSource } from "@repo/form-engine/hooks";
 
-export const MTMTScientometrics = ({ fieldKey, formData, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
-    const data = useAtomValue(mtmtScientometricsAtom);
-    const status = useAtomValue(mtmtScientometricsStatusAtom);
-    const pubListStatus = useAtomValue(mtmtPubListStatusAtom);
+export const MTMTScientometrics = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
+    const [status, data, scientometrics] = useMTMTScientometrics();
+    const [pubListStatus, _, pubList] = useMTMTPubList();
+
+    const loadScientometrics = useCallback(() => {
+        const userId = pubList.userId;
+        scientometrics.load(userId);
+    }, [scientometrics, value]);
 
     useEffect(() => {
         if (status === "done") {
-            setValue([JSON.stringify(data)]);
+            setValue(JSON.stringify(data));
         }
     }, [status, data, setValue]);
 

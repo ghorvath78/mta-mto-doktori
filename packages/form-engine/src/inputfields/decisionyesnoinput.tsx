@@ -1,10 +1,10 @@
+import { useFieldWithValueSource } from "@/hooks";
+import type { FieldInputProps } from "@/types";
+import { getFieldLabel, isFieldReadonly } from "@/utils";
 import { SimpleCombobox, SimpleComboboxContent, SimpleComboboxInput, SimpleComboboxItem, SimpleComboboxList } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "../forms";
-import { useAtom } from "jotai";
 
-export const DecisionYesNoInput = ({ formData, index, fieldKey, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+export const DecisionYesNoInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const readonly = isFieldReadonly(fieldDescr);
     const items = ["igen", "nem"];
@@ -16,7 +16,7 @@ export const DecisionYesNoInput = ({ formData, index, fieldKey, fieldDescr }: Fi
         return (
             <div className={baseClass}>
                 <div className={labelClass}>{label}</div>
-                <div className="py-1 px-2 flex-3">{value[index] || <span className="italic text-gray-500">Nincs megadva</span>}</div>
+                <div className="py-1 px-2 flex-3">{value || <span className="italic text-gray-500">Nincs megadva</span>}</div>
             </div>
         );
     }
@@ -27,13 +27,11 @@ export const DecisionYesNoInput = ({ formData, index, fieldKey, fieldDescr }: Fi
             <SimpleCombobox
                 items={items}
                 multiple={false}
-                value={value[index] ?? ""}
+                value={value ?? ""}
                 onValueChange={(v: string | null) => {
                     const nextValue = v ?? "";
-                    if (value[index] === nextValue) return;
-                    const newValue = [...value];
-                    newValue[index] = nextValue;
-                    setValue(newValue);
+                    if (value === nextValue) return;
+                    setValue(nextValue);
                 }}
             >
                 <SimpleComboboxInput
@@ -44,10 +42,10 @@ export const DecisionYesNoInput = ({ formData, index, fieldKey, fieldDescr }: Fi
                 />
                 <SimpleComboboxContent>
                     <SimpleComboboxList>
-                        <SimpleComboboxItem key={resolvedFieldKey + "-igen"} value={"igen"}>
+                        <SimpleComboboxItem key={fieldKey + "-igen"} value={"igen"}>
                             igen
                         </SimpleComboboxItem>
-                        <SimpleComboboxItem key={resolvedFieldKey + "-nem"} value={"nem"}>
+                        <SimpleComboboxItem key={fieldKey + "-nem"} value={"nem"}>
                             nem
                         </SimpleComboboxItem>
                     </SimpleComboboxList>

@@ -1,27 +1,34 @@
-import { store } from "@repo/form-engine";
-import type { InputFieldPrinter } from "@repo/form-engine";
 import { removeSpecialUtf8KeepAccents } from "@repo/form-engine";
-import { getPubItemSummary, loadMTMTCitations, mtmtPubListAtom, mtmtPubSummaryCacheAtom, type PubItemSummary } from "./mtmt";
+import type { InputFieldPrinter } from "@repo/form-engine/types";
+import { getPubItemMinimal, type PubItemMinimal, type PubListMinimal } from "./publistminimal";
+import type { PubList } from "./publist";
+import { loadMTMTCitations } from "./citations";
 
 export const MTMTUserFieldPrinter: InputFieldPrinter = (label, value) => {
     return [[{ text: label }, { text: value || "-", link: value ? `https://m2.mtmt.hu/api/author/${value}` : undefined, style: value ? "link" : undefined }]];
 };
 
 export const MTMTItemFieldPrinter: InputFieldPrinter = async (label, value, fieldDescr, options) => {
-    const mtmt = String(value);
-    const pubSummaries = store.get(mtmtPubSummaryCacheAtom);
-    let pubSummary: PubItemSummary | null = pubSummaries[mtmt] ?? null;
+    const fieldContext = options.fieldContext;
+    const formInfo = fieldContext?.formInfo;
+    if (!fieldContext || !formInfo) return [];
+    const pubListMinimal = formInfo["mtmtPubListMinimal"] as PubListMinimal;
+    const mtid = String(value);
+    let pubSummary: PubItemMinimal | null = pubListMinimal?.getPublication?.(mtid) ?? null;
     if (!pubSummary) {
-        const pub = store.get(mtmtPubListAtom).find((item) => String(item.mtid) === mtmt);
-        pubSummary = pub ? getPubItemSummary(pub) : null;
+        const pubList = formInfo["mtmtPubList"] as PubList;
+        const pub = pubList?.getPublication?.(mtid) ?? null;
+        pubSummary = pub ? getPubItemMinimal(pub) : null;
     }
-    if (fieldDescr.type === "mtmtCitation" && !pubSummary && mtmt) {
-        const fieldContext = options.fieldContext;
-        const pubKey = String(fieldDescr.attribs?.pubKey ?? "");
-        const pubMTMT = fieldContext?.formData[pubKey] ? store.get(fieldContext.formData[pubKey])[fieldContext.index] : "";
+    if (fieldDescr.type === "mtmtCitation" && !pubSummary && mtid) {
+        let pubKey = String(fieldDescr.attribs?.pubKey ?? "");
+        if (formInfo.valueStore.isFieldinArrayGroup(pubKey)) {
+            pubKey = formInfo.valueStore.getFieldKeyForArrayItem(pubKey, fieldContext.index ?? 0);
+        }
+        const pubMTMT = formInfo.valueStore.getField(pubKey) || "";
         const citations = pubMTMT ? await loadMTMTCitations(pubMTMT) : [];
-        const pub = citations.find((item) => String(item.mtid) === mtmt);
-        pubSummary = pub ? getPubItemSummary(pub) : null;
+        const pub = citations.find((item) => String(item.mtid) === mtid);
+        pubSummary = pub ? getPubItemMinimal(pub) : null;
     }
 
     const el = document.createElement("div");
@@ -49,8 +56,8 @@ export const MTMTItemFieldPrinter: InputFieldPrinter = async (label, value, fiel
                   [...baseIndex, { text: String(baseLabel) }],
                   [
                       {
-                          text: mtmt,
-                          link: `https://m2.mtmt.hu/api/publication/${mtmt}`,
+                          text: mtid,
+                          link: `https://m2.mtmt.hu/api/publication/${mtid}`,
                           style: "link"
                       },
                       { text: authors, style: "authors" },
@@ -64,9 +71,9 @@ export const MTMTItemFieldPrinter: InputFieldPrinter = async (label, value, fiel
               [
                   { text: String(baseLabel) },
                   {
-                      text: mtmt || "nincs megadva",
-                      link: mtmt ? `https://m2.mtmt.hu/api/publication/${mtmt}` : undefined,
-                      style: mtmt ? "link" : undefined
+                      text: mtid || "nincs megadva",
+                      link: mtid ? `https://m2.mtmt.hu/api/publication/${mtid}` : undefined,
+                      style: mtid ? "link" : undefined
                   }
               ]
           ];

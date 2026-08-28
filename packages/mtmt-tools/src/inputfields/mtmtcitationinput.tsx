@@ -1,30 +1,51 @@
+import { getEffectiveFieldKey, useFieldValue, useFieldWithValueSource, useValueStore } from "@repo/form-engine";
+import type { FieldInputProps } from "@repo/form-engine/types";
+import { getFieldLabel, isFieldReadonly } from "@repo/form-engine/utils";
 import { Button, Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "@repo/form-engine";
-import { getRating, loadMTMTCitations, mtmtPubListAtom, mtmtPubSummaryCacheAtom, processMTMTTemplateLinks } from "../mtmt";
-import { atom, useAtom, useAtomValue } from "jotai";
 import { Eraser } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMTMTPubList } from "../publist";
+import { useMTMTPubListMinimal } from "../publistminimal";
+import { loadMTMTCitations } from "../citations";
+import { processMTMTTemplateLinks } from "../mtmtutils";
+import { getPubRating, type PubItem } from "../pubitem";
 
 type PubChoice = { mtid: string; title: string; template: string };
 
-const emptyConditionAtom = atom(new Array(100).fill(""));
-
-export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+export const MTMTCitationInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const store = useValueStore();
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const readonly = isFieldReadonly(fieldDescr);
     const attribs = fieldDescr.attribs;
     const [choices, setChoices] = useState<PubChoice[]>([]);
-    const mtmtPubList = useAtomValue(mtmtPubListAtom);
-    const pubMTMT = useAtomValue(attribs?.pubKey ? (formData[String(attribs.pubKey)] ?? emptyConditionAtom) : emptyConditionAtom);
+    const [_, mtmtPubList] = useMTMTPubList();
+
+    const pubKey = useMemo(() => {
+        let pubKey = "";
+        if (attribs?.pubKey) {
+            pubKey = attribs.pubKey;
+            // check if field is inside an array, and if so, adjust the pubKey to point to the correct array index
+            const key = getEffectiveFieldKey(fieldKey, fieldDescr.valueSource, store);
+            const bracketStart = key.indexOf("[[");
+            const ix = bracketStart >= 0 ? parseInt(key.slice(bracketStart + 2), 10) : -1;
+            if (ix >= 0) {
+                // create indexed key from pubKey, e.g. $parent[[ix]]|pubKey
+                const keyParts = pubKey.split("|");
+                pubKey = `$${keyParts.slice(0, -1).join("|")}[[${ix}]]|${keyParts[keyParts.length - 1]}`;
+            }
+        }
+        return pubKey;
+    }, [fieldKey, fieldDescr.valueSource, store, attribs?.pubKey]);
+
+    const pubMTMT = useFieldValue(pubKey);
     const [loading, setLoading] = useState(false);
     const activePub = useRef<string>("");
-    const mtmtPubSummaryCache = useAtomValue(mtmtPubSummaryCacheAtom);
+    const mtmtPubSummaryCache = useMTMTPubListMinimal();
 
     useEffect(() => {
         let mounted = true;
-        const toLoad = pubMTMT[index];
+        const toLoad = pubMTMT;
         if (toLoad !== activePub.current) {
             if (readonly && mtmtPubSummaryCache[toLoad]) return;
             // console.log("cache:", mtmtPubSummaryCache);
@@ -35,9 +56,7 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
                     // no publication selected, clear choices
                     if (mounted) {
                         setChoices([]);
-                        const newValue = [...value];
-                        newValue[index] = "";
-                        setValue(newValue);
+                        setValue("");
                         setLoading(false);
                     }
                     activePub.current = "";
@@ -49,10 +68,8 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
                         console.log("Loaded citations:", citations);
                         setChoices(citations);
                         // if the current value is not in the new choices, clear it
-                        if (!citations.find((c) => String(c.mtid) === value[index])) {
-                            const newValue = [...value];
-                            newValue[index] = "";
-                            setValue(newValue);
+                        if (!citations.find((c) => String(c.mtid) === value)) {
+                            setValue("");
                         }
                         activePub.current = toLoad;
                         setLoading(false);
@@ -61,9 +78,7 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
                 } catch (e) {
                     if (mounted) {
                         setChoices([]);
-                        const newValue = [...value];
-                        newValue[index] = "";
-                        setValue(newValue);
+                        setValue("");
                         setLoading(false);
                     }
                     activePub.current = "";
@@ -75,29 +90,37 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
         return () => {
             mounted = false;
         };
-    }, [mtmtPubList, pubMTMT, index, value, setValue]);
+    }, [mtmtPubList, pubMTMT, value, setValue]);
 
     const cachedSummary = useMemo(() => {
-        const mtid = value[index];
+        const mtid = value;
         if (!mtid) return null;
         return mtmtPubSummaryCache[mtid] || null;
-    }, [mtmtPubSummaryCache, value, index]);
+    }, [mtmtPubSummaryCache, value]);
 
     const template = useCallback(
         (node: HTMLDivElement | null) => {
             // A template-hez az összes choices-ból keressük (a kiválasztott érték megjelenítéséhez)
-            const inner = cachedSummary?.template ?? choices.find((c) => String(c.mtid) === value[index])?.template ?? "";
+            const inner = cachedSummary?.template ?? choices.find((c) => String(c.mtid) === value)?.template ?? "";
             if (inner && node) {
                 node.innerHTML = inner;
                 processMTMTTemplateLinks(node);
             }
         },
-        [choices, value, index, cachedSummary]
+        [choices, value, cachedSummary]
     );
 
     const rating = useMemo(() => {
-        return cachedSummary?.rating ?? getRating(mtmtPubList, value[index]);
-    }, [mtmtPubList, value, index, cachedSummary]);
+        if (cachedSummary?.rating) {
+            return cachedSummary.rating;
+        } else {
+            const activeChoice = choices.find((c) => String(c.mtid) === value);
+            if (activeChoice) {
+                return getPubRating(activeChoice as PubItem);
+            }
+            return "";
+        }
+    }, [choices, value, cachedSummary]);
 
     const description = (
         <div className="w-3/4 px-2 text-sm mtmt-publication">
@@ -114,14 +137,12 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
                     <div className="flex flex-1 items-center">
                         <PubSelectField
                             className="flex flex-1"
-                            value={value[index] ?? ""}
+                            value={value ?? ""}
                             choices={choices as PubChoice[]}
                             onChange={(newValue) => {
-                                const newValues = [...value];
-                                newValues[index] = newValue;
-                                setValue(newValues);
+                                setValue(newValue);
                             }}
-                            parentSelected={pubMTMT[index] ?? ""}
+                            parentSelected={pubMTMT ?? ""}
                             loading={loading}
                         />
                         {attribs?.clearable && (
@@ -130,9 +151,7 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
                                 size="icon-sm"
                                 className="ml-2 hover:bg-background"
                                 onClick={() => {
-                                    const newValues = [...value];
-                                    newValues[index] = "";
-                                    setValue(newValues);
+                                    setValue("");
                                 }}
                             >
                                 <Eraser />
@@ -140,10 +159,10 @@ export const MTMTCitationInput = ({ formData, fieldKey, index, fieldDescr }: Fie
                         )}
                     </div>
                 )}
-                {readonly && value[index] && <>{loading ? <span className="w-3/4 px-2 italic text-gray-500">Betöltés alatt...</span> : description}</>}
-                {readonly && !value[index] && <div className="w-3/4 px-2 italic text-gray-500">Nincs megadva</div>}
+                {readonly && value && <>{loading ? <span className="w-3/4 px-2 italic text-gray-500">Betöltés alatt...</span> : description}</>}
+                {readonly && !value && <div className="w-3/4 px-2 italic text-gray-500">Nincs megadva</div>}
             </div>
-            {!readonly && value[index] && choices.length > 0 && (
+            {!readonly && value && choices.length > 0 && (
                 <div className="flex items-center space-x-2 m-2">
                     <div className="w-1/4" />
                     {description}

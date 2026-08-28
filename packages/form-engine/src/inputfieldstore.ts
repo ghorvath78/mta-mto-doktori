@@ -1,4 +1,3 @@
-import type { InputFieldPrinter, InputFieldRegistration, InputFieldType } from "./forms";
 import { BirthDataInput } from "./inputfields/birthdatainput";
 import { DecisionTextInput } from "./inputfields/decisiontext";
 import { DecisionYesNoInput } from "./inputfields/decisionyesnoinput";
@@ -17,6 +16,7 @@ import {
     SimpleFieldPrinter,
     YearRangeFieldPrinter
 } from "./inputfieldprinters.ts";
+import type { InputFieldPrinter, InputFieldRegistration, InputFieldType } from "./types.ts";
 
 export const inputFieldStore = new Map<string, InputFieldRegistration>();
 

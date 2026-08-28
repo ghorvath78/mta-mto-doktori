@@ -17,6 +17,7 @@ import { tudomanymetria } from "./lap-tudomanymetria";
 import { kozeletiTevekenyseg } from "./lap-kozeleti";
 import { osszefoglalas } from "./lap-osszefoglalas";
 import {
+    createMTMTTools,
     getRanking,
     loadMTMTCitations,
     loadMTMTPublications,
@@ -24,7 +25,10 @@ import {
     mtmtPubListAtom,
     mtmtPubListStatusAtom,
     mtmtScientometricsAtom,
-    mtmtScientometricsStatusAtom
+    mtmtScientometricsStatusAtom,
+    PubList,
+    PubListMinimal,
+    Scientometrics
 } from "@repo/mtmt-tools";
 import { FileDown, FileUp } from "lucide-react";
 import { savePDF } from "./pdfsaver";
@@ -45,6 +49,7 @@ export const kerelmezoiFormDescriptor: FormDescriptor = {
 };
 
 export const kerelmezoiFormData = createAtomsFromDescriptor(formName, kerelmezoiFormDescriptor);
+const mtmt = createMTMTTools();
 
 type JsonMap = Record<string, unknown>;
 
@@ -154,5 +159,6 @@ export const kerelmezoiFormInfo: FormInfo = {
                 setDialogMessage("");
             }
         }*/
-    ]
+    ],
+    ...mtmt
 };

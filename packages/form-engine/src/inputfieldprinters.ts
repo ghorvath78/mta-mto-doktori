@@ -1,4 +1,4 @@
-import type { FieldDescriptor, InputFieldPrinter } from "./forms";
+import type { FieldDescriptor, InputFieldPrinter } from "./types";
 
 const isInlineDisabled = (fieldDescr: FieldDescriptor) => fieldDescr.attribs?.inline === "false" || fieldDescr.attribs?.inline === false;
 

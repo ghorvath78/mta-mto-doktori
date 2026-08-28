@@ -1,6 +1,14 @@
-export * from "./mtmt";
 export { MTMTUserInput, MTMTIdFinder } from "./inputfields/mtmtuserinput";
 export { MTMTPubInput } from "./inputfields/mtmtpubinput";
 export { MTMTCitationInput } from "./inputfields/mtmtcitationinput";
 export { MTMTScientometrics } from "./inputfields/mtmtscientometrics";
 export { MTMTUserFieldPrinter, MTMTItemFieldPrinter } from "./inputfieldprinters";
+export * from "./mtmtutils";
+export * from "./mtmtfetch";
+export * from "./author";
+export * from "./pubitem";
+export * from "./publist";
+export * from "./publistminimal";
+export * from "./citations";
+export * from "./scientometrics";
+export { createMTMTTools } from "./registration";

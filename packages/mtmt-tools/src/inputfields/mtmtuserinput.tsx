@@ -1,3 +1,6 @@
+import { useFieldWithValueSource } from "@repo/form-engine";
+import type { FieldInputProps } from "@repo/form-engine/types";
+import { getFieldLabel, isFieldReadonly } from "@repo/form-engine/utils";
 import {
     Button,
     Input,
@@ -18,47 +21,44 @@ import {
     AlertDialogTitle,
     AlertDialogDescription
 } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps, type FormData } from "@repo/form-engine";
-import {
-    activeMTMTUserIdAtom,
-    getMTMTObject,
-    isValidMTMTId,
-    loadMTMTPublications,
-    loadScientometrics,
-    mtmtPubListStatusAtom,
-    mtmtScientometricsStatusAtom
-} from "../mtmt";
-import { useAtom, useAtomValue } from "jotai";
 import { Search } from "lucide-react";
 import { useRef, useState, useCallback } from "react";
+import { getMTMTObject } from "../mtmtfetch";
+import { isValidMTMTId } from "../mtmtutils";
 
-export const MTMTUserInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+import { useFormInfo } from "@repo/form-engine";
+import { useMTMTAuthorValue, useMTMTPubList, type PubList } from "../publist";
+import { Scientometrics, useMTMTScientometrics } from "../scientometrics";
+
+export const MTMTUserInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const readonly = isFieldReadonly(fieldDescr);
-    const onMTMTIdChange = fieldDescr.attribs?.onMTMTIdChange as ((id: string, formData: FormData, fieldKey: string, index: number) => void) | undefined;
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [activeMTMTUserId, setActiveMTMTUserId] = useAtom(activeMTMTUserIdAtom);
-    const mtmtPubListStatus = useAtomValue(mtmtPubListStatusAtom);
-    const mtmtScientometricsStatus = useAtomValue(mtmtScientometricsStatusAtom);
 
-    const fieldName = `${resolvedFieldKey}-${index}`;
+    const formInfo = useFormInfo();
+    if (!formInfo || "mtmtPubList" in formInfo === false) throw new Error("MTMTUserInput csak <FormProvider> alatt használható");
+    const pubList = formInfo["mtmtPubList"] as PubList;
+    const scientometrics = formInfo["mtmtScientometrics"] as Scientometrics;
+
+    const activeMTMTUserId = useMTMTAuthorValue();
+    const [mtmtPubListStatus] = useMTMTPubList();
+    const [mtmtScientometricsStatus] = useMTMTScientometrics();
 
     return (
         <div className="flex items-baseline space-x-2">
-            <label className={`block mb-1 font-medium text-end w-1/4 leading-[0.95em]`} htmlFor={fieldName}>
+            <label className={`block mb-1 font-medium text-end w-1/4 leading-[0.95em]`} htmlFor={fieldKey}>
                 {label}
             </label>
             {readonly && (
                 <a
-                    id={fieldName}
+                    id={fieldKey}
                     className="py-1 px-2 flex-3 formlink"
-                    href={`https://m2.mtmt.hu/api/author/${value[index]}`}
+                    href={`https://m2.mtmt.hu/api/author/${value}`}
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    {value[index]}
+                    {value}
                 </a>
             )}
             {!readonly && (
@@ -67,22 +67,18 @@ export const MTMTUserInput = ({ formData, fieldKey, index, fieldDescr }: FieldIn
                         <InputGroupInput
                             className="h-[unset] px-0 py-0 md:text-base"
                             disabled={mtmtPubListStatus === "loading"}
-                            id={fieldName}
-                            name={fieldName}
-                            value={value[index] ?? ""}
+                            id={fieldKey}
+                            name={fieldKey}
+                            value={value ?? ""}
                             onChange={(e) => {
-                                const newValue = [...value];
-                                newValue[index] = e.target.value;
-                                setValue(newValue);
+                                setValue(e.target.value);
                             }}
                             onBlur={(e) => {
                                 const id = e.target.value;
                                 if (isValidMTMTId(id)) {
-                                    if (onMTMTIdChange) onMTMTIdChange(id, formData, resolvedFieldKey, index);
-                                    else if (activeMTMTUserId !== id) {
-                                        setActiveMTMTUserId(id);
-                                        loadMTMTPublications(id).then(() => {
-                                            loadScientometrics();
+                                    if (activeMTMTUserId !== id) {
+                                        pubList.loadMTMTPublications(id).then(() => {
+                                            scientometrics.load(id);
                                         });
                                     }
                                 }
@@ -116,16 +112,12 @@ export const MTMTUserInput = ({ formData, fieldKey, index, fieldDescr }: FieldIn
                             setDialogOpen(false);
                         }}
                         onSelect={(id) => {
-                            const newValue = [...value];
-                            newValue[index] = id;
-                            setValue(newValue);
+                            setValue(id);
                             setDialogOpen(false);
                             if (isValidMTMTId(id)) {
-                                if (onMTMTIdChange) onMTMTIdChange(id, formData, resolvedFieldKey, index);
-                                else if (activeMTMTUserId !== id) {
-                                    setActiveMTMTUserId(id);
-                                    loadMTMTPublications(id).then(() => {
-                                        loadScientometrics();
+                                if (activeMTMTUserId !== id) {
+                                    pubList.loadMTMTPublications(id).then(() => {
+                                        scientometrics.load(id);
                                     });
                                 }
                             }

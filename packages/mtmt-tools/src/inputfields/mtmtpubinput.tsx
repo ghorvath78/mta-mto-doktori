@@ -1,16 +1,12 @@
+import { getEffectiveFieldKey, useFieldWithValueSource, useValueStore } from "@repo/form-engine/hooks";
+import type { FieldInputProps } from "@repo/form-engine/types";
+import { getFieldLabel, isFieldReadonly } from "@repo/form-engine/utils";
 import { Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
-import { getFieldLabel, isFieldReadonly, resolveFieldKey, type FieldInputProps } from "@repo/form-engine";
-import {
-    activeMTMTUserIdAtom,
-    getIndependentCitationCount,
-    getRanking,
-    getRating,
-    mtmtPubListAtom,
-    mtmtPubSummaryCacheAtom,
-    processMTMTTemplateLinks
-} from "../mtmt";
-import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMTMTAuthorValue, useMTMTPubList } from "../publist";
+import { getPubRating } from "../pubitem";
+import { useMTMTPubListMinimal } from "../publistminimal";
+import { processMTMTTemplateLinks } from "../mtmtutils";
 
 type PubChoice = { mtid: string; title: string; template: string };
 
@@ -23,22 +19,27 @@ const rankingAtLeast = (ranking: string, minRank: number | string): boolean => {
     return false;
 };
 
-export const MTMTPubInput = ({ formData, fieldKey, index, fieldDescr }: FieldInputProps) => {
-    const resolvedFieldKey = resolveFieldKey(fieldKey, fieldDescr);
-    const [value, setValue] = useAtom(formData[resolvedFieldKey]);
+export const MTMTPubInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
+    const store = useValueStore();
+    const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);
     const label = getFieldLabel(fieldDescr);
     const readonly = isFieldReadonly(fieldDescr);
     const attribs = fieldDescr.attribs;
     const [choices, setChoices] = useState<PubChoice[]>([]);
-    const mtmtPubList = useAtomValue(mtmtPubListAtom);
-    const mtmtPubSummaryCache = useAtomValue(mtmtPubSummaryCacheAtom);
+    const [_, mtmtPubList] = useMTMTPubList();
+    const pubItem = useMemo(() => mtmtPubList.find((c) => String(c.mtid) === value), [mtmtPubList, value]);
+    const mtmtPubSummaryCache = useMTMTPubListMinimal();
+    const pubItemSummary = useMemo(() => {
+        if (!value) return null;
+        return mtmtPubSummaryCache[value] ?? null;
+    }, [mtmtPubSummaryCache, value]);
 
     useEffect(() => {
         let filtered = mtmtPubList;
         if (attribs?.type === "journal") {
             filtered = filtered.filter((c) => "journal" in c);
             if (attribs?.minRank) {
-                filtered = filtered.filter((c) => rankingAtLeast(getRanking(c), String(attribs.minRank)));
+                filtered = filtered.filter((c) => rankingAtLeast(getPubRating(c), String(attribs.minRank)));
             }
             if (attribs?.maxAuthors) {
                 filtered = filtered.filter((c) => (c.authorships ? c.authorships.length <= Number(attribs.maxAuthors) : false));
@@ -58,35 +59,52 @@ export const MTMTPubInput = ({ formData, fieldKey, index, fieldDescr }: FieldInp
     // Ha unique=true, akkor kiszűrjük a már kiválasztott értékeket (kivéve a saját értékünket)
     const availableChoices = useMemo(() => {
         if (!attribs?.unique) return choices;
-        const selectedByOthers = new Set(value.filter((v, i) => i !== index && v !== "").map((v) => String(v)));
-        return choices.filter((c) => !selectedByOthers.has(String(c.mtid)));
-    }, [choices, value, index, attribs?.unique]);
 
-    const cachedSummary = useMemo(() => {
-        const mtid = value[index];
-        if (!mtid) return null;
-        return mtmtPubSummaryCache[mtid] || null;
-    }, [mtmtPubSummaryCache, value, index]);
+        // megnézzük, hogy a value egy tömb csoportban van-e, és kiszűrjük a már kiválasztott értékeket
+        const key = getEffectiveFieldKey(fieldKey, fieldDescr.valueSource, store);
+        const bracketStart = key.indexOf("[[");
+        const ix = bracketStart >= 0 ? parseInt(key.slice(bracketStart + 2), 10) : -1;
+        if (ix >= 0) {
+            // a tömb hosszát a store-ból nézzük meg
+            const keyParts = key.split("|");
+            const lengthKey = [...keyParts.slice(0, -1), "_length"].join("|");
+            const arrayLength = parseInt(store.data[lengthKey]) || 0;
+            // összeszedjük az összes tömb indexet (kivéve a saját indexünket), és kiszűrjük a már kiválasztott értékeket
+            const selectedByOthers = new Set(
+                Array.from({ length: arrayLength }, (_, i) => i)
+                    .filter((i) => i !== ix)
+                    .map((i) => {
+                        const otherKey = `$${keyParts.slice(0, -1).join("|")}[[${i}]]|${keyParts[keyParts.length - 1]}`;
+                        return store.getField(otherKey);
+                    })
+                    .filter((v) => v !== "")
+                    .map((v) => String(v))
+            );
+            return choices.filter((c) => !selectedByOthers.has(String(c.mtid)));
+        } else {
+            return choices;
+        }
+    }, [choices, value, attribs?.unique]);
 
     const template = useCallback(
         (node: HTMLDivElement | null) => {
             // A template-hez az összes choices-ból keressük (a kiválasztott érték megjelenítéséhez)
-            const inner = cachedSummary?.template ?? choices.find((c) => String(c.mtid) === value[index])?.template ?? "";
+            const inner = pubItemSummary?.template ?? choices.find((c) => String(c.mtid) === value)?.template ?? "";
             if (inner && node) {
                 node.innerHTML = inner;
                 processMTMTTemplateLinks(node);
             }
         },
-        [choices, value, index, cachedSummary]
+        [choices, value, pubItemSummary]
     );
 
     const rating = useMemo(() => {
-        return cachedSummary?.rating ?? getRating(mtmtPubList, value[index]);
-    }, [mtmtPubList, value, index, cachedSummary]);
+        return pubItemSummary?.rating ?? getPubRating(pubItem ?? { mtid: "", title: "", template: "" });
+    }, [mtmtPubList, value, pubItemSummary, pubItem]);
 
     const independentCitationCount = useMemo(() => {
-        return cachedSummary?.independentCitationCount ?? getIndependentCitationCount(mtmtPubList, value[index]);
-    }, [mtmtPubList, value, index, cachedSummary]);
+        return pubItemSummary?.independentCitationCount ?? pubItem?.independentCitationCount ?? 0;
+    }, [mtmtPubList, value, pubItemSummary, pubItem]);
 
     const description = (
         <div className="w-3/4 px-2 text-sm mtmt-publication">
@@ -103,20 +121,18 @@ export const MTMTPubInput = ({ formData, fieldKey, index, fieldDescr }: FieldInp
                 {!readonly && (
                     <PubSelectField
                         className="flex flex-grow"
-                        value={value[index] ?? ""}
+                        value={value ?? ""}
                         choices={availableChoices as PubChoice[]}
                         allChoices={choices as PubChoice[]}
                         onChange={(newValue) => {
-                            const newValues = [...value];
-                            newValues[index] = newValue;
-                            setValue(newValues);
+                            setValue(newValue);
                         }}
                     />
                 )}
-                {readonly && value[index] && <>{description}</>}
-                {readonly && !value[index] && <div className="w-3/4 px-2 italic text-gray-500">Nincs megadva</div>}
+                {readonly && value && <>{description}</>}
+                {readonly && !value && <div className="w-3/4 px-2 italic text-gray-500">Nincs megadva</div>}
             </div>
-            {!readonly && value[index] && choices.length > 0 && (
+            {!readonly && value && choices.length > 0 && (
                 <div className="flex items-center space-x-2 m-2">
                     <div className="w-1/4" />
                     {description}
@@ -140,7 +156,7 @@ export const PubSelectField = ({
     className?: string;
 }) => {
     const [search, setSearch] = useState("");
-    const activeUser = useAtomValue(activeMTMTUserIdAtom);
+    const activeUser = useMTMTAuthorValue();
 
     // A lookup-hoz használjuk az allChoices-t ha van, egyébként a choices-t
     const lookupChoices = allChoices ?? choices;

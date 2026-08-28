@@ -1,9 +1,8 @@
-import { useAtomValue } from "jotai";
-import { infoPanelOpenAtom } from "./atoms.ts";
 import { Help } from "./help.tsx";
 import { FormPanel } from "./formpanel";
 import { ButtonPanel } from "./buttonpanel";
-import type { FormInfo } from "./forms.ts";
+import { useFormInfo } from "./hooks.tsx";
+import { useInfoState } from "./infostate.ts";
 
 const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
     <header className="flex items-center bg-primary text-primary-foreground p-4">
@@ -17,15 +16,16 @@ const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
     </header>
 );
 
-export const MainScreen = ({ formInfo }: { formInfo: FormInfo }) => {
-    const infoOpen = useAtomValue(infoPanelOpenAtom);
+export const MainScreen = () => {
+    const formInfo = useFormInfo();
+    const { panelOpen: infoOpen } = useInfoState();
 
     return (
         <div className="flex min-h-svh flex-col bg-muted h-screen">
             <Header title={formInfo.title} subtitle={formInfo.subtitle ?? ""} />
             <ButtonPanel formInfo={formInfo} />
             <div className="flex-grow flex min-h-0">
-                <FormPanel formName={formInfo.name} descriptor={formInfo.descriptor} formData={formInfo.data} />
+                <FormPanel />
                 {infoOpen && <Help />}
             </div>
         </div>

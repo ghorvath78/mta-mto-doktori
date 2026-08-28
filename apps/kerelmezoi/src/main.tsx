@@ -6,11 +6,6 @@ import { MTMTCitationInput, MTMTItemFieldPrinter, MTMTPubInput, MTMTScientometri
 import { createForm } from "@repo/form-engine";
 import { kerelmezoiFormInfo } from "./kerelmezoiform";
 
-registerInputField("mtmtUser", { component: MTMTUserInput, printer: MTMTUserFieldPrinter });
-registerInputField("mtmtPub", { component: MTMTPubInput, printer: MTMTItemFieldPrinter });
-registerInputField("mtmtCitation", { component: MTMTCitationInput, printer: MTMTItemFieldPrinter });
-registerInputField("mtmtTable", { component: MTMTScientometrics, printer: EmptyFieldPrinter });
-
 const rootComponent = createForm(kerelmezoiFormInfo);
 
 createRoot(document.getElementById("root")!).render(rootComponent);

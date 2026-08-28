@@ -1,22 +1,23 @@
 import { Info } from "lucide-react";
-import { useAtom } from "jotai";
-import { infoPanelOpenAtom } from "./atoms.ts";
 import { useMemo, useState } from "react";
 import { Button, Spinner, AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@repo/ui";
 import type { FormInfo } from "./index.ts";
+import { useInfoState, useSetPanelOpen } from "./infostate.ts";
 
 export const ButtonPanel = ({ formInfo }: { formInfo: FormInfo }) => {
-    const [infoOpen, setInfoOpen] = useAtom(infoPanelOpenAtom);
+    const { panelOpen: infoOpen } = useInfoState();
+    const setInfoOpen = useSetPanelOpen();
+
     const [dialogText, setDialogText] = useState("");
 
     const buttons = useMemo(() => {
         if (formInfo.buttons) {
-            return formInfo.buttons.map((button, ix) => (
+            return formInfo.buttons.map((button: any, ix: number) => (
                 <Button
                     key={ix}
                     variant="outline"
                     onClick={async () => {
-                        await button.onClick(formInfo.data, (message) => {
+                        await button.onClick(formInfo.data, (message: string) => {
                             setDialogText(message);
                         });
                     }}
@@ -33,7 +34,7 @@ export const ButtonPanel = ({ formInfo }: { formInfo: FormInfo }) => {
         <div className="w-full bg-background flex items-center p-4 border-b-1 border-primary">
             <div className="flex items-center space-x-2">{buttons}</div>
             <div className="flex-grow" />
-            <Button variant={infoOpen ? "default" : "outline"} onClick={() => setInfoOpen((i) => !i)}>
+            <Button variant={infoOpen ? "default" : "outline"} onClick={() => setInfoOpen(!infoOpen)}>
                 Súgó
                 <Info />
             </Button>
