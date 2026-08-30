@@ -1,6 +1,6 @@
-import { useFieldWithValueSource } from "@/hooks";
-import type { FieldInputProps } from "@/types";
-import { isFieldReadonly } from "@/utils";
+import { useFieldWithValueSource } from "../hooks";
+import type { FieldInputProps } from "../types";
+import { isFieldReadonly } from "../utils";
 
 export const BirthDataInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const minYear = 1900;

@@ -1,8 +1,8 @@
 import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from "@repo/ui";
 import { ExternalLink } from "lucide-react";
-import type { FieldInputProps } from "@/types";
-import { getFieldLabel, isFieldReadonly } from "@/utils";
-import { useFieldWithValueSource } from "@/hooks";
+import type { FieldInputProps } from "../types";
+import { getFieldLabel, isFieldReadonly } from "../utils";
+import { useFieldWithValueSource } from "../hooks";
 
 export const TextInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);

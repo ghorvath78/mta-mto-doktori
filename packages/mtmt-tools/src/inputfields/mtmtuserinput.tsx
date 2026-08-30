@@ -1,6 +1,6 @@
 import { useFieldWithValueSource } from "@repo/form-engine";
-import type { FieldInputProps } from "@repo/form-engine/types";
-import { getFieldLabel, isFieldReadonly } from "@repo/form-engine/utils";
+import type { FieldInputProps } from "@repo/form-engine";
+import { getFieldLabel, isFieldReadonly } from "@repo/form-engine";
 import {
     Button,
     Input,

@@ -17,7 +17,7 @@ export const ButtonPanel = ({ formInfo }: { formInfo: FormInfo }) => {
                     key={ix}
                     variant="outline"
                     onClick={async () => {
-                        await button.onClick(formInfo.data, (message: string) => {
+                        await button.onClick(formInfo, (message: string) => {
                             setDialogText(message);
                         });
                     }}

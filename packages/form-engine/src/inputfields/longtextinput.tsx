@@ -1,6 +1,6 @@
-import { useFieldWithValueSource } from "@/hooks";
-import type { FieldInputProps } from "@/types";
-import { getFieldLabel, isFieldReadonly } from "@/utils";
+import { useFieldWithValueSource } from "../hooks";
+import type { FieldInputProps } from "../types";
+import { getFieldLabel, isFieldReadonly } from "../utils";
 import { Textarea } from "@repo/ui";
 
 export const LongTextInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {

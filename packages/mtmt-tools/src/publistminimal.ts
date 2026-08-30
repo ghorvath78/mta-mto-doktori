@@ -1,4 +1,4 @@
-import { useFormInfo } from "@repo/form-engine/hooks";
+import { useFormInfo } from "@repo/form-engine";
 import { getCachedCitations } from "./citations";
 import { getPubRating, type PubItem } from "./pubitem";
 import type { PubList } from "./publist";

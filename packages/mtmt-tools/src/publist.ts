@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { getMTMTObject } from "./mtmtfetch";
 import { getPubRating, type PubItem } from "./pubitem";
-import { useFormInfo } from "@repo/form-engine/hooks";
+import { useFormInfo } from "@repo/form-engine";
 
 export type MTMTPubListResponse = {
     content: PubItem[];

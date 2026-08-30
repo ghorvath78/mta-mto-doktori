@@ -1,6 +1,6 @@
-import { getEffectiveFieldKey, useFieldWithValueSource, useValueStore } from "@repo/form-engine/hooks";
-import type { FieldInputProps } from "@repo/form-engine/types";
-import { getFieldLabel, isFieldReadonly } from "@repo/form-engine/utils";
+import { getEffectiveFieldKey, useFieldWithValueSource, useValueStore } from "@repo/form-engine";
+import type { FieldInputProps } from "@repo/form-engine";
+import { getFieldLabel, getIndexFromKey, isFieldReadonly } from "@repo/form-engine";
 import { Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger } from "@repo/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMTMTAuthorValue, useMTMTPubList } from "../publist";
@@ -62,8 +62,7 @@ export const MTMTPubInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
 
         // megnézzük, hogy a value egy tömb csoportban van-e, és kiszűrjük a már kiválasztott értékeket
         const key = getEffectiveFieldKey(fieldKey, fieldDescr.valueSource, store);
-        const bracketStart = key.indexOf("[[");
-        const ix = bracketStart >= 0 ? parseInt(key.slice(bracketStart + 2), 10) : -1;
+        const ix = getIndexFromKey(key);
         if (ix >= 0) {
             // a tömb hosszát a store-ból nézzük meg
             const keyParts = key.split("|");

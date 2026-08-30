@@ -3,8 +3,8 @@ import { ListRestart } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { useMTMTScientometrics } from "../scientometrics";
 import { useMTMTPubList } from "../publist";
-import type { FieldInputProps } from "@repo/form-engine/types";
-import { useFieldWithValueSource } from "@repo/form-engine/hooks";
+import type { FieldInputProps } from "@repo/form-engine";
+import { useFieldWithValueSource } from "@repo/form-engine";
 
 export const MTMTScientometrics = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);

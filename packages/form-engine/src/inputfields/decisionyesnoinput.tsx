@@ -1,6 +1,6 @@
-import { useFieldWithValueSource } from "@/hooks";
-import type { FieldInputProps } from "@/types";
-import { getFieldLabel, isFieldReadonly } from "@/utils";
+import { useFieldWithValueSource } from "../hooks";
+import type { FieldInputProps } from "../types";
+import { getFieldLabel, isFieldReadonly } from "../utils";
 import { SimpleCombobox, SimpleComboboxContent, SimpleComboboxInput, SimpleComboboxItem, SimpleComboboxList } from "@repo/ui";
 
 export const DecisionYesNoInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {

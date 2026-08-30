@@ -1,6 +1,6 @@
-import { useFieldWithValueSource } from "@/hooks";
-import type { FieldInputProps } from "@/types";
-import { getFieldLabel, isFieldReadonly } from "@/utils";
+import { useFieldWithValueSource } from "../hooks";
+import type { FieldInputProps } from "../types";
+import { getFieldLabel, isFieldReadonly } from "../utils";
 import { InputGroup, InputGroupInput } from "@repo/ui";
 import type React from "react";
 

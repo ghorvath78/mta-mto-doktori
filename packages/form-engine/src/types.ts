@@ -9,7 +9,7 @@ export type FormInfo = {
     subtitle?: string;
     descriptor: FormDescriptor;
     valueStore: FormStore;
-    buttons?: { label: string; icon: JSX.Element; onClick: (formData: FormData, setDialogMessage: (message: string) => void) => Promise<void> }[];
+    buttons?: { label: string; icon: JSX.Element; onClick: (formInfo: FormInfo, setDialogMessage: (message: string) => void) => Promise<void> }[];
     [key: string]: any;
 };
 

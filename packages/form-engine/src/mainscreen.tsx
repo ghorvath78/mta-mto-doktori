@@ -1,7 +1,7 @@
 import { Help } from "./help.tsx";
 import { FormPanel } from "./formpanel";
 import { ButtonPanel } from "./buttonpanel";
-import { useFormInfo } from "./hooks.tsx";
+import { useFormInfo } from "./hooks.ts";
 import { useInfoState } from "./infostate.ts";
 
 const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (

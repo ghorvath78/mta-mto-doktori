@@ -20,3 +20,8 @@ export function getFieldLabel(fieldDescr: FieldDescriptor): string {
 export function isFieldReadonly(fieldDescr: FieldDescriptor): boolean {
     return fieldDescr.readonly === true;
 }
+
+export function getIndexFromKey(key: string): number {
+    const bracketStart = key.indexOf("[[");
+    return bracketStart >= 0 ? parseInt(key.slice(bracketStart + 2), 10) : -1;
+}

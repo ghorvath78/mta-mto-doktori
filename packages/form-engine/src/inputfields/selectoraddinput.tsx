@@ -10,8 +10,8 @@ import {
     ComboboxTrigger
 } from "@repo/ui";
 import { useFieldWithValueSource } from "..";
-import type { FieldInputProps } from "@/types";
-import { getFieldLabel, isFieldReadonly } from "@/utils";
+import type { FieldInputProps } from "../types";
+import { getFieldLabel, isFieldReadonly } from "../utils";
 
 export const SelectOrAddInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);

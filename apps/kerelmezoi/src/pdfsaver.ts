@@ -1,8 +1,7 @@
-import { atomsToJSON, getPdfDocumentStyles, getPdfSection, savePdfWithFormData, store, type FormData, type FormDescriptor } from "@repo/form-engine";
-import { activeMTMTUserIdAtom, getAuthorRecord, loadMTMTCitations, mtmtPubListAtom, mtmtScientometricsAtom, savePubItemSummary } from "@repo/mtmt-tools";
+import { getPdfDocumentStyles, getPdfSection, savePdfWithFormData, type FormData, type FormDescriptor } from "@repo/form-engine";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
-export const savePDF = async (descriptor: FormDescriptor, formData: FormData) => {
+export const savePDF = async (descriptor: FormDescriptor, formInfo: FormInfo) => {
     const doktoriMuSection = [];
     const formaKey = "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája";
     if (store.get(formData[formaKey])[0] === "monográfia vagy könyv") {

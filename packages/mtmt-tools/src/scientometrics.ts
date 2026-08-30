@@ -1,4 +1,4 @@
-import { useFormInfo } from "@repo/form-engine/hooks";
+import { useFormInfo } from "@repo/form-engine";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 type Listener = () => void;
@@ -33,6 +33,12 @@ export class Scientometrics {
             this.status = "error";
             this.notifyListeners();
         }
+    }
+
+    set(scientometrics: ScientometricsData) {
+        this.scientometrics = scientometrics;
+        this.status = "done";
+        this.notifyListeners();
     }
 
     subscribe: (listener: () => void) => () => boolean = (listener) => {

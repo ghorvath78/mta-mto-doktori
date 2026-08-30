@@ -1,6 +1,6 @@
-import { useFieldWithValueSource } from "@/hooks";
-import type { FieldInputProps } from "@/types";
-import { getFieldLabel, isFieldReadonly } from "@/utils";
+import { useFieldWithValueSource } from "../hooks";
+import type { FieldInputProps } from "../types";
+import { getFieldLabel, isFieldReadonly } from "../utils";
 
 export const YearRangeInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const [value, setValue] = useFieldWithValueSource(fieldKey, fieldDescr.valueSource);

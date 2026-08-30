@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useSyncExternalStore } from "react";
 import type { FormStore, Listener } from "./formstore";
 import type { FormInfo } from "./types";
+import { getIndexFromKey } from "./utils";
 
 export const StoreContext = createContext<FormStore | null>(null);
 export const FormInfoContext = createContext<FormInfo | null>(null);
@@ -43,8 +44,7 @@ export function getEffectiveFieldKey(key: string, valueSource: string | null | u
 
     if (valueSource) {
         // check if the key is an array, has an index part and extract the index
-        const bracketStart = key.indexOf("[[");
-        const ix = bracketStart >= 0 ? parseInt(key.slice(bracketStart + 2), 10) : -1;
+        const ix = getIndexFromKey(key);
         if (ix >= 0) {
             // check if valueSource is in an array group and ix is valid
             const keyParts = valueSource.split("|");

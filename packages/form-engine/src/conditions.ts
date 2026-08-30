@@ -1,9 +1,25 @@
+import type { FormStore } from "./formstore";
 import { useFieldValue, useValueStore } from "./hooks";
 import type { ConditionalDescriptor } from "./types";
 
 export function useCondition(cond: ConditionalDescriptor, ix = -1): boolean {
     const store = useValueStore();
+    const conditionKey = getConditionKey(store, cond, ix);
 
+    const inputValue = useFieldValue(conditionKey ?? "");
+
+    if (!cond.conditionKey) {
+        return true;
+    }
+    if (conditionKey === null) {
+        return false;
+    }
+
+    const conditionValue = cond.conditionValue ?? "true";
+    return matchesConditionValue(inputValue, conditionValue);
+}
+
+function getConditionKey(store: FormStore, cond: ConditionalDescriptor, ix = -1): string | null {
     let conditionKey = cond.conditionKey ?? "";
     if (conditionKey && ix >= 0) {
         // check if cond.conditionKey is in an array group and ix is valid
@@ -19,16 +35,19 @@ export function useCondition(cond: ConditionalDescriptor, ix = -1): boolean {
     }
 
     const keyExists = conditionKey !== "" && conditionKey in store.data;
-    // Hooks must run unconditionally, so subscribe before applying the early-return logic below.
-    const inputValue = useFieldValue(keyExists ? conditionKey : "");
+    return keyExists ? conditionKey : null;
+}
 
+export function evaluateCondition(store: FormStore, cond: ConditionalDescriptor, ix = -1): boolean {
     if (!cond.conditionKey) {
         return true;
     }
-    if (!keyExists) {
+    const conditionKey = getConditionKey(store, cond, ix);
+    if (!conditionKey) {
         return false;
     }
 
+    const inputValue = store.data[conditionKey];
     const conditionValue = cond.conditionValue ?? "true";
     return matchesConditionValue(inputValue, conditionValue);
 }
