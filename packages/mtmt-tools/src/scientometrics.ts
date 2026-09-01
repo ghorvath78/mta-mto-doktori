@@ -12,6 +12,7 @@ export class Scientometrics {
 
     async load(userId: string) {
         this.status = "loading";
+        this.notifyListeners();
         const link = "https://support.mtmt.hu/doktori_minimum/256_backend.php?author=" + userId;
         try {
             const response = await fetch(link);

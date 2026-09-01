@@ -1,22 +1,25 @@
-import { getPdfDocumentStyles, getPdfSection, savePdfWithFormData, type FormData, type FormDescriptor } from "@repo/form-engine";
+import { getPdfDocumentStyles, getPdfSection, savePdfWithFormData, type FormInfo } from "@repo/form-engine";
+import { getAuthorRecord, loadMTMTCitations, PubList, savePubListMinimal, type Scientometrics } from "@repo/mtmt-tools";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
-export const savePDF = async (descriptor: FormDescriptor, formInfo: FormInfo) => {
+export const savePDF = async (formInfo: FormInfo) => {
+    const store = formInfo.valueStore;
+    const descriptor = formInfo.descriptor;
     const doktoriMuSection = [];
     const formaKey = "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája";
-    if (store.get(formData[formaKey])[0] === "monográfia vagy könyv") {
+    if (store.getField(formaKey) === "monográfia vagy könyv") {
         doktoriMuSection.push({ text: "A könyv adatai:", style: "subsection" });
         doktoriMuSection.push(
-            ...(await getPdfSection(descriptor, formData, "Kérelmezői|A doktori mű adatai|Könyv adatai", "", { bibIndex: "true", bibLabel: "" }))
+            ...(await getPdfSection(descriptor, formInfo, "Kérelmezői|A doktori mű adatai|Könyv adatai", "", { bibIndex: "true", bibLabel: "" }))
         );
-    } else if (store.get(formData[formaKey])[0] === "rövid értekezés") {
+    } else if (store.getField(formaKey) === "rövid értekezés") {
         doktoriMuSection.push({ text: "A SJR D1 besorolású tudományos közleményeinek listája:", style: "subsection" });
         doktoriMuSection.push(
-            ...(await getPdfSection(descriptor, formData, "Kérelmezői|A doktori mű adatai|D1 közlemények listája", "", { bibIndex: "true", bibLabel: "" }))
+            ...(await getPdfSection(descriptor, formInfo, "Kérelmezői|A doktori mű adatai|D1 közlemények listája", "", { bibIndex: "true", bibLabel: "" }))
         );
         doktoriMuSection.push({ text: "A téziseket alátámasztó, legfeljebb 6 darab SJR legalább Q1 besorolású cikk:", style: "subsection" });
         doktoriMuSection.push(
-            ...(await getPdfSection(descriptor, formData, "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk", "", {
+            ...(await getPdfSection(descriptor, formInfo, "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk", "", {
                 bibIndex: "true",
                 bibLabel: ""
             }))
@@ -24,7 +27,7 @@ export const savePDF = async (descriptor: FormDescriptor, formInfo: FormInfo) =>
     }
 
     const hivatkozasok = store
-        .get(formData["Kérelmezői|Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|Hivatkozó közlemény"])
+        .getArray("Kérelmezői|Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|Hivatkozó közlemény")
         .filter((h) => h) as string[];
 
     const docDefinition: TDocumentDefinitions = {
@@ -33,26 +36,26 @@ export const savePDF = async (descriptor: FormDescriptor, formInfo: FormInfo) =>
             { text: "MTA Műszaki Tudományok Osztálya", italics: true },
             { text: "KÉRELMEZŐI ADATLAP", style: "header" },
             { text: "1. A kérelmező főbb adatai", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok", ""),
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Diplomák", (i) => (i === 0 ? "Egyetemi diploma:" : "Egyéb diploma:")),
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Tudományos fokozatok", "Tudományos fokozat:"),
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Tudományos címek", "Tudományos cím:"),
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Aktuális munkahelyek", "Munkahely (a benyújtáskor):"),
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Nyelvvizsgák", "Nyelvvizsga:"),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Diplomák", (i) => (i === 0 ? "Egyetemi diploma:" : "Egyéb diploma:")),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Tudományos fokozatok", "Tudományos fokozat:"),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Tudományos címek", "Tudományos cím:"),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Aktuális munkahelyek", "Munkahely (a benyújtáskor):"),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Nyelvvizsgák", "Nyelvvizsga:"),
             { text: "2. A kérelmező szakterületei", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Szakterületek", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Szakterületek", ""),
             {
                 text: "3. A kérelmező egyetemi oktatói, kutatóintézeti, ipari, tervezői vagy kivitelezői tevékenysége, munkahelyei (utolsó három)",
                 style: "section"
             },
-            await getPdfSection(descriptor, formData, "Kérelmezői|A kérelmező főbb adatai|Korábbi tevékenységek, munkahelyek", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A kérelmező főbb adatai|Korábbi tevékenységek, munkahelyek", ""),
             { text: "4. Az eljárás alapjául szolgáló doktori mű", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű", ""),
             ...doktoriMuSection,
             { text: "5. A kérelmező öt legfontosabb publikációja", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Legfontosabb publikációk|Öt legfontosabb publikáció", "", { bibIndex: "true", bibLabel: "" }),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Legfontosabb publikációk|Öt legfontosabb publikáció", "", { bibIndex: "true", bibLabel: "" }),
             { text: "6. A kérelmező öt legfontosabb hivatkozása", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Legfontosabb hivatkozások|Öt legfontosabb hivatkozás", "", {
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Legfontosabb hivatkozások|Öt legfontosabb hivatkozás", "", {
                 bibIndex: "true",
                 bibLabels: { "Hivatkozott közlemény": "Hivatkozott\nközlemény", "Hivatkozó közlemény": "Hivatkozó\nközlemény" },
                 indexColWidth: "75"
@@ -73,59 +76,59 @@ export const savePDF = async (descriptor: FormDescriptor, formInfo: FormInfo) =>
                 margin: [20, 10, 0, 10]
             },
             { text: "7. A kérelmező kiemelkedő megvalósult műszaki alkotásai", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása", "Műszaki alkotás", {
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása", "Műszaki alkotás", {
                 indexColWidth: "136",
                 sectionIndex: "true"
             }),
             { text: "8. A kérelmező tudományos közéleti tevékenysége", style: "section" },
             { text: "8.1. TDK témavezetés", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|TDK témavezetés", "", {
                 useGroupLabelAsHeader: "true"
             }),
             { text: "8.2. Részvétel graduális és doktori képzésben (tárgyelőadó, tárgyfelelős)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel graduális és doktori képzésben", ""),
             { text: "8.3. Részvétel doktori témavezetésben (fokozatot szerzett hallgatók)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók", ""),
             { text: "8.4. Részvétel tudományos zsűriben, kuratóriumban, bírálatokban", style: "subsection" },
             await getPdfSection(
                 descriptor,
-                formData,
+                formInfo,
                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos zsűriben, kuratóriumban, bírálatokban",
                 ""
             ),
             { text: "8.5. Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében, plenáris előadások", style: "subsection" },
             await getPdfSection(
                 descriptor,
-                formData,
+                formInfo,
                 "Kérelmezői|Tudományos közéleti tevékenység|Részvétel nemzetközi kongresszus/nemzetközi konferencia szervezésében",
                 ""
             ),
             { text: "8.6. Tisztség, kiemelt/választott tagság hazai és/vagy nemzetközi tudományos szervezetben", style: "subsection" },
             await getPdfSection(
                 descriptor,
-                formData,
+                formInfo,
                 "Kérelmezői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben",
                 ""
             ),
             { text: "8.7. Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", ""),
             { text: "8.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|Részvétel tudományos minősítésben", ""),
             { text: "8.9. Elnyert tudományos pályázat (témavezető, résztvevő)", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|Elnyert tudományos pályázat", ""),
             { text: "8.10. Külföldi szakmai munka", style: "subsection" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
             { text: "8.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
             await getPdfSection(
                 descriptor,
-                formData,
+                formInfo,
                 "Kérelmezői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés",
                 ""
             ),
             { text: "9. A doktori címet megalapozó tudományos munkásság rövid összefoglalója", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Munkásság összefoglalása|Összefoglaló szövege", "", { nolabel: "true" }),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Munkásság összefoglalása|Összefoglaló szövege", "", { nolabel: "true" }),
             { text: "10. Egyéb közlendők", style: "section" },
-            await getPdfSection(descriptor, formData, "Kérelmezői|Munkásság összefoglalása|Egyéb közlendők", "", { nolabel: "true" }),
+            await getPdfSection(descriptor, formInfo, "Kérelmezői|Munkásság összefoglalása|Egyéb közlendők", "", { nolabel: "true" }),
             //{ text: "Melléklet", italics: true, pageBreak: "before" },
             {
                 text: "Az MTMT segítségével elkészített tudománymetriai táblázat",
@@ -135,37 +138,35 @@ export const savePDF = async (descriptor: FormDescriptor, formInfo: FormInfo) =>
                 margin: [0, 0, 0, 5],
                 pageBreak: "before"
             },
-            ...getScientometricsPdfSection()
+            ...getScientometricsPdfSection(formInfo)
         ]
     };
 
-    const mtmtData = await collectMTMTDataToSave(descriptor, formData);
+    const mtmtData = await collectMTMTDataToSave(formInfo);
 
     savePdfWithFormData(docDefinition, "adatlap.pdf", {
-        "kerelmezo_form.json": JSON.stringify(atomsToJSON(formData), null, 4),
+        "kerelmezo_form.json": JSON.stringify(store.toJSON(), null, 4),
         "kerelmezo_mtmt.json": JSON.stringify(mtmtData, null, 4)
     });
 };
 
-async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormData): Promise<object> {
+async function collectMTMTDataToSave(formInfo: FormInfo): Promise<object> {
+    const store = formInfo.valueStore;
+    const descriptor = formInfo.descriptor;
     const mtids = new Set<string>();
     const citationParentMtids = new Set<string>();
 
     for (const page of Object.values(descriptor)) {
         for (const section of page.sections) {
             for (const group of section.groups) {
-                const groupLengthKey = `Kérelmezői|${page.key}|${section.key}|${group.key}|_length`;
-                const groupLength = group.isArray ? Number.parseInt(store.get(formData[groupLengthKey])?.[0] ?? "0", 10) || 0 : 1;
-
                 for (const field of group.fields) {
                     if (field.type !== "mtmtPub" && field.type !== "mtmtCitation") {
                         continue;
                     }
-
                     const fieldKey = `Kérelmezői|${page.key}|${section.key}|${group.key}|${field.key}`;
-                    const values = store.get(formData[fieldKey]) ?? [];
+                    const values = store.getArray(fieldKey);
 
-                    for (let index = 0; index < groupLength; index++) {
+                    for (let index = 0; index < values.length; index++) {
                         const mtid = values[index];
                         if (mtid) {
                             mtids.add(mtid);
@@ -175,8 +176,7 @@ async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormD
                             continue;
                         }
 
-                        const parentValues = store.get(formData[String(field.attribs.pubKey)]) ?? [];
-                        const parentMtid = parentValues[index]?.trim();
+                        const parentMtid = store.getArrayItem(field.attribs.pubKey, index).trim();
                         if (parentMtid) {
                             citationParentMtids.add(parentMtid);
                         }
@@ -188,9 +188,9 @@ async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormD
 
     await Promise.all(Array.from(citationParentMtids, (mtid) => loadMTMTCitations(mtid)));
 
-    const mtmtCache = savePubItemSummary(Array.from(mtids));
-    const pubList = store.get(mtmtPubListAtom) ?? [];
-    const allPubMTMTs: Record<string, string[]> = pubList.reduce(
+    const pubList = formInfo.mtmtPubList as PubList;
+    const mtmtCache = savePubListMinimal(Array.from(mtids), pubList);
+    const allPubMTMTs: Record<string, string[]> = pubList?.publications?.reduce(
         (acc, pub) => {
             const mtid = String(pub.mtid);
             if (!acc[mtid]) {
@@ -207,7 +207,7 @@ async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormD
         },
         {} as Record<string, string[]>
     );
-    const authorData = await getAuthorRecord(store.get(activeMTMTUserIdAtom));
+    const authorData = await getAuthorRecord(pubList.userId);
 
     return {
         "Adatlapon szereplő publikációk": mtmtCache,
@@ -216,9 +216,13 @@ async function collectMTMTDataToSave(descriptor: FormDescriptor, formData: FormD
     };
 }
 
-const getScientometricsPdfSection = (): Content[] => {
-    const status = store.get(mtmtScientometricsAtom);
-    const data = store.get(mtmtScientometricsAtom);
+const getScientometricsPdfSection = (formInfo: FormInfo): Content[] => {
+    if (!formInfo.mtmtScientometrics) {
+        return [{ text: "Nincs rendelkezésre álló adat", style: "nodata" }];
+    }
+    const scientometrics = formInfo.mtmtScientometrics as Scientometrics;
+    const status = scientometrics.status;
+    const data = scientometrics.scientometrics;
     if (!status || status.length === 0 || data.length === 0) {
         return [{ text: "Nincs rendelkezésre álló adat", style: "nodata" }];
     }

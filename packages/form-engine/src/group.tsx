@@ -14,17 +14,17 @@ const GroupLabel = ({ title }: { title: string }) => {
 export const GroupPanel = ({
     group,
     children,
-    index = -1,
+    keyPrefix,
     noLabel = false,
     className
 }: {
     group: GroupDescriptor;
     children: React.ReactNode;
-    index?: number;
+    keyPrefix: string;
     noLabel?: boolean;
     className?: string;
 }) => {
-    const isVisible = useCondition(group, index);
+    const isVisible = useCondition(group, keyPrefix);
     const isImportant = group.attribs?.important === true;
 
     return (
@@ -37,7 +37,7 @@ export const GroupPanel = ({
 
 export const GroupArrayPanel = ({ group, keyPrefix, readonly }: { group: GroupDescriptor; keyPrefix: string; source?: string; readonly?: boolean }) => {
     const store = useValueStore();
-    const isVisible = useCondition(group);
+    const isVisible = useCondition(group, keyPrefix);
     const arrayLengthSource = group.lengthSource ? group.lengthSource : `${keyPrefix}|_length`;
     const length = parseInt(useFieldValue(arrayLengthSource));
 
@@ -45,10 +45,11 @@ export const GroupArrayPanel = ({ group, keyPrefix, readonly }: { group: GroupDe
 
     const groups: JSX.Element[] = [];
     for (let i = 0; i < length; i++) {
+        const groupKeyPrefix = `${keyPrefix}[[${i}]]`;
         groups.push(
-            <GroupPanel key={`${group.key}-${i}`} group={group} index={i} className="pb-1" noLabel={true}>
+            <GroupPanel key={`${group.key}-${i}`} group={group} keyPrefix={groupKeyPrefix} className="pb-1" noLabel={true}>
                 <div className="space-y-1">
-                    <Group group={group} keyPrefix={`${keyPrefix}[[${i}]]`} key={`${group.key}-${i}-comp`} readonly={readonly} />
+                    <Group group={group} keyPrefix={groupKeyPrefix} key={`${group.key}-${i}-comp`} readonly={readonly} />
                     <div className="absolute top-0 left-0 flex flex-col translate-x-[-100%]">
                         {!readonly && length > (group.arrayMin ?? 0) && (
                             <Button
@@ -114,7 +115,7 @@ export const Group = ({ group, keyPrefix, readonly = false }: { group: GroupDesc
         const component = InputField ? <InputField {...inputProps} /> : null;
         if (component) {
             components.push(
-                <FieldWrapper fieldDescriptor={field} key={key}>
+                <FieldWrapper fieldDescriptor={field} keyPrefix={key} key={key}>
                     {component}
                 </FieldWrapper>
             );

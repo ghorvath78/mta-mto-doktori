@@ -183,7 +183,8 @@ export class FormStore {
                 objKey = keyParts.join("|");
             }
             const fullKey = prefix ? prefix + "|" + objKey : objKey;
-            if (createMissing || fullKey in this.data) {
+            if (objKey.startsWith("Kérelmezői|A kérelmező főbb adatai|Diplomák|Diplomák")) console.log("setField", objKey, fullKey, value);
+            if (createMissing || fullKey in this.data || this.isFieldinArrayGroup(fullKey)) {
                 this.data[fullKey] = value;
             }
         };
@@ -213,8 +214,8 @@ export class FormStore {
                         }
                     }
                 }
-
                 obj.forEach((item: unknown, i: number) => {
+                    if (arrayKey === "Kérelmezői|A kérelmező főbb adatai|Diplomák|Diplomák") console.log("Diplomák array fields", obj, item, i);
                     for (const field of fields) {
                         const value = item && typeof item === "object" ? String((item as Record<string, unknown>)[field] ?? "") : "";
                         setField(`${arrayKey}[[${i}]]|${field}`, value);
@@ -323,12 +324,21 @@ export class FormStore {
         return result;
     }
 
-    isFieldinArrayGroup(fieldKey: string): boolean {
-        // remove last part of the key, append "|_length" and check if it exists in the data
+    getArrayLength(fieldKey: string): number {
         const parts = fieldKey.split("|");
-        if (parts.length < 5) return false;
-        const lengthKey = [...parts.slice(0, -1), "_length"].join("|");
-        return lengthKey in this.data;
+        if (parts.length < 5) return 0;
+        // If the fieldKey contains indexed array notation, strip it to get the base group key
+        const groupPart = parts[3];
+        const m = groupPart.match(/^(.*)\[\[(\d+)\]\]$/);
+        if (m) {
+            parts[3] = m[1]; // Replace with base group key
+        }
+        const arrayKey = [...parts.slice(0, -1), "_length"].join("|");
+        return arrayKey in this.data ? parseInt(this.data[arrayKey]) || 0 : -1;
+    }
+
+    isFieldinArrayGroup(fieldKey: string): boolean {
+        return this.getArrayLength(fieldKey) >= 0;
     }
 
     getFieldKeyForArrayItem(fieldKey: string, index: number): string {
@@ -338,6 +348,20 @@ export class FormStore {
         const base = m ? m[1] : groupPart;
         const newGroupPart = `${base}[[${index}]]`;
         return [...parts.slice(0, 3), newGroupPart, parts[4]].join("|");
+    }
+
+    getArrayItem(fieldKey: string, index: number): string {
+        const itemKey = this.getFieldKeyForArrayItem(fieldKey, index);
+        return this.data[itemKey] || "";
+    }
+
+    getArray(fieldKey: string): string[] {
+        const length = this.getArrayLength(fieldKey);
+        const result: string[] = [];
+        for (let i = 0; i < length; i++) {
+            result.push(this.getArrayItem(fieldKey, i));
+        }
+        return result;
     }
 }
 

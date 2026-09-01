@@ -66,7 +66,7 @@ export const MTMTScientometrics = ({ fieldKey, fieldDescr }: FieldInputProps) =>
     }, []);
 
     useEffect(() => {
-        refreshTable(value[0]);
+        refreshTable(value);
     }, [value, refreshTable]);
 
     if (status !== "done" && status !== "loading") {

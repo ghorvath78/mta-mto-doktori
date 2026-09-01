@@ -21,24 +21,24 @@ export const Section = ({ section, keyPrefix }: { section: SectionDescriptor; ke
             attribs={section.attribs}
         >
             {section.groups.map((group, ix) => {
-                const groupKeyPrefix = `${keyPrefix}|${group.key}`;
+                const groupKeyPrefix = group.valueSource ?? `${keyPrefix}|${group.key}`;
                 return (
                     <Fragment key={ix}>
                         {group.customComponent && (
-                            <GroupPanel group={group}>
+                            <GroupPanel group={group} keyPrefix={groupKeyPrefix}>
                                 <group.customComponent group={group} keyPrefix={groupKeyPrefix} index={0} />
                             </GroupPanel>
                         )}
                         {!group.customComponent && !group.isArray && (
-                            <GroupPanel group={group}>
-                                <Group group={group} keyPrefix={group.valueSource ?? groupKeyPrefix} readonly={group.readonly} />
+                            <GroupPanel group={group} keyPrefix={groupKeyPrefix}>
+                                <Group group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
                             </GroupPanel>
                         )}
                         {!group.customComponent && group.isArray && !(group.attribs?.printTabular && group.readonly) && (
-                            <GroupArrayPanel group={group} keyPrefix={group.valueSource ?? groupKeyPrefix} readonly={group.readonly} />
+                            <GroupArrayPanel group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
                         )}
                         {!group.customComponent && group.isArray && group.attribs?.printTabular && group.readonly && (
-                            <GroupPanel group={group}>
+                            <GroupPanel group={group} keyPrefix={groupKeyPrefix}>
                                 <TabularList group={group} keyPrefix={groupKeyPrefix} index={0} />
                             </GroupPanel>
                         )}

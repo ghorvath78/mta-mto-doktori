@@ -31,7 +31,7 @@ export const MTMTCitationInput = ({ fieldKey, fieldDescr }: FieldInputProps) => 
             if (ix >= 0) {
                 // create indexed key from pubKey, e.g. $parent[[ix]]|pubKey
                 const keyParts = pubKey.split("|");
-                pubKey = `$${keyParts.slice(0, -1).join("|")}[[${ix}]]|${keyParts[keyParts.length - 1]}`;
+                pubKey = `${keyParts.slice(0, -1).join("|")}[[${ix}]]|${keyParts[keyParts.length - 1]}`;
             }
         }
         return pubKey;

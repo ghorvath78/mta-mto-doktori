@@ -1,4 +1,4 @@
-import type { PageDescriptor } from "@/forms";
+import type { PageDescriptor } from "@/types";
 
 export const osszefoglalas: PageDescriptor = {
     key: "Munkásság összefoglalása",

@@ -1,8 +1,4 @@
-import {
-    chooseAndLoadPdf,
-    FormStore,
-    type FormInfo
-} from "@repo/form-engine";
+import { chooseAndLoadPdf, FormStore, type FormInfo } from "@repo/form-engine";
 import { type FormDescriptor } from "@repo/form-engine";
 import { fobbAdatok } from "./lap-fobbadatok";
 import { doktoriMu } from "./lap-doktorimu";
@@ -12,11 +8,7 @@ import { alkotasok } from "./lap-alkotasok";
 import { tudomanymetria } from "./lap-tudomanymetria";
 import { kozeletiTevekenyseg } from "./lap-kozeleti";
 import { osszefoglalas } from "./lap-osszefoglalas";
-import {
-    createMTMTTools,
-    getPubRating,
-    loadMTMTCitations,
-} from "@repo/mtmt-tools";
+import { createMTMTTools, getPubRating, loadMTMTCitations } from "@repo/mtmt-tools";
 import { FileDown, FileUp } from "lucide-react";
 import { savePDF } from "./pdfsaver";
 import { getFromObjectByKey } from "@repo/form-engine";
@@ -111,7 +103,7 @@ export const kerelmezoiFormInfo: FormInfo = {
                 // hozzáadjuk a tudománymetriai adatokat is egy rejtett mezőbe
                 const scientometrics = JSON.stringify(mtmt.mtmtScientometrics.scientometrics);
                 valueStore.setField("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat", scientometrics);
-                await savePDF(kerelmezoiFormDescriptor, valueStore);
+                await savePDF(kerelmezoiFormInfo);
                 setDialogMessage("");
             }
         },

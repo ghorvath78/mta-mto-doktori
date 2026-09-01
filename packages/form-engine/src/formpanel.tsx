@@ -10,7 +10,7 @@ const trueAtom = atom(true);
 
 export const FormPanel = () => {
     const formInfo = useFormInfo();
-    const { formName, descriptor } = formInfo;
+    const { name: formName, descriptor } = formInfo;
     const [activePage, setActivePage] = useState(descriptor ? Object.keys(descriptor)[0] : "");
 
     return (

@@ -1,12 +1,16 @@
 import type { FormStore } from "./formstore";
 import { useFieldValue, useValueStore } from "./hooks";
 import type { ConditionalDescriptor } from "./types";
+import { getIndexFromKey } from "./utils";
 
-export function useCondition(cond: ConditionalDescriptor, ix = -1): boolean {
+export function useCondition(cond: ConditionalDescriptor, keyPrefix?: string): boolean {
     const store = useValueStore();
-    const conditionKey = getConditionKey(store, cond, ix);
-
+    const conditionKey = getConditionKey(store, cond, keyPrefix ? getIndexFromKey(keyPrefix) : -1);
     const inputValue = useFieldValue(conditionKey ?? "");
+
+    if (cond.conditionKey === "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|Műszaki alkotás típusa") {
+        console.log("useCondition: conditionKey:", cond.conditionKey, "EZ:", conditionKey);
+    }
 
     if (!cond.conditionKey) {
         return true;
@@ -33,6 +37,7 @@ function getConditionKey(store: FormStore, cond: ConditionalDescriptor, ix = -1)
             }
         }
     }
+    console.log("getConditionKey: conditionKey:", cond.conditionKey, "ix:", ix, "resolved conditionKey:", conditionKey);
 
     const keyExists = conditionKey !== "" && conditionKey in store.data;
     return keyExists ? conditionKey : null;
@@ -42,6 +47,7 @@ export function evaluateCondition(store: FormStore, cond: ConditionalDescriptor,
     if (!cond.conditionKey) {
         return true;
     }
+
     const conditionKey = getConditionKey(store, cond, ix);
     if (!conditionKey) {
         return false;

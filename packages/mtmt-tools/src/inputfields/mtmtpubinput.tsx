@@ -63,26 +63,9 @@ export const MTMTPubInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
         // megnézzük, hogy a value egy tömb csoportban van-e, és kiszűrjük a már kiválasztott értékeket
         const key = getEffectiveFieldKey(fieldKey, fieldDescr.valueSource, store);
         const ix = getIndexFromKey(key);
-        if (ix >= 0) {
-            // a tömb hosszát a store-ból nézzük meg
-            const keyParts = key.split("|");
-            const lengthKey = [...keyParts.slice(0, -1), "_length"].join("|");
-            const arrayLength = parseInt(store.data[lengthKey]) || 0;
-            // összeszedjük az összes tömb indexet (kivéve a saját indexünket), és kiszűrjük a már kiválasztott értékeket
-            const selectedByOthers = new Set(
-                Array.from({ length: arrayLength }, (_, i) => i)
-                    .filter((i) => i !== ix)
-                    .map((i) => {
-                        const otherKey = `$${keyParts.slice(0, -1).join("|")}[[${i}]]|${keyParts[keyParts.length - 1]}`;
-                        return store.getField(otherKey);
-                    })
-                    .filter((v) => v !== "")
-                    .map((v) => String(v))
-            );
-            return choices.filter((c) => !selectedByOthers.has(String(c.mtid)));
-        } else {
-            return choices;
-        }
+        const allValues = store.getArray(key);
+        const selectedByOthers = new Set(allValues.filter((v, i) => v !== "" && i !== ix).map((v) => String(v)));
+        return choices.filter((c) => !selectedByOthers.has(String(c.mtid)));
     }, [choices, value, attribs?.unique]);
 
     const template = useCallback(
