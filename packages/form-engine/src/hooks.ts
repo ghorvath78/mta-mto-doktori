@@ -4,16 +4,16 @@ import type { FormDescriptor } from "./types";
 import { getIndexFromKey } from "./utils";
 
 export const StoreContext = createContext<FormStore | null>(null);
-export const FormInfoContext = createContext<FormDescriptor | null>(null);
+export const FormDescriptorContext = createContext<FormDescriptor | null>(null);
 
-export function useFormInfo(): FormDescriptor {
-    const info = useContext(FormInfoContext);
-    if (!info) throw new Error("useFormInfo csak <FormProvider> alatt használható");
+export function useFormDescriptor(): FormDescriptor {
+    const info = useContext(FormDescriptorContext);
+    if (!info) throw new Error("useFormDescriptor csak <FormProvider> alatt használható");
     return info;
 }
 
 export function useValueStore(): FormStore {
-    const store = useContext(FormInfoContext)?.valueStore;
+    const store = useContext(FormDescriptorContext)?.valueStore;
     if (!store) throw new Error("useValueStore csak <FormProvider> alatt használható");
     return store;
 }

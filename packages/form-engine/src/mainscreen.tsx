@@ -1,7 +1,7 @@
 import { Help } from "./help.tsx";
 import { FormPanel } from "./formpanel";
 import { ButtonPanel } from "./buttonpanel";
-import { useFormInfo } from "./hooks.ts";
+import { useFormDescriptor } from "./hooks.ts";
 import { useInfoState } from "./infostate.ts";
 
 const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
@@ -17,13 +17,13 @@ const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
 );
 
 export const MainScreen = () => {
-    const formInfo = useFormInfo();
+    const formDescriptor = useFormDescriptor();
     const { panelOpen: infoOpen } = useInfoState();
 
     return (
         <div className="flex min-h-svh flex-col bg-muted h-screen">
-            <Header title={formInfo.title} subtitle={formInfo.subtitle ?? ""} />
-            <ButtonPanel formInfo={formInfo} />
+            <Header title={formDescriptor.title} subtitle={formDescriptor.subtitle ?? ""} />
+            <ButtonPanel formDescriptor={formDescriptor} />
             <div className="flex-grow flex min-h-0">
                 <FormPanel />
                 {infoOpen && <Help />}

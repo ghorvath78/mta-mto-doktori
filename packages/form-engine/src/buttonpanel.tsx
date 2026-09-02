@@ -4,20 +4,20 @@ import { Button, Spinner, AlertDialog, AlertDialogContent, AlertDialogDescriptio
 import type { FormDescriptor } from "./index.ts";
 import { useInfoState, useSetPanelOpen } from "./infostate.ts";
 
-export const ButtonPanel = ({ formInfo }: { formInfo: FormDescriptor }) => {
+export const ButtonPanel = ({ formDescriptor }: { formDescriptor: FormDescriptor }) => {
     const { panelOpen: infoOpen } = useInfoState();
     const setInfoOpen = useSetPanelOpen();
 
     const [dialogText, setDialogText] = useState("");
 
     const buttons = useMemo(() => {
-        if (formInfo.buttons) {
-            return formInfo.buttons.map((button: any, ix: number) => (
+        if (formDescriptor.buttons) {
+            return formDescriptor.buttons.map((button: any, ix: number) => (
                 <Button
                     key={ix}
                     variant="outline"
                     onClick={async () => {
-                        await button.onClick(formInfo, (message: string) => {
+                        await button.onClick(formDescriptor, (message: string) => {
                             setDialogText(message);
                         });
                     }}
@@ -28,7 +28,7 @@ export const ButtonPanel = ({ formInfo }: { formInfo: FormDescriptor }) => {
             ));
         }
         return null;
-    }, [formInfo]);
+    }, [formDescriptor]);
 
     return (
         <div className="w-full bg-background flex items-center p-4 border-b-1 border-primary">

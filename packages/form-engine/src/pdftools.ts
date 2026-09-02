@@ -14,7 +14,7 @@ declare const BUILD_DATE: string;
 export const groupToPdfDocDefinition = async (
     label: string,
     group: GroupDescriptor,
-    formInfo: FormDescriptor,
+    formDescriptor: FormDescriptor,
     groupKeyPrefix: string,
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
@@ -22,7 +22,7 @@ export const groupToPdfDocDefinition = async (
     const fields = group.fields || [];
     const index = getIndexFromKey(groupKeyPrefix);
 
-    const store = formInfo.valueStore;
+    const store = formDescriptor.valueStore;
     for (const field of fields) {
         if (field.attribs?.noPrint) continue;
         if (!evaluateCondition(store, field, index)) continue;
@@ -36,7 +36,7 @@ export const groupToPdfDocDefinition = async (
         if (!printer) {
             continue;
         }
-        body.push(...(await printer(fieldLabel, String(fieldValue), field, { ...options, fieldContext: { formInfo, index } })));
+        body.push(...(await printer(fieldLabel, String(fieldValue), field, { ...options, fieldContext: { formDescriptor, index } })));
     }
     if (body.length === 0) return [];
     const firstColWidth = options.firstColWidth ? parseInt(String(options.firstColWidth)) : 130;
@@ -61,11 +61,11 @@ export const groupToPdfDocDefinition = async (
 export const groupToPdfTableDefinition = async (
     label: string,
     group: GroupDescriptor,
-    formInfo: FormDescriptor,
+    formDescriptor: FormDescriptor,
     groupKeyPrefix: string,
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
-    const store = formInfo.valueStore;
+    const store = formDescriptor.valueStore;
     const fields = group.fields || [];
     const length = group.lengthSource ? parseInt(store.getField(group.lengthSource)) : parseInt(store.getField(`${groupKeyPrefix}|_length`)) || 0;
     // create rows array
@@ -130,18 +130,18 @@ export const groupToPdfTableDefinition = async (
 };
 
 export const getPdfSection = async (
-    formInfo: FormDescriptor,
+    formDescriptor: FormDescriptor,
     sectionKey: string,
     label: string | ((index?: number) => string),
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
     const rows: Content[] = [];
     const parts = sectionKey.split("|");
-    const page = formInfo.pages.find((p) => p.key === parts[1]);
+    const page = formDescriptor.pages.find((p) => p.key === parts[1]);
     if (!page) return [];
     const section = page.sections.find((s) => s.key === parts[2]);
     if (!section) return [];
-    const store = formInfo.valueStore;
+    const store = formDescriptor.valueStore;
     if (!evaluateCondition(store, section, 0)) return [];
     for (const group of section.groups) {
         if (group.isArray) {
@@ -153,13 +153,13 @@ export const getPdfSection = async (
                 continue;
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
-                rows.push(...(await groupToPdfTableDefinition(String(label), group, formInfo, `${sectionKey}|${group.key}`, options)));
+                rows.push(...(await groupToPdfTableDefinition(String(label), group, formDescriptor, `${sectionKey}|${group.key}`, options)));
             } else {
                 for (let i = 0; i < length; i++) {
                     const groupKeyPrefix = `${sectionKey}|${group.key}[[${i}]]`;
                     let grLabel: string = typeof label === "function" ? label(i) : label;
                     if (options.sectionIndex) grLabel = `${i + 1}. ${grLabel}`;
-                    rows.push(...(await groupToPdfDocDefinition(grLabel, group, formInfo, groupKeyPrefix, options)));
+                    rows.push(...(await groupToPdfDocDefinition(grLabel, group, formDescriptor, groupKeyPrefix, options)));
                 }
             }
         } else {
@@ -169,9 +169,9 @@ export const getPdfSection = async (
                 continue;
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
-                rows.push(...(await groupToPdfTableDefinition(String(label), group, formInfo, groupKeyPrefix, options)));
+                rows.push(...(await groupToPdfTableDefinition(String(label), group, formDescriptor, groupKeyPrefix, options)));
             } else {
-                rows.push(...(await groupToPdfDocDefinition(typeof label === "function" ? label() : label, group, formInfo, groupKeyPrefix, options)));
+                rows.push(...(await groupToPdfDocDefinition(typeof label === "function" ? label() : label, group, formDescriptor, groupKeyPrefix, options)));
             }
         }
     }

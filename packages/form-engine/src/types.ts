@@ -9,7 +9,7 @@ export type FormDescriptor = {
     subtitle?: string;
     pages: PageDescriptor[];
     valueStore: FormStore;
-    buttons?: { label: string; icon: JSX.Element; onClick: (formInfo: FormDescriptor, setDialogMessage: (message: string) => void) => Promise<void> }[];
+    buttons?: { label: string; icon: JSX.Element; onClick: (formDescriptor: FormDescriptor, setDialogMessage: (message: string) => void) => Promise<void> }[];
     [key: string]: any;
 };
 
@@ -81,7 +81,7 @@ export type ConditionalDescriptor = {
 };
 
 export type PdfPrintingContext = {
-    formInfo: FormDescriptor;
+    formDescriptor: FormDescriptor;
     index: number;
 };
 

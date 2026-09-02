@@ -2,6 +2,7 @@ import type { PageDescriptor } from "@/types";
 
 export const doktoriMu: PageDescriptor = {
     key: "A doktori mű adatai",
+    label: "A doktori mű",
     sections: [
         {
             key: "Az eljárás alapjául szolgáló doktori mű",

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { getMTMTObject } from "./mtmtfetch";
 import { getPubRating, type PubItem } from "./pubitem";
-import { useFormInfo } from "@repo/form-engine";
+import { useFormDescriptor } from "@repo/form-engine";
 
 export type MTMTPubListResponse = {
     content: PubItem[];
@@ -82,9 +82,9 @@ export class PubList {
 }
 
 export function useMTMTPubList(): [Status, PubItem[], PubList] {
-    const formInfo = useFormInfo();
-    if (!formInfo || "mtmtPubList" in formInfo === false) throw new Error("useMTMTPubListStatus csak <FormProvider> alatt használható");
-    const pubList = formInfo["mtmtPubList"] as PubList;
+    const formDescriptor = useFormDescriptor();
+    if (!formDescriptor || "mtmtPubList" in formDescriptor === false) throw new Error("useMTMTPubListStatus csak <FormProvider> alatt használható");
+    const pubList = formDescriptor["mtmtPubList"] as PubList;
 
     const subscribe = useCallback((fn: Listener) => pubList.subscribe(fn), [pubList]);
 
@@ -109,9 +109,9 @@ export function useMTMTPubList(): [Status, PubItem[], PubList] {
 }
 
 export function useMTMTAuthorValue(): string {
-    const formInfo = useFormInfo();
-    if (!formInfo || "mtmtPubList" in formInfo === false) throw new Error("useMTMTAuthorValue csak <FormProvider> alatt használható");
-    const pubList = formInfo["mtmtPubList"] as PubList;
+    const formDescriptor = useFormDescriptor();
+    if (!formDescriptor || "mtmtPubList" in formDescriptor === false) throw new Error("useMTMTAuthorValue csak <FormProvider> alatt használható");
+    const pubList = formDescriptor["mtmtPubList"] as PubList;
 
     const subscribe = useCallback((fn: Listener) => pubList.subscribe(fn), [pubList]);
     const getSnapshot = useCallback(() => pubList.userId, [pubList]);

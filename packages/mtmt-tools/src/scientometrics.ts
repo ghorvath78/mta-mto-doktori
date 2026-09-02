@@ -1,4 +1,4 @@
-import { useFormInfo } from "@repo/form-engine";
+import { useFormDescriptor } from "@repo/form-engine";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 type Listener = () => void;
@@ -54,21 +54,10 @@ export class Scientometrics {
     }
 }
 
-/*export function useMTMTScientometricsStatus(): Status {
-    const formInfo = useFormInfo();
-    if (!formInfo || "mtmtScientometrics" in formInfo === false) throw new Error("useMTMTScientometricsStatus csak <FormProvider> alatt használható");
-    const pubList = formInfo["mtmtScientometrics"] as Scientometrics;
-    const subscribe = useCallback((fn: Listener) => pubList.subscribe(fn), [pubList]);
-    const getSnapshot = useCallback(() => pubList.status, [pubList]);
-
-    const value = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
-    return value;
-}*/
-
 export function useMTMTScientometrics(): [Status, ScientometricsData, Scientometrics] {
-    const formInfo = useFormInfo();
-    if (!formInfo || "mtmtScientometrics" in formInfo === false) throw new Error("useMTMTScientometrics csak <FormProvider> alatt használható");
-    const scientometrics = formInfo["mtmtScientometrics"] as Scientometrics;
+    const formDescriptor = useFormDescriptor();
+    if (!formDescriptor || "mtmtScientometrics" in formDescriptor === false) throw new Error("useMTMTScientometrics csak <FormProvider> alatt használható");
+    const scientometrics = formDescriptor["mtmtScientometrics"] as Scientometrics;
 
     const subscribe = useCallback((fn: Listener) => scientometrics.subscribe(fn), [scientometrics]);
 

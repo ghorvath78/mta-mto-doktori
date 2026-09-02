@@ -10,22 +10,22 @@ export const MTMTUserFieldPrinter: InputFieldPrinter = (label, value) => {
 
 export const MTMTItemFieldPrinter: InputFieldPrinter = async (label, value, fieldDescr, options) => {
     const fieldContext = options.fieldContext;
-    const formInfo = fieldContext?.formInfo;
-    if (!fieldContext || !formInfo) return [];
-    const pubListMinimal = formInfo["mtmtPubListMinimal"] as PubListMinimal;
+    const formDescriptor = fieldContext?.formDescriptor;
+    if (!fieldContext || !formDescriptor) return [];
+    const pubListMinimal = formDescriptor["mtmtPubListMinimal"] as PubListMinimal;
     const mtid = String(value);
     let pubSummary: PubItemMinimal | null = pubListMinimal?.getPublication?.(mtid) ?? null;
     if (!pubSummary) {
-        const pubList = formInfo["mtmtPubList"] as PubList;
+        const pubList = formDescriptor["mtmtPubList"] as PubList;
         const pub = pubList?.getPublication?.(mtid) ?? null;
         pubSummary = pub ? getPubItemMinimal(pub) : null;
     }
     if (fieldDescr.type === "mtmtCitation" && !pubSummary && mtid) {
         let pubKey = String(fieldDescr.attribs?.pubKey ?? "");
-        if (formInfo.valueStore.isFieldinArrayGroup(pubKey)) {
-            pubKey = formInfo.valueStore.getFieldKeyForArrayItem(pubKey, fieldContext.index ?? 0);
+        if (formDescriptor.valueStore.isFieldinArrayGroup(pubKey)) {
+            pubKey = formDescriptor.valueStore.getFieldKeyForArrayItem(pubKey, fieldContext.index ?? 0);
         }
-        const pubMTMT = formInfo.valueStore.getField(pubKey) || "";
+        const pubMTMT = formDescriptor.valueStore.getField(pubKey) || "";
         const citations = pubMTMT ? await loadMTMTCitations(pubMTMT) : [];
         const pub = citations.find((item) => String(item.mtid) === mtid);
         pubSummary = pub ? getPubItemMinimal(pub) : null;

@@ -11,7 +11,7 @@ const GroupLabel = ({ title }: { title: string }) => {
     return <div className="font-bold italic my-2">{title}</div>;
 };
 
-export const GroupPanel = ({
+export const SingleGroupPanel = ({
     group,
     children,
     index = -1,
@@ -35,7 +35,7 @@ export const GroupPanel = ({
     );
 };
 
-export const GroupArrayPanel = ({ group, keyPrefix, readonly }: { group: GroupDescriptor; keyPrefix: string; source?: string; readonly?: boolean }) => {
+export const ArrayGroupPanel = ({ group, keyPrefix, readonly }: { group: GroupDescriptor; keyPrefix: string; source?: string; readonly?: boolean }) => {
     const store = useValueStore();
     const isVisible = useCondition(group);
     const arrayLengthSource = group.lengthSource ? group.lengthSource : `${keyPrefix}|_length`;
@@ -47,7 +47,7 @@ export const GroupArrayPanel = ({ group, keyPrefix, readonly }: { group: GroupDe
     for (let i = 0; i < length; i++) {
         const groupKeyPrefix = `${keyPrefix}[[${i}]]`;
         groups.push(
-            <GroupPanel key={`${group.key}-${i}`} group={group} index={i} className="pb-1" noLabel={true}>
+            <SingleGroupPanel key={`${group.key}-${i}`} group={group} index={i} className="pb-1" noLabel={true}>
                 <div className="space-y-1">
                     <Group group={group} keyPrefix={groupKeyPrefix} index={i} key={`${group.key}-${i}-comp`} readonly={readonly} />
                     <div className="absolute top-0 left-0 flex flex-col translate-x-[-100%]">
@@ -86,7 +86,7 @@ export const GroupArrayPanel = ({ group, keyPrefix, readonly }: { group: GroupDe
                         )}
                     </div>
                 </div>
-            </GroupPanel>
+            </SingleGroupPanel>
         );
     }
 

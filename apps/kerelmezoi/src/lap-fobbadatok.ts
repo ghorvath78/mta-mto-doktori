@@ -2,6 +2,7 @@ import type { PageDescriptor } from "@/types";
 
 export const fobbAdatok: PageDescriptor = {
     key: "A kérelmező főbb adatai",
+    label: "Főbb adatok",
     sections: [
         {
             key: "Személyes adatok",

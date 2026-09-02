@@ -17,16 +17,7 @@ import { getFromObjectByKey } from "@repo/form-engine";
 export const formName = "Kérelmezői";
 
 // Összeszedjük az összes lapot
-const pages: PageDescriptor[] = [
-    { ...fobbAdatok, label: "Főbb adatok" },
-    { ...doktoriMu, label: "A doktori mű" },
-    { ...publikaciok, label: "Legfontosabb publikációk" },
-    { ...hivatkozasok, label: "Legfontosabb hivatkozások" },
-    { ...alkotasok, label: "Műszaki alkotások" },
-    { ...tudomanymetria, label: "Tudománymetria" },
-    { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
-    { ...osszefoglalas, label: "Munkásság összefoglalása" }
-];
+const pages: PageDescriptor[] = [fobbAdatok, doktoriMu, publikaciok, hivatkozasok, alkotasok, tudomanymetria, kozeletiTevekenyseg, osszefoglalas];
 
 export const valueStore = new FormStore(formName, pages);
 const mtmt = createMTMTTools();

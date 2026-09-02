@@ -26,7 +26,7 @@ import { useRef, useState, useCallback } from "react";
 import { getMTMTObject } from "../mtmtfetch";
 import { isValidMTMTId } from "../mtmtutils";
 
-import { useFormInfo } from "@repo/form-engine";
+import { useFormDescriptor } from "@repo/form-engine";
 import { useMTMTAuthorValue, useMTMTPubList, type PubList } from "../publist";
 import { Scientometrics, useMTMTScientometrics } from "../scientometrics";
 
@@ -36,10 +36,10 @@ export const MTMTUserInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const readonly = isFieldReadonly(fieldDescr);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const formInfo = useFormInfo();
-    if (!formInfo || "mtmtPubList" in formInfo === false) throw new Error("MTMTUserInput csak <FormProvider> alatt használható");
-    const pubList = formInfo["mtmtPubList"] as PubList;
-    const scientometrics = formInfo["mtmtScientometrics"] as Scientometrics;
+    const formDescriptor = useFormDescriptor();
+    if (!formDescriptor || "mtmtPubList" in formDescriptor === false) throw new Error("MTMTUserInput csak <FormProvider> alatt használható");
+    const pubList = formDescriptor["mtmtPubList"] as PubList;
+    const scientometrics = formDescriptor["mtmtScientometrics"] as Scientometrics;
 
     const activeMTMTUserId = useMTMTAuthorValue();
     const [mtmtPubListStatus] = useMTMTPubList();

@@ -1,7 +1,7 @@
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@repo/ui";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@repo/ui";
-import { Group, GroupPanel, GroupArrayPanel } from "./group";
+import { Group, SingleGroupPanel, ArrayGroupPanel } from "./group";
 import { Fragment } from "react/jsx-runtime";
 import { TabularList } from "./inputfields/tabularlist";
 import { useCollapsibleState } from "./collapsiblestate";
@@ -25,22 +25,22 @@ export const Section = ({ section, keyPrefix }: { section: SectionDescriptor; ke
                 return (
                     <Fragment key={ix}>
                         {group.customComponent && (
-                            <GroupPanel group={group}>
+                            <SingleGroupPanel group={group}>
                                 <group.customComponent group={group} keyPrefix={groupKeyPrefix} index={0} />
-                            </GroupPanel>
+                            </SingleGroupPanel>
                         )}
                         {!group.customComponent && !group.isArray && (
-                            <GroupPanel group={group}>
+                            <SingleGroupPanel group={group}>
                                 <Group group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
-                            </GroupPanel>
+                            </SingleGroupPanel>
                         )}
                         {!group.customComponent && group.isArray && !(group.attribs?.printTabular && group.readonly) && (
-                            <GroupArrayPanel group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
+                            <ArrayGroupPanel group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
                         )}
                         {!group.customComponent && group.isArray && group.attribs?.printTabular && group.readonly && (
-                            <GroupPanel group={group}>
+                            <SingleGroupPanel group={group}>
                                 <TabularList group={group} keyPrefix={groupKeyPrefix} index={0} />
-                            </GroupPanel>
+                            </SingleGroupPanel>
                         )}
                     </Fragment>
                 );

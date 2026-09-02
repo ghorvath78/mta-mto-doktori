@@ -2,6 +2,7 @@ import type { PageDescriptor } from "@/types";
 
 export const kozeletiTevekenyseg: PageDescriptor = {
     key: "Tudományos közéleti tevékenység",
+    label: "Közéleti tevékenység",
     sections: [
         {
             key: "TDK témavezetés",

@@ -1,4 +1,4 @@
-import { useFormInfo } from "@repo/form-engine";
+import { useFormDescriptor } from "@repo/form-engine";
 import { getCachedCitations } from "./citations";
 import { getPubRating, type PubItem } from "./pubitem";
 import type { PubList } from "./publist";
@@ -71,9 +71,9 @@ export const savePubListMinimal = (mtids: string[], pubList: PubList): Record<st
 };
 
 export function useMTMTPubListMinimal(): Record<string, PubItemMinimal> {
-    const formInfo = useFormInfo();
-    if (!formInfo || "mtmtPubListMinimal" in formInfo === false) throw new Error("useMTMTPubListMinimal csak <FormProvider> alatt használható");
-    const pubListMinimal = formInfo["mtmtPubListMinimal"] as PubListMinimal;
+    const formDescriptor = useFormDescriptor();
+    if (!formDescriptor || "mtmtPubListMinimal" in formDescriptor === false) throw new Error("useMTMTPubListMinimal csak <FormProvider> alatt használható");
+    const pubListMinimal = formDescriptor["mtmtPubListMinimal"] as PubListMinimal;
 
     const subscribe = useCallback((fn: Listener) => pubListMinimal.subscribe(fn), [pubListMinimal]);
     const getSnapshot = useCallback(() => pubListMinimal.publications, [pubListMinimal]);
