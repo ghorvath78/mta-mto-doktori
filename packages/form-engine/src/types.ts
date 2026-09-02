@@ -3,13 +3,19 @@ import type { TableCell } from "pdfmake/interfaces";
 import type { PrimitiveAtom } from "jotai";
 import type { FormStore } from "./formstore";
 
+export type HeaderButtonDescriptor = {
+    label: string;
+    icon: JSX.Element;
+    onClick: (formDescriptor: FormDescriptor, setDialogMessage: (message: string) => void) => Promise<void>;
+};
+
 export type FormDescriptor = {
-    name: string;
+    formName: string;
     title: string;
     subtitle?: string;
     pages: PageDescriptor[];
     valueStore: FormStore;
-    buttons?: { label: string; icon: JSX.Element; onClick: (formDescriptor: FormDescriptor, setDialogMessage: (message: string) => void) => Promise<void> }[];
+    buttons?: HeaderButtonDescriptor[];
     [key: string]: any;
 };
 
@@ -21,64 +27,54 @@ export type AttribType = { [key: string]: any };
 export type InputFieldType = "text" | "number" | "year" | "yearRange" | "select" | "selectAddOther" | "longtext" | "birthYearPlace" | "link" | (string & {});
 
 export type FieldDescriptor = {
-    label?: string;
-    key: string;
     type: InputFieldType;
-    attribs?: AttribType;
     value?: string;
     helpText?: string;
     noPersist?: boolean;
     readonly?: boolean;
     valueSource?: string;
-} & ConditionalDescriptor;
+} & FormComponentDescriptor;
 
 export type SectionDescriptor = {
-    label?: string;
-    key: string;
     hidden?: boolean;
     helpText?: string;
     groups: GroupDescriptor[];
-    attribs?: AttribType;
     noPersist?: boolean;
     readonly?: boolean;
-} & ConditionalDescriptor;
+} & FormComponentDescriptor;
 
 export type GroupDescriptor = {
-    label?: string;
-    key: string;
     isArray?: boolean;
     arrayMin?: number;
     arrayMax?: number;
     arrayAddLabel?: string;
     fields: FieldDescriptor[];
     hidden?: boolean;
-    attribs?: AttribType;
     customComponent?: CustomGroupComponent;
     noPersist?: boolean;
     readonly?: boolean;
     valueSource?: string;
     lengthSource?: string;
-} & ConditionalDescriptor;
+} & FormComponentDescriptor;
 
 export type PageWrapperComponent = ({ children }: { children: React.ReactNode }) => JSX.Element;
 
 export type PageDescriptor = {
-    label?: string;
-    key: string;
     sections: SectionDescriptor[];
-    attribs?: AttribType;
     enabledAtom?: PrimitiveAtom<boolean>;
     wrapperComponent?: PageWrapperComponent;
-};
-
-export function getPageLabel(page: PageDescriptor): string {
-    return page.label || page.key;
-}
+} & FormComponentDescriptor;
 
 export type ConditionalDescriptor = {
     conditionKey?: string;
     conditionValue?: string;
 };
+
+export type FormComponentDescriptor = {
+    label?: string;
+    key: string;
+    attribs?: AttribType;
+} & ConditionalDescriptor;
 
 export type PdfPrintingContext = {
     formDescriptor: FormDescriptor;

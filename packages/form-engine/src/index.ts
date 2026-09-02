@@ -7,3 +7,4 @@ export * from "./inputfieldstore.ts";
 export * from "./inputfieldprinters.ts";
 export { readJsonFromPdf, chooseAndLoadPdf, chooseAndLoadJSON } from "./pdfloader.ts";
 export * from "./pdftools.ts";
+export * from "./initform.ts";

@@ -3,7 +3,6 @@ import { Page } from "./page";
 import { atom, useAtomValue } from "jotai";
 import { useFormDescriptor } from "./hooks";
 import type { PageDescriptor } from "./types";
-import { getPageLabel } from "./types";
 
 declare const BUILD_DATE: string;
 
@@ -11,7 +10,7 @@ const trueAtom = atom(true);
 
 export const FormPanel = () => {
     const formDescriptor = useFormDescriptor();
-    const { name: formName, pages } = formDescriptor;
+    const { formName, pages } = formDescriptor;
     const [activePage, setActivePage] = useState(pages ? pages[0]?.key : "");
     const activePageDescriptor = pages.find((page) => page.key === activePage);
 
@@ -44,7 +43,7 @@ const PageSelectorItem = ({ page, active, setActivePage }: { page: PageDescripto
     }
     return (
         <li key={page.key} className={`p-2 rounded cursor-pointer ${active ? activeStyle : normalStyle}`} onClick={() => enabled && setActivePage(page.key)}>
-            {getPageLabel(page)}
+            {page.label || page.key}
         </li>
     );
 };

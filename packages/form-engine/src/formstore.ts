@@ -10,10 +10,10 @@ export class FormStore {
     listeners = new Map<string, Set<Listener>>();
 
     constructor(formName: string, pages: PageDescriptor[]) {
-        this.initialize(formName, pages);
+        this.initialize({ formName, pages });
     }
 
-    initialize(formName: string, pages: PageDescriptor[]) {
+    initialize({ formName, pages }: { formName: string; pages: PageDescriptor[] }) {
         this.data = {};
         // field values and array lengths
         for (const page of pages) {
