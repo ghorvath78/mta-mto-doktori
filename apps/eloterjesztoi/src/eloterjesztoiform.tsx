@@ -1,5 +1,5 @@
-import { readJsonFromPdf, store, type FormInfo } from "@repo/form-engine";
-import { atomsFromJSON, createAtomsFromDescriptor, getFromObjectByKey, type FormDescriptor } from "@repo/form-engine";
+import { readJsonFromPdf, store, type FormDescriptor } from "@repo/form-engine";
+import { atomsFromJSON, createAtomsFromDescriptor, getFromObjectByKey, type PageDescriptor } from "@repo/form-engine";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, mtmtPubSummaryCacheAtom, type AuthorData, type PubItemSummary } from "@repo/mtmt-tools";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
@@ -19,22 +19,20 @@ import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 export const formName = "Előterjesztői";
 
 // Összeszedjük az összes lapot
-export const eloterjesztoiFormDescriptor: FormDescriptor = {
-    pages: [
-        { ...eloterjesztoAdatai, label: "Előterjesztő adatai" },
-        { ...palyazoAdatai, label: "Pályázó adatai" },
-        { ...tudomanymetria, label: "Tudománymetria" },
-        { ...otPublikacio, label: "Öt kiemelt publikáció" },
-        { ...otHivatkozas, label: "Öt kiemelt hivatkozás" },
-        { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
-        { ...osszesites, label: "Minimumkövetelmények" },
-        { ...osszefoglalo, label: "Javaslat" },
-        { ...biraloBizottsag, label: "Bíráló bizottság" }
-    ]
-};
+const pages: PageDescriptor[] = [
+    { ...eloterjesztoAdatai, label: "Előterjesztő adatai" },
+    { ...palyazoAdatai, label: "Pályázó adatai" },
+    { ...tudomanymetria, label: "Tudománymetria" },
+    { ...otPublikacio, label: "Öt kiemelt publikáció" },
+    { ...otHivatkozas, label: "Öt kiemelt hivatkozás" },
+    { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
+    { ...osszesites, label: "Minimumkövetelmények" },
+    { ...osszefoglalo, label: "Javaslat" },
+    { ...biraloBizottsag, label: "Bíráló bizottság" }
+];
 
 // elkészítjük a form mezők tárolóját
-export const eloterjesztoiFormData = createAtomsFromDescriptor(formName, eloterjesztoiFormDescriptor);
+export const eloterjesztoiFormData = createAtomsFromDescriptor(formName, pages);
 
 // ha a kategória változik, frissítjük az elvárásokat tartalmazó mezőket
 store.sub(
@@ -162,19 +160,19 @@ export async function loadApplicantDataFromForm(applicantContent: string | undef
 }
 
 // összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
-export const eloterjesztoiFormInfo: FormInfo = {
+export const eloterjesztoiFormDescriptor: FormDescriptor = {
     name: formName,
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, előterjesztői űrlap",
     data: eloterjesztoiFormData,
-    descriptor: eloterjesztoiFormDescriptor,
+    pages,
     buttons: [
         {
             label: "Adatlap mentése",
             icon: <FileDown />,
             onClick: async (formData, setDialogMessage: (message: string) => void) => {
                 setDialogMessage("Adatlap mentése");
-                await savePDF(eloterjesztoiFormDescriptor, formData, formName, {
+                await savePDF(pages, formData, formName, {
                     "kerelmezo_form.json": JSON.stringify(applicantDataInForm, null, 4),
                     "kerelmezo_mtmt.json": JSON.stringify(mtmtDataInForm, null, 4)
                 });

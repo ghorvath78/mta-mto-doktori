@@ -11,14 +11,14 @@ const trueAtom = atom(true);
 
 export const FormPanel = () => {
     const formInfo = useFormInfo();
-    const { name: formName, descriptor } = formInfo;
-    const [activePage, setActivePage] = useState(descriptor ? descriptor.pages[0]?.key : "");
-    const activePageDescriptor = descriptor.pages.find((page) => page.key === activePage);
+    const { name: formName, pages } = formInfo;
+    const [activePage, setActivePage] = useState(pages ? pages[0]?.key : "");
+    const activePageDescriptor = pages.find((page) => page.key === activePage);
 
     return (
         <main className="flex-3 min-w-0 p-4 relative max-w-[1200px] mx-auto w-full">
             <div className="flex w-full pt-4 min-h-0 max-h-[100%]">
-                <PageSelector activePage={activePage} setActivePage={setActivePage} pages={descriptor.pages} />
+                <PageSelector activePage={activePage} setActivePage={setActivePage} pages={pages} />
                 <div className="w-[1px] bg-primary" />
                 <div className="flex-3 flex min-h-0 min-w-0 overflow-y-auto overflow-x-hidden relative">
                     {activePageDescriptor && <Page descriptor={activePageDescriptor} keyPrefix={`${formName}|${activePageDescriptor.key}`} />}

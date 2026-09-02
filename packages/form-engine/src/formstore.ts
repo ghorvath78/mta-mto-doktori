@@ -1,4 +1,4 @@
-import type { FormDescriptor, GroupDescriptor } from "./types";
+import type { GroupDescriptor, PageDescriptor } from "./types";
 
 export type FormData = {
     [key: string]: string;
@@ -9,14 +9,14 @@ export class FormStore {
     data: FormData = {};
     listeners = new Map<string, Set<Listener>>();
 
-    constructor(formName: string, descriptor: FormDescriptor) {
-        this.initialize(formName, descriptor);
+    constructor(formName: string, pages: PageDescriptor[]) {
+        this.initialize(formName, pages);
     }
 
-    initialize(formName: string, descriptor: FormDescriptor) {
+    initialize(formName: string, pages: PageDescriptor[]) {
         this.data = {};
         // field values and array lengths
-        for (const page of descriptor.pages) {
+        for (const page of pages) {
             for (const section of page.sections) {
                 if (section.noPersist) continue;
                 for (const group of section.groups) {
@@ -233,7 +233,7 @@ export class FormStore {
         this.notifyAllListeners();
     }
 
-    toJSON(descriptor?: FormDescriptor, formName?: string): Record<string, unknown> {
+    toJSON(pages?: PageDescriptor[], formName?: string): Record<string, unknown> {
         const result: Record<string, unknown> = {};
 
         // Keys always have 5 parts: form|page|section|group|field (or _length/_open).
@@ -257,8 +257,8 @@ export class FormStore {
         }
 
         // For groups that use lengthSource, override with the actual source length
-        if (descriptor && formName) {
-            for (const page of descriptor.pages) {
+        if (pages && formName) {
+            for (const page of pages) {
                 for (const section of page.sections) {
                     for (const group of section.groups) {
                         if (group.isArray && group.lengthSource && this.data[group.lengthSource]) {

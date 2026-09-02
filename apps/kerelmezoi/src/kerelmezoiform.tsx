@@ -1,5 +1,5 @@
-import { chooseAndLoadPdf, FormStore, type FormInfo } from "@repo/form-engine";
-import { type FormDescriptor } from "@repo/form-engine";
+import { chooseAndLoadPdf, FormStore, type FormDescriptor } from "@repo/form-engine";
+import { type PageDescriptor } from "@repo/form-engine";
 import { fobbAdatok } from "./lap-fobbadatok";
 import { doktoriMu } from "./lap-doktorimu";
 import { publikaciok } from "./lap-publikaciok";
@@ -17,20 +17,18 @@ import { getFromObjectByKey } from "@repo/form-engine";
 export const formName = "Kérelmezői";
 
 // Összeszedjük az összes lapot
-export const kerelmezoiFormDescriptor: FormDescriptor = {
-    pages: [
-        { ...fobbAdatok, label: "Főbb adatok" },
-        { ...doktoriMu, label: "A doktori mű" },
-        { ...publikaciok, label: "Legfontosabb publikációk" },
-        { ...hivatkozasok, label: "Legfontosabb hivatkozások" },
-        { ...alkotasok, label: "Műszaki alkotások" },
-        { ...tudomanymetria, label: "Tudománymetria" },
-        { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
-        { ...osszefoglalas, label: "Munkásság összefoglalása" }
-    ]
-};
+const pages: PageDescriptor[] = [
+    { ...fobbAdatok, label: "Főbb adatok" },
+    { ...doktoriMu, label: "A doktori mű" },
+    { ...publikaciok, label: "Legfontosabb publikációk" },
+    { ...hivatkozasok, label: "Legfontosabb hivatkozások" },
+    { ...alkotasok, label: "Műszaki alkotások" },
+    { ...tudomanymetria, label: "Tudománymetria" },
+    { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
+    { ...osszefoglalas, label: "Munkásság összefoglalása" }
+];
 
-export const valueStore = new FormStore(formName, kerelmezoiFormDescriptor);
+export const valueStore = new FormStore(formName, pages);
 const mtmt = createMTMTTools();
 
 type JsonMap = Record<string, unknown>;
@@ -58,7 +56,7 @@ export const beforeLoad = async (json: JsonMap) => {
     const mtmtUserId = (data?.["Személyes adatok"] as JsonMap | undefined)?.["MTMT azonosító"] as string | undefined;
     if (mtmtUserId) {
         await mtmt.mtmtPubList.loadMTMTPublications(mtmtUserId);
-        for (const page of kerelmezoiFormDescriptor.pages) {
+        for (const page of pages) {
             for (const section of page.sections) {
                 for (const group of section.groups) {
                     for (const field of group.fields) {
@@ -88,12 +86,12 @@ export const afterLoad = async () => {
 };
 
 // összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
-export const kerelmezoiFormInfo: FormInfo = {
+export const kerelmezoiFormDescriptor: FormDescriptor = {
     name: formName,
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, kérelmezői űrlap",
     valueStore,
-    descriptor: kerelmezoiFormDescriptor,
+    pages,
     buttons: [
         {
             label: "Adatlap mentése",
@@ -105,7 +103,7 @@ export const kerelmezoiFormInfo: FormInfo = {
                 // hozzáadjuk a tudománymetriai adatokat is egy rejtett mezőbe
                 const scientometrics = JSON.stringify(mtmt.mtmtScientometrics.scientometrics);
                 valueStore.setField("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat", scientometrics);
-                await savePDF(kerelmezoiFormInfo);
+                await savePDF(kerelmezoiFormDescriptor);
                 setDialogMessage("");
             }
         },
@@ -117,7 +115,7 @@ export const kerelmezoiFormInfo: FormInfo = {
                 if (!content) return;
                 setDialogMessage("Adatlap betöltése");
                 const parsedContent = JSON.parse(content);
-                valueStore.initialize(formName, kerelmezoiFormDescriptor);
+                valueStore.initialize(formName, pages);
                 setDialogMessage("Pubikációk és hivatkozások betöltése");
                 await beforeLoad(parsedContent);
                 valueStore.fromJSON(parsedContent);

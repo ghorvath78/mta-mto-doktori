@@ -3,7 +3,7 @@ import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interface
 import { saveAs } from "file-saver";
 import { PDFDocument } from "pdf-lib";
 import { getInputFieldPrinter } from "./inputfieldstore";
-import type { FormDescriptor, FormInfo, GroupDescriptor, PdfPrintingOptions } from "./types";
+import type { FormDescriptor, GroupDescriptor, PdfPrintingOptions } from "./types";
 import type { FormStore } from "./formstore";
 import { evaluateCondition } from "./conditions";
 import { getEffectiveFieldKey } from "./hooks";
@@ -14,7 +14,7 @@ declare const BUILD_DATE: string;
 export const groupToPdfDocDefinition = async (
     label: string,
     group: GroupDescriptor,
-    formInfo: FormInfo,
+    formInfo: FormDescriptor,
     groupKeyPrefix: string,
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
@@ -61,7 +61,7 @@ export const groupToPdfDocDefinition = async (
 export const groupToPdfTableDefinition = async (
     label: string,
     group: GroupDescriptor,
-    formInfo: FormInfo,
+    formInfo: FormDescriptor,
     groupKeyPrefix: string,
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
@@ -130,15 +130,14 @@ export const groupToPdfTableDefinition = async (
 };
 
 export const getPdfSection = async (
-    descriptor: FormDescriptor,
-    formInfo: FormInfo,
+    formInfo: FormDescriptor,
     sectionKey: string,
     label: string | ((index?: number) => string),
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
     const rows: Content[] = [];
     const parts = sectionKey.split("|");
-    const page = descriptor.pages.find((p) => p.key === parts[1]);
+    const page = formInfo.pages.find((p) => p.key === parts[1]);
     if (!page) return [];
     const section = page.sections.find((s) => s.key === parts[2]);
     if (!section) return [];

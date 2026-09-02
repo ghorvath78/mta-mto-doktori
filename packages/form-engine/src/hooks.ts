@@ -1,12 +1,12 @@
 import { createContext, useCallback, useContext, useSyncExternalStore } from "react";
 import type { FormStore, Listener } from "./formstore";
-import type { FormInfo } from "./types";
+import type { FormDescriptor } from "./types";
 import { getIndexFromKey } from "./utils";
 
 export const StoreContext = createContext<FormStore | null>(null);
-export const FormInfoContext = createContext<FormInfo | null>(null);
+export const FormInfoContext = createContext<FormDescriptor | null>(null);
 
-export function useFormInfo(): FormInfo {
+export function useFormInfo(): FormDescriptor {
     const info = useContext(FormInfoContext);
     if (!info) throw new Error("useFormInfo csak <FormProvider> alatt használható");
     return info;

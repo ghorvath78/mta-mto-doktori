@@ -3,13 +3,13 @@ import type { TableCell } from "pdfmake/interfaces";
 import type { PrimitiveAtom } from "jotai";
 import type { FormStore } from "./formstore";
 
-export type FormInfo = {
+export type FormDescriptor = {
     name: string;
     title: string;
     subtitle?: string;
-    descriptor: FormDescriptor;
+    pages: PageDescriptor[];
     valueStore: FormStore;
-    buttons?: { label: string; icon: JSX.Element; onClick: (formInfo: FormInfo, setDialogMessage: (message: string) => void) => Promise<void> }[];
+    buttons?: { label: string; icon: JSX.Element; onClick: (formInfo: FormDescriptor, setDialogMessage: (message: string) => void) => Promise<void> }[];
     [key: string]: any;
 };
 
@@ -71,10 +71,6 @@ export type PageDescriptor = {
     wrapperComponent?: PageWrapperComponent;
 };
 
-export type FormDescriptor = {
-    pages: PageDescriptor[];
-};
-
 export function getPageLabel(page: PageDescriptor): string {
     return page.label || page.key;
 }
@@ -85,7 +81,7 @@ export type ConditionalDescriptor = {
 };
 
 export type PdfPrintingContext = {
-    formInfo: FormInfo;
+    formInfo: FormDescriptor;
     index: number;
 };
 

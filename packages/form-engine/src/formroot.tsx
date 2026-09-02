@@ -1,9 +1,9 @@
 import { StrictMode, type ReactNode } from "react";
 import { MainScreen } from "./mainscreen.tsx";
-import type { FormInfo } from "./types.ts";
+import type { FormDescriptor } from "./types.ts";
 import { FormInfoContext, StoreContext } from "./hooks.ts";
 
-export function FormProvider({ info, children }: { info: FormInfo; children: ReactNode }) {
+export function FormProvider({ info, children }: { info: FormDescriptor; children: ReactNode }) {
     return (
         <FormInfoContext.Provider value={info}>
             <StoreContext.Provider value={info.valueStore}>{children}</StoreContext.Provider>
@@ -11,11 +11,11 @@ export function FormProvider({ info, children }: { info: FormInfo; children: Rea
     );
 }
 
-export function createForm(formInfo: FormInfo) {
+export function createForm(formInfo: FormDescriptor) {
     return <FormRoot formInfo={formInfo} />;
 }
 
-export const FormRoot = ({ formInfo }: { formInfo: FormInfo }) => (
+export const FormRoot = ({ formInfo }: { formInfo: FormDescriptor }) => (
     <StrictMode>
         <FormProvider info={formInfo}>
             <MainScreen />
