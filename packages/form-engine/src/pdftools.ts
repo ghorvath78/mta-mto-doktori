@@ -138,7 +138,7 @@ export const getPdfSection = async (
 ): Promise<Content[]> => {
     const rows: Content[] = [];
     const parts = sectionKey.split("|");
-    const page = Object.values(descriptor).find((p) => p.key === parts[1]);
+    const page = descriptor.pages.find((p) => p.key === parts[1]);
     if (!page) return [];
     const section = page.sections.find((s) => s.key === parts[2]);
     if (!section) return [];

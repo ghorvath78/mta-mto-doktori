@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Page } from "./page";
 import { atom, useAtomValue } from "jotai";
 import { useFormInfo } from "./hooks";
-import type { FormDescriptor, PageDescriptor } from "./types";
+import type { PageDescriptor } from "./types";
+import { getPageLabel } from "./types";
 
 declare const BUILD_DATE: string;
 
@@ -11,15 +12,16 @@ const trueAtom = atom(true);
 export const FormPanel = () => {
     const formInfo = useFormInfo();
     const { name: formName, descriptor } = formInfo;
-    const [activePage, setActivePage] = useState(descriptor ? Object.keys(descriptor)[0] : "");
+    const [activePage, setActivePage] = useState(descriptor ? descriptor.pages[0]?.key : "");
+    const activePageDescriptor = descriptor.pages.find((page) => page.key === activePage);
 
     return (
         <main className="flex-3 min-w-0 p-4 relative max-w-[1200px] mx-auto w-full">
             <div className="flex w-full pt-4 min-h-0 max-h-[100%]">
-                <PageSelector activePage={activePage} setActivePage={setActivePage} pages={descriptor} />
+                <PageSelector activePage={activePage} setActivePage={setActivePage} pages={descriptor.pages} />
                 <div className="w-[1px] bg-primary" />
                 <div className="flex-3 flex min-h-0 min-w-0 overflow-y-auto overflow-x-hidden relative">
-                    <Page descriptor={descriptor[activePage]} keyPrefix={`${formName}|${descriptor[activePage].key}`} />
+                    {activePageDescriptor && <Page descriptor={activePageDescriptor} keyPrefix={`${formName}|${activePageDescriptor.key}`} />}
                 </div>
             </div>
             <div className="fixed bottom-1 left-1 text-xs text-muted-foreground">v{BUILD_DATE}</div>
@@ -27,17 +29,7 @@ export const FormPanel = () => {
     );
 };
 
-const PageSelectorItem = ({
-    pageKey,
-    page,
-    active,
-    setActivePage
-}: {
-    pageKey: string;
-    page: PageDescriptor;
-    active: boolean;
-    setActivePage: (pageKey: string) => void;
-}) => {
+const PageSelectorItem = ({ page, active, setActivePage }: { page: PageDescriptor; active: boolean; setActivePage: (pageKey: string) => void }) => {
     const enabled = useAtomValue(page?.enabledAtom ?? trueAtom);
 
     let normalStyle = "hover:bg-secondary hover:text-secondary-foreground";
@@ -51,18 +43,30 @@ const PageSelectorItem = ({
         activeStyle = "cursor-not-allowed opacity-50";
     }
     return (
-        <li key={pageKey} className={`p-2 rounded cursor-pointer ${active ? activeStyle : normalStyle}`} onClick={() => enabled && setActivePage(pageKey)}>
-            {pageKey}
+        <li
+            key={page.key}
+            className={`p-2 rounded cursor-pointer ${active ? activeStyle : normalStyle}`}
+            onClick={() => enabled && setActivePage(page.key)}
+        >
+            {getPageLabel(page)}
         </li>
     );
 };
 
-export const PageSelector = ({ activePage, setActivePage, pages }: { activePage: string; setActivePage: (Page: string) => void; pages: FormDescriptor }) => {
+export const PageSelector = ({
+    activePage,
+    setActivePage,
+    pages
+}: {
+    activePage: string;
+    setActivePage: (Page: string) => void;
+    pages: PageDescriptor[];
+}) => {
     return (
         <nav className="w-1/4 border-r pr-4">
             <ul className="space-y-2">
-                {Object.entries(pages).map(([pageKey, page]: [string, PageDescriptor]) => (
-                    <PageSelectorItem key={pageKey} pageKey={pageKey} page={page} active={activePage === pageKey} setActivePage={setActivePage} />
+                {pages.map((page) => (
+                    <PageSelectorItem key={page.key} page={page} active={activePage === page.key} setActivePage={setActivePage} />
                 ))}
             </ul>
         </nav>

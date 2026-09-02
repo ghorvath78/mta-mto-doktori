@@ -18,14 +18,16 @@ export const formName = "Kérelmezői";
 
 // Összeszedjük az összes lapot
 export const kerelmezoiFormDescriptor: FormDescriptor = {
-    "Főbb adatok": fobbAdatok,
-    "A doktori mű": doktoriMu,
-    "Legfontosabb publikációk": publikaciok,
-    "Legfontosabb hivatkozások": hivatkozasok,
-    "Műszaki alkotások": alkotasok,
-    Tudománymetria: tudomanymetria,
-    "Közéleti tevékenység": kozeletiTevekenyseg,
-    "Munkásság összefoglalása": osszefoglalas
+    pages: [
+        { ...fobbAdatok, label: "Főbb adatok" },
+        { ...doktoriMu, label: "A doktori mű" },
+        { ...publikaciok, label: "Legfontosabb publikációk" },
+        { ...hivatkozasok, label: "Legfontosabb hivatkozások" },
+        { ...alkotasok, label: "Műszaki alkotások" },
+        { ...tudomanymetria, label: "Tudománymetria" },
+        { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
+        { ...osszefoglalas, label: "Munkásság összefoglalása" }
+    ]
 };
 
 export const valueStore = new FormStore(formName, kerelmezoiFormDescriptor);
@@ -56,8 +58,8 @@ export const beforeLoad = async (json: JsonMap) => {
     const mtmtUserId = (data?.["Személyes adatok"] as JsonMap | undefined)?.["MTMT azonosító"] as string | undefined;
     if (mtmtUserId) {
         await mtmt.mtmtPubList.loadMTMTPublications(mtmtUserId);
-        for (const value of Object.values(kerelmezoiFormDescriptor)) {
-            for (const section of value.sections) {
+        for (const page of kerelmezoiFormDescriptor.pages) {
+            for (const section of page.sections) {
                 for (const group of section.groups) {
                     for (const field of group.fields) {
                         if (field.type === "mtmtCitation") {

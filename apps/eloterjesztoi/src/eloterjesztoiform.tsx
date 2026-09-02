@@ -20,15 +20,17 @@ export const formName = "Előterjesztői";
 
 // Összeszedjük az összes lapot
 export const eloterjesztoiFormDescriptor: FormDescriptor = {
-    "Előterjesztő adatai": eloterjesztoAdatai,
-    "Pályázó adatai": palyazoAdatai,
-    Tudománymetria: tudomanymetria,
-    "Öt kiemelt publikáció": otPublikacio,
-    "Öt kiemelt hivatkozás": otHivatkozas,
-    "Közéleti tevékenység": kozeletiTevekenyseg,
-    Minimumkövetelmények: osszesites,
-    Javaslat: osszefoglalo,
-    "Bíráló bizottság": biraloBizottsag
+    pages: [
+        { ...eloterjesztoAdatai, label: "Előterjesztő adatai" },
+        { ...palyazoAdatai, label: "Pályázó adatai" },
+        { ...tudomanymetria, label: "Tudománymetria" },
+        { ...otPublikacio, label: "Öt kiemelt publikáció" },
+        { ...otHivatkozas, label: "Öt kiemelt hivatkozás" },
+        { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
+        { ...osszesites, label: "Minimumkövetelmények" },
+        { ...osszefoglalo, label: "Javaslat" },
+        { ...biraloBizottsag, label: "Bíráló bizottság" }
+    ]
 };
 
 // elkészítjük a form mezők tárolóját

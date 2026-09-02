@@ -163,7 +163,7 @@ async function collectMTMTDataToSave(formInfo: FormInfo): Promise<object> {
     const mtids = new Set<string>();
     const citationParentMtids = new Set<string>();
 
-    for (const page of Object.values(descriptor)) {
+    for (const page of descriptor.pages) {
         for (const section of page.sections) {
             for (const group of section.groups) {
                 for (const field of group.fields) {

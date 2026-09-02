@@ -1,12 +1,11 @@
 import {
-    atomsToJSON,
     cD,
+    getPageLabel,
     getPdfDocumentStyles,
     getPdfSection,
     groupToPdfTableDefinition,
     requestPdfSaveTarget,
     savePdfWithFormData,
-    store,
     type FormData,
     type FormDescriptor
 } from "@repo/form-engine";
@@ -51,7 +50,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
           ]
         : [];
 
-    const tudomanyMetria = descriptor["Tudománymetria"];
+    const tudomanyMetria = descriptor.pages.find((p) => getPageLabel(p) === "Tudománymetria")!;
     const qSection = tudomanyMetria.sections.find((s) => s.key === "Q-szám");
     const alkGroup = qSection?.groups.find((g) => g.key === "A kérelmező alkotási teljesítménye");
     const alkNum = parseInt(store.get(formData["Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|_length"])[0]);

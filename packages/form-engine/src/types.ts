@@ -72,8 +72,12 @@ export type PageDescriptor = {
 };
 
 export type FormDescriptor = {
-    [pageKey: string]: PageDescriptor;
+    pages: PageDescriptor[];
 };
+
+export function getPageLabel(page: PageDescriptor): string {
+    return page.label || page.key;
+}
 
 export type ConditionalDescriptor = {
     conditionKey?: string;

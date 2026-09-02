@@ -16,8 +16,7 @@ export class FormStore {
     initialize(formName: string, descriptor: FormDescriptor) {
         this.data = {};
         // field values and array lengths
-        for (const pageKey in descriptor) {
-            const page = descriptor[pageKey];
+        for (const page of descriptor.pages) {
             for (const section of page.sections) {
                 if (section.noPersist) continue;
                 for (const group of section.groups) {
@@ -259,8 +258,7 @@ export class FormStore {
 
         // For groups that use lengthSource, override with the actual source length
         if (descriptor && formName) {
-            for (const pageKey in descriptor) {
-                const page = descriptor[pageKey];
+            for (const page of descriptor.pages) {
                 for (const section of page.sections) {
                     for (const group of section.groups) {
                         if (group.isArray && group.lengthSource && this.data[group.lengthSource]) {
