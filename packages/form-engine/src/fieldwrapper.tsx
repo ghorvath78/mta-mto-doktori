@@ -2,15 +2,17 @@ import type { FieldDescriptor } from "./types";
 import { useCondition } from "./conditions";
 import { useSetInfoState } from "./infostate";
 
-export const FieldWrapper = ({ fieldDescriptor, keyPrefix, children }: { fieldDescriptor: FieldDescriptor; keyPrefix: string; children: React.ReactNode }) => {
-    const isVisible = useCondition(fieldDescriptor, keyPrefix);
+export const FieldWrapper = ({
+    fieldDescriptor,
+    groupIndex,
+    children
+}: {
+    fieldDescriptor: FieldDescriptor;
+    groupIndex: number;
+    children: React.ReactNode;
+}) => {
+    const isVisible = useCondition(fieldDescriptor, groupIndex);
     const setInfoField = useSetInfoState();
-
-    console.log("FieldWrapper: fieldDescriptor.key is", fieldDescriptor.key, "conditionKey:", fieldDescriptor.conditionKey, "isVisible:", isVisible);
-
-    if (fieldDescriptor.key === "Kapcsolódó szabadalom") {
-        console.log("FieldWrapper: fieldDescriptor.key is 'Kapcsolódó szabadalom'", fieldDescriptor.conditionKey);
-    }
 
     return (
         <div

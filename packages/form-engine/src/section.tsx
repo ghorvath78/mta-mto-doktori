@@ -25,12 +25,12 @@ export const Section = ({ section, keyPrefix }: { section: SectionDescriptor; ke
                 return (
                     <Fragment key={ix}>
                         {group.customComponent && (
-                            <GroupPanel group={group} keyPrefix={groupKeyPrefix}>
+                            <GroupPanel group={group}>
                                 <group.customComponent group={group} keyPrefix={groupKeyPrefix} index={0} />
                             </GroupPanel>
                         )}
                         {!group.customComponent && !group.isArray && (
-                            <GroupPanel group={group} keyPrefix={groupKeyPrefix}>
+                            <GroupPanel group={group}>
                                 <Group group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
                             </GroupPanel>
                         )}
@@ -38,7 +38,7 @@ export const Section = ({ section, keyPrefix }: { section: SectionDescriptor; ke
                             <GroupArrayPanel group={group} keyPrefix={groupKeyPrefix} readonly={group.readonly} />
                         )}
                         {!group.customComponent && group.isArray && group.attribs?.printTabular && group.readonly && (
-                            <GroupPanel group={group} keyPrefix={groupKeyPrefix}>
+                            <GroupPanel group={group}>
                                 <TabularList group={group} keyPrefix={groupKeyPrefix} index={0} />
                             </GroupPanel>
                         )}

@@ -28,7 +28,7 @@ export const loadMTMTCitations = async (mtid: string) => {
                 else throw "Too many errors during MTMT fetch";
             }
         }
-        console.log("Citations fetched from MTMT.", citeData);
+        console.log(`Citations fetched from MTMT for ${mtid}:`, citeData);
         citationCache[mtid] = citeData;
         return citeData;
     } catch (err) {

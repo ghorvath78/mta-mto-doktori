@@ -4,6 +4,7 @@ import {
     getPdfDocumentStyles,
     getPdfSection,
     groupToPdfTableDefinition,
+    requestPdfSaveTarget,
     savePdfWithFormData,
     store,
     type FormData,
@@ -21,6 +22,13 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
     const hasKerelmezoData = Object.keys(formData).some((key) => key.startsWith("Kérelmezői"));
     if (!hasKerelmezoData) {
         window.alert("A PDF exportálásához előbb be kell tölteni a kérelmező adatait.");
+        return;
+    }
+
+    // ezt kell a legelső await-nek lennie: a fájlmentési dialógus csak a user gesture-t
+    // közvetlenül kihasználva nyitható meg, a lenti lassú hívások előtt
+    const saveTarget = await requestPdfSaveTarget("eloterjesztoi_adatlap.pdf");
+    if (saveTarget.type === "cancelled") {
         return;
     }
 
@@ -177,7 +185,7 @@ export const savePDF = async (descriptor: FormDescriptor, formData: FormData, fo
         ]
     };
 
-    savePdfWithFormData(docDefinition, "eloterjesztoi_adatlap.pdf", {
+    savePdfWithFormData(saveTarget, docDefinition, "eloterjesztoi_adatlap.pdf", {
         "eloterjeszto_form.json": JSON.stringify(atomsToJSON(formData, descriptor, formName), null, 4),
         ...additionalData
     });

@@ -21,6 +21,7 @@ export const groupToPdfDocDefinition = async (
     const body: TableCell[][] = [];
     const fields = group.fields || [];
     const index = getIndexFromKey(groupKeyPrefix);
+
     const store = formInfo.valueStore;
     for (const field of fields) {
         if (field.attribs?.noPrint) continue;
@@ -65,7 +66,7 @@ export const groupToPdfTableDefinition = async (
     options: PdfPrintingOptions = {}
 ): Promise<Content[]> => {
     const store = formInfo.valueStore;
-    const fields = group.fields || [];    
+    const fields = group.fields || [];
     const length = group.lengthSource ? parseInt(store.getField(group.lengthSource)) : parseInt(store.getField(`${groupKeyPrefix}|_length`)) || 0;
     // create rows array
     const rows: TableCell[][] = Array.from({ length: length + 1 }, () => []);
@@ -145,23 +146,24 @@ export const getPdfSection = async (
     if (!evaluateCondition(store, section, 0)) return [];
     for (const group of section.groups) {
         if (group.isArray) {
-            const length = group.lengthSource ? parseInt(store.getField(group.lengthSource)) : parseInt(store.getField(`${sectionKey}|${group.key}|_length`)) || 0;
-            if (length === 0) { 
+            const length = group.lengthSource
+                ? parseInt(store.getField(group.lengthSource))
+                : parseInt(store.getField(`${sectionKey}|${group.key}|_length`)) || 0;
+            if (length === 0) {
                 rows.push({ text: "Nincs adat", style: "nodata" });
                 continue;
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
                 rows.push(...(await groupToPdfTableDefinition(String(label), group, formInfo, `${sectionKey}|${group.key}`, options)));
-            }
-            else {
+            } else {
                 for (let i = 0; i < length; i++) {
+                    const groupKeyPrefix = `${sectionKey}|${group.key}[[${i}]]`;
                     let grLabel: string = typeof label === "function" ? label(i) : label;
-                    if (options.sectionIndex) grLabel = `${i + 1}. ${grLabel}`;                        
-                    rows.push(...(await groupToPdfDocDefinition(grLabel, group, formInfo, sectionKey, options)));
+                    if (options.sectionIndex) grLabel = `${i + 1}. ${grLabel}`;
+                    rows.push(...(await groupToPdfDocDefinition(grLabel, group, formInfo, groupKeyPrefix, options)));
                 }
             }
-        }
-        else {
+        } else {
             const groupKeyPrefix = `${sectionKey}|${group.key}`;
             if (options.hideEmptyGroup === "true" && isGroupEmpty(group, store, groupKeyPrefix)) {
                 rows.push({ text: "Nincs adat", style: "nodata" });
@@ -169,9 +171,8 @@ export const getPdfSection = async (
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
                 rows.push(...(await groupToPdfTableDefinition(String(label), group, formInfo, groupKeyPrefix, options)));
-            }
-            else {
-                rows.push(...(await groupToPdfDocDefinition(typeof label === "function" ? label() : label, group, formInfo, sectionKey, options)));
+            } else {
+                rows.push(...(await groupToPdfDocDefinition(typeof label === "function" ? label() : label, group, formInfo, groupKeyPrefix, options)));
             }
         }
     }
@@ -288,7 +289,46 @@ export function getPdfDocumentStyles(): TDocumentDefinitions {
     };
 }
 
-export function savePdfWithFormData(docDefinition: TDocumentDefinitions, fileName: string, jsonsToEmbed: { [filename: string]: string }) {
+export type PdfSaveTarget = { type: "handle"; handle: any } | { type: "fallback" } | { type: "cancelled" };
+
+// showSaveFilePicker csak közvetlenül egy user gesture (pl. kattintás) hatására hívható meg,
+// az engedély ugyanis csak rövid ideig (böngészőtől függően néhány másodpercig) érvényes, és bármelyik
+// megelőző await elfogyaszthatja. Ezért ezt a hívást a lehető leghamarabb, minden lassú (pl. hálózati)
+// művelet előtt el kell végezni, még mielőtt a PDF tartalma összeáll.
+export async function requestPdfSaveTarget(fileName: string): Promise<PdfSaveTarget> {
+    if (!("showSaveFilePicker" in window)) {
+        return { type: "fallback" };
+    }
+    try {
+        const handle = await (window as any).showSaveFilePicker({
+            suggestedName: fileName,
+            types: [
+                {
+                    description: "PDF Document",
+                    accept: { "application/pdf": [".pdf"] }
+                }
+            ]
+        });
+        return { type: "handle", handle };
+    } catch (err: any) {
+        if (err.name === "AbortError") {
+            return { type: "cancelled" };
+        }
+        console.error("Save file picker failed:", err);
+        return { type: "fallback" };
+    }
+}
+
+export function savePdfWithFormData(
+    saveTarget: PdfSaveTarget,
+    docDefinition: TDocumentDefinitions,
+    fileName: string,
+    jsonsToEmbed: { [filename: string]: string }
+) {
+    if (saveTarget.type === "cancelled") {
+        return;
+    }
+
     const fonts = {
         Roboto: {
             normal: "https://fonts.cdnfonts.com/s/85546/Satoshi-Regular.woff",
@@ -307,27 +347,15 @@ export function savePdfWithFormData(docDefinition: TDocumentDefinitions, fileNam
         const uint8 = Uint8Array.from(finalPdf);
         const blob = new Blob([uint8], { type: "application/pdf" });
 
-        if ("showSaveFilePicker" in window) {
+        if (saveTarget.type === "handle") {
             try {
-                const handle = await (window as any).showSaveFilePicker({
-                    suggestedName: fileName,
-                    types: [
-                        {
-                            description: "PDF Document",
-                            accept: { "application/pdf": [".pdf"] }
-                        }
-                    ]
-                });
-                const writable = await handle.createWritable();
+                const writable = await saveTarget.handle.createWritable();
                 await writable.write(blob);
                 await writable.close();
                 return;
-            } catch (err: any) {
-                // If user aborted, do nothing, otherwise fallback
-                if (err.name !== "AbortError") {
-                    console.error("Save file picker failed:", err);
-                    saveAs(blob, fileName);
-                }
+            } catch (err) {
+                console.error("Writing via save file handle failed:", err);
+                saveAs(blob, fileName);
                 return;
             }
         }

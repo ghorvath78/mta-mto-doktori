@@ -183,7 +183,6 @@ export class FormStore {
                 objKey = keyParts.join("|");
             }
             const fullKey = prefix ? prefix + "|" + objKey : objKey;
-            if (objKey.startsWith("Kérelmezői|A kérelmező főbb adatai|Diplomák|Diplomák")) console.log("setField", objKey, fullKey, value);
             if (createMissing || fullKey in this.data || this.isFieldinArrayGroup(fullKey)) {
                 this.data[fullKey] = value;
             }
@@ -215,7 +214,6 @@ export class FormStore {
                     }
                 }
                 obj.forEach((item: unknown, i: number) => {
-                    if (arrayKey === "Kérelmezői|A kérelmező főbb adatai|Diplomák|Diplomák") console.log("Diplomák array fields", obj, item, i);
                     for (const field of fields) {
                         const value = item && typeof item === "object" ? String((item as Record<string, unknown>)[field] ?? "") : "";
                         setField(`${arrayKey}[[${i}]]|${field}`, value);
@@ -299,6 +297,12 @@ export class FormStore {
                 current = current[part];
             }
             return current;
+        }
+
+        // Ensure array containers exist in the output even when they have zero items
+        // (in which case there are no field keys to trigger ensurePath below).
+        for (const path of outputArrayPaths.keys()) {
+            ensurePath(path.split("|"));
         }
 
         for (const key in this.data) {

@@ -1,8 +1,15 @@
-import { getPdfDocumentStyles, getPdfSection, savePdfWithFormData, type FormInfo } from "@repo/form-engine";
+import { getPdfDocumentStyles, getPdfSection, requestPdfSaveTarget, savePdfWithFormData, type FormInfo } from "@repo/form-engine";
 import { getAuthorRecord, loadMTMTCitations, PubList, savePubListMinimal, type Scientometrics } from "@repo/mtmt-tools";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
 export const savePDF = async (formInfo: FormInfo) => {
+    // ezt kell a legelső await-nek lennie: a fájlmentési dialógus csak a user gesture-t
+    // közvetlenül kihasználva nyitható meg, a lenti lassú (pl. MTMT hálózati) hívások előtt
+    const saveTarget = await requestPdfSaveTarget("adatlap.pdf");
+    if (saveTarget.type === "cancelled") {
+        return;
+    }
+
     const store = formInfo.valueStore;
     const descriptor = formInfo.descriptor;
     const doktoriMuSection = [];
@@ -144,7 +151,7 @@ export const savePDF = async (formInfo: FormInfo) => {
 
     const mtmtData = await collectMTMTDataToSave(formInfo);
 
-    savePdfWithFormData(docDefinition, "adatlap.pdf", {
+    savePdfWithFormData(saveTarget, docDefinition, "adatlap.pdf", {
         "kerelmezo_form.json": JSON.stringify(store.toJSON(), null, 4),
         "kerelmezo_mtmt.json": JSON.stringify(mtmtData, null, 4)
     });
@@ -185,7 +192,6 @@ async function collectMTMTDataToSave(formInfo: FormInfo): Promise<object> {
             }
         }
     }
-
     await Promise.all(Array.from(citationParentMtids, (mtid) => loadMTMTCitations(mtid)));
 
     const pubList = formInfo.mtmtPubList as PubList;
