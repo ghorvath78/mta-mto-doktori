@@ -326,16 +326,21 @@ export class FormStore {
         return result;
     }
 
-    getArrayLength(fieldKey: string): number {
+    getArrayLengthKey(fieldKey: string): string {
         const parts = fieldKey.split("|");
-        if (parts.length < 5) return 0;
         // If the fieldKey contains indexed array notation, strip it to get the base group key
         const groupPart = parts[3];
         const m = groupPart.match(/^(.*)\[\[(\d+)\]\]$/);
         if (m) {
             parts[3] = m[1]; // Replace with base group key
         }
-        const arrayKey = [...parts.slice(0, -1), "_length"].join("|");
+        return [...parts.slice(0, -1), "_length"].join("|");
+    }
+
+    getArrayLength(fieldKey: string): number {
+        const parts = fieldKey.split("|");
+        if (parts.length < 5) return 0;
+        const arrayKey = this.getArrayLengthKey(fieldKey);
         return arrayKey in this.data ? parseInt(this.data[arrayKey]) || 0 : -1;
     }
 

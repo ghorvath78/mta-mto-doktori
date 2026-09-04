@@ -8,6 +8,7 @@ import "./customgroups/iscoresummary";
 
 export const tudomanymetria: PageDescriptor = {
     key: "Tudományos minimumkövetelmények",
+    label: "Tudománymetria",
     enabledAtom: applicantDataLoaded,
     sections: [
         {

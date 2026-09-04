@@ -1,19 +1,14 @@
-import { useAtomValue, atom } from "jotai";
-import type { GroupDescriptor, FormData } from "@repo/form-engine";
-import { cD, invertedText } from "@repo/form-engine";
+import { cD, invertedText, useFieldArrayValue, useFieldValue } from "@repo/form-engine";
 import { getNumOfAuthorsInPub, getRatingOfPub } from "@/eloterjesztoiform";
 
-const emptyArrayAtom = atom<string[]>([]);
-
-export const ShortThesisRequirements = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
-    const d1PubsFromData = formData["Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója"];
-    const d1Pubs = useAtomValue(d1PubsFromData || emptyArrayAtom);
-    const thesisPubsFromData =
-        formData["Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"];
-    const thesisPubs = useAtomValue(thesisPubsFromData || emptyArrayAtom);
+export const ShortThesisRequirements = () => {
+    const d1Pubs = useFieldArrayValue("Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója");
+    const thesisPubs = useFieldArrayValue(
+        "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"
+    );
     const d1Share = d1Pubs.reduce((sum, mtmt) => sum + 1 / getNumOfAuthorsInPub(mtmt), 0);
 
-    const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || [];
     const data = JSON.parse(rawData[0] || "[]");
     const wosNumber = cD(data[11][0] || 0);
     const thesisPubData = thesisPubs.map((mtmt) => {

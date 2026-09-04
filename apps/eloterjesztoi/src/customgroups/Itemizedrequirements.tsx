@@ -1,18 +1,14 @@
-import { useAtomValue } from "jotai";
-import type { GroupDescriptor, FormData } from "@repo/form-engine";
 import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ } from "@/requirements";
-import { cD, invertedText } from "@repo/form-engine";
+import { cD, invertedText, useFieldArrayValue, useFieldValue } from "@repo/form-engine";
 
-export const ItemizedRequirements = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
-    const achievementQ = useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám"] || []);
-    const category = useAtomValue(
-        formData[
-            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
-        ] || [""]
-    )[0];
-    const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
+export const ItemizedRequirements = () => {
+    const achievementQ = useFieldArrayValue("Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám") || [];
+    const category = useFieldValue(
+        "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+    );
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat");
     const data = JSON.parse(rawData[0] || "[]");
-    const iScore = parseInt(useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"] || [0])[0]);
+    const iScore = parseInt(useFieldValue("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám") || "0");
 
     const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
     const paperQValue = cD(data[1][6]) + cD(data[4][6]);
@@ -28,10 +24,8 @@ export const ItemizedRequirements = ({ formData }: { group: GroupDescriptor; for
     const minHunPapers = 1;
 
     const asIfPapers = cD(data[14][0] || 0);
-    const phdStudents = cD(
-        useAtomValue(
-            formData["Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma"] || [0]
-        )[0]
+    const phdStudents = parseInt(
+        useFieldValue("Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma") || "0"
     );
     const minSaIfPhdSum = 2;
 

@@ -1,17 +1,13 @@
-import { useAtomValue } from "jotai";
-import type { GroupDescriptor, FormData } from "@repo/form-engine";
 import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalQ } from "@/requirements";
-import { cD, invertedText } from "@repo/form-engine";
+import { cD, invertedText, useFieldArrayValue, useFieldValue } from "@repo/form-engine";
 
-export const QScoreSummary = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
-    const achievementQ = useAtomValue(formData["Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám"] || []);
-    const category = useAtomValue(
-        formData[
-            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
-        ] || [""]
-    )[0];
-    const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
-    const data = JSON.parse(rawData[0] || "[]");
+export const QScoreSummary = () => {
+    const achievementQ = useFieldArrayValue("Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Pontszám") || [];
+    const category = useFieldValue(
+        "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+    );
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat");
+    const data = JSON.parse(rawData || "[]");
 
     const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
     const paperQValue = cD(data[1][6]) + cD(data[4][6]);

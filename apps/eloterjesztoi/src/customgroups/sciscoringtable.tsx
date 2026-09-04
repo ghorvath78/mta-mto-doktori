@@ -1,9 +1,7 @@
-import { useAtomValue } from "jotai";
-import type { GroupDescriptor, FormData } from "@repo/form-engine";
-import { cD } from "@repo/form-engine";
+import { cD, useFieldValue } from "@repo/form-engine";
 
-export const SciScoringTable = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
-    const rawData = useAtomValue(formData["Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat"] || []);
+export const SciScoringTable = () => {
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || [];
     const data = JSON.parse(rawData[0] || "[]");
 
     const empty = "h-4";

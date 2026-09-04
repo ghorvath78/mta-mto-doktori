@@ -1,10 +1,5 @@
 import { getMinCommunityCount } from "@/requirements";
-import type { FormData, GroupDescriptor } from "@repo/form-engine";
-import { invertedText } from "@repo/form-engine";
-import { atom, useAtomValue } from "jotai";
-import { useMemo } from "react";
-
-const emptyAtom = atom(["A"]);
+import { invertedText, useFieldValue } from "@repo/form-engine";
 
 export const activityRequirementSectionKeys = [
     "TDK témavezetés",
@@ -20,29 +15,15 @@ export const activityRequirementSectionKeys = [
     "Állami vagy MTA által adományozott tudományos díj, kitüntetés"
 ] as const;
 
-export const PublicActivitySummary = ({ formData }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
+export const PublicActivitySummary = () => {
     const minimumRequired = getMinCommunityCount();
-
-    const actualCountAtom = useMemo(
-        () =>
-            atom((get) => {
-                let count = 0;
-
-                for (const sectionKey of activityRequirementSectionKeys) {
-                    const key = `Előterjesztői|Tudományos közéleti tevékenység|${sectionKey}|Értékelés|Követelmény teljesül`;
-                    const value = get(formData[key] || emptyAtom)[0];
-
-                    if (value && value.toLowerCase() === "igen") {
-                        count++;
-                    }
-                }
-
-                return count;
-            }),
-        [formData]
-    );
-
-    const actualCount = useAtomValue(actualCountAtom);
+    let count = 0;
+    for (const sectionKey of activityRequirementSectionKeys) {
+        const value = useFieldValue(`Előterjesztői|Tudományos közéleti tevékenység|${sectionKey}|Értékelés|Követelmény teljesül`);
+        if (value && value.toLowerCase() === "igen") {
+            count++;
+        }
+    }
 
     return (
         <div>
@@ -50,7 +31,7 @@ export const PublicActivitySummary = ({ formData }: { group: GroupDescriptor; fo
                 Teljesítendő tudományos közéleti szempontok száma: <span className="font-bold">{minimumRequired}</span>
             </div>
             <div>
-                Teljesített tudományos közéleti szempontok száma: <span className="font-bold">{invertedText("" + actualCount)}</span>
+                Teljesített tudományos közéleti szempontok száma: <span className="font-bold">{invertedText("" + count)}</span>
             </div>
             {/*<div className="font-bold">A minimumkövetelmény teljesült: {invertedText(actualCount >= minimimRequired ? "IGEN" : "NEM")}</div>*/}
         </div>

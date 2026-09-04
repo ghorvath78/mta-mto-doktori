@@ -1,7 +1,7 @@
-import { readJsonFromPdf, store, type FormDescriptor } from "@repo/form-engine";
-import { atomsFromJSON, createAtomsFromDescriptor, getFromObjectByKey, type PageDescriptor } from "@repo/form-engine";
+import { createFormDescriptor, readJsonFromPdf } from "@repo/form-engine";
+import { getFromObjectByKey } from "@repo/form-engine";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
-import { loadMTMTCitations, loadMTMTPublications, loadPubItemSummary, mtmtPubSummaryCacheAtom, type AuthorData, type PubItemSummary } from "@repo/mtmt-tools";
+import { createMTMTTools, loadMTMTCitations, PubList, PubListMinimal, type AuthorData, type PubItemMinimal } from "@repo/mtmt-tools";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
@@ -9,57 +9,94 @@ import { otPublikacio } from "./lap-otpublikacio.ts";
 import { otHivatkozas } from "./lap-othivatkozas.ts";
 import { kozeletiTevekenyseg } from "./lap-kozeleti.ts";
 import { osszesites } from "./lap-osszesites.ts";
-import { applicantDataLoaded } from "./atoms.ts";
 import { FileDown, FileUp } from "lucide-react";
 import { savePDF } from "./pdfsaver.ts";
 import { osszefoglalo } from "./lap-osszefoglalo.ts";
 import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 
-// A form neve, ez lesz a form adatok prefixe is a JSON-ban
-export const formName = "Előterjesztői";
+const mtmt = createMTMTTools();
 
-// Összeszedjük az összes lapot
-const pages: PageDescriptor[] = [
-    { ...eloterjesztoAdatai, label: "Előterjesztő adatai" },
-    { ...palyazoAdatai, label: "Pályázó adatai" },
-    { ...tudomanymetria, label: "Tudománymetria" },
-    { ...otPublikacio, label: "Öt kiemelt publikáció" },
-    { ...otHivatkozas, label: "Öt kiemelt hivatkozás" },
-    { ...kozeletiTevekenyseg, label: "Közéleti tevékenység" },
-    { ...osszesites, label: "Minimumkövetelmények" },
-    { ...osszefoglalo, label: "Javaslat" },
-    { ...biraloBizottsag, label: "Bíráló bizottság" }
-];
+// összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
+export const eloterjesztoiFormDescriptor = createFormDescriptor({
+    formName: "Előterjesztői",
+    title: "MTA Műszaki Tudományok Osztálya",
+    subtitle: "MTA doktori pályázat, előterjesztői űrlap",
+    pages: [eloterjesztoAdatai, palyazoAdatai, tudomanymetria, otPublikacio, otHivatkozas, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
+    buttons: [
+        {
+            label: "Adatlap mentése",
+            icon: <FileDown />,
+            onClick: async (_, setDialogMessage: (message: string) => void) => {
+                setDialogMessage("Adatlap mentése");
+                await savePDF(eloterjesztoiFormDescriptor, {
+                    "kerelmezo_form.json": JSON.stringify(applicantDataInForm, null, 4),
+                    "kerelmezo_mtmt.json": JSON.stringify(mtmtDataInForm, null, 4)
+                });
+                setDialogMessage("");
+            }
+        },
+        {
+            label: "Adatlap betöltése",
+            icon: <FileUp />,
+            onClick: async (_, setDialogMessage: (message: string) => void) => {
+                const file = await new Promise<File | null>((resolve) => {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = ".pdf,application/pdf";
+                    input.oncancel = () => resolve(null);
+                    input.onchange = () => resolve(input.files?.[0] ?? null);
+                    input.click();
+                });
+                if (!file) return;
 
-// elkészítjük a form mezők tárolóját
-export const eloterjesztoiFormData = createAtomsFromDescriptor(formName, pages);
+                setDialogMessage("Adatlap betöltése");
+                const [formContent, applicantContent, mtmtContent] = await Promise.all([
+                    readJsonFromPdf(file, "eloterjeszto_form.json"),
+                    readJsonFromPdf(file, "kerelmezo_form.json"),
+                    readJsonFromPdf(file, "kerelmezo_mtmt.json")
+                ]);
+                if (!formContent) {
+                    setDialogMessage("");
+                    alert("A kiválasztott PDF nem tartalmazza a szükséges adatokat. Kérem, válassza ki a form kitöltésekor letöltött PDF-et.");
+                    return;
+                }
+
+                const parsedContent = JSON.parse(formContent);
+                const valueStore = eloterjesztoiFormDescriptor.valueStore;
+                valueStore.initialize(eloterjesztoiFormDescriptor);
+                setDialogMessage("Publikációk és hivatkozások betöltése");
+                await loadApplicantDataFromForm(applicantContent, mtmtContent);
+
+                valueStore.fromJSON(parsedContent);
+                setDialogMessage("");
+
+                console.log("Betöltött form adatok:", valueStore.toJSON());
+            }
+        }
+    ],
+    extra: mtmt
+});
+
+export const valueStore = eloterjesztoiFormDescriptor.valueStore;
 
 // ha a kategória változik, frissítjük az elvárásokat tartalmazó mezőket
-store.sub(
-    eloterjesztoiFormData[
-        "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
-    ],
+valueStore.subscribeKey(
+    "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória",
     onCategoryChange
 );
 
 function onCategoryChange() {
-    const category = store.get(
-        eloterjesztoiFormData[
-            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
-        ]
-    )[0];
+    const category = valueStore.getField(
+        "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+    );
     if (category) {
-        store.set(
-            eloterjesztoiFormData[
-                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Q küszöbszám"
-            ],
-            [String(getMinPaperQ(category))]
+        valueStore.setField(
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Q küszöbszám",
+            String(getMinPaperQ(category))
         );
-        store.set(
-            eloterjesztoiFormData[
-                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|I küszöbszám"
-            ],
-            [String(getMinTotalI(category))]
+        valueStore.setField(
+            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|I küszöbszám",
+            String(getMinTotalI(category))
         );
     }
 }
@@ -71,42 +108,44 @@ let applicantDataInForm: Record<string, unknown> | null = null;
 export async function loadApplicantData(data: Record<string, unknown>, mtmtData: Record<string, unknown>) {
     mtmtDataInForm = mtmtData;
     applicantDataInForm = data;
-    atomsFromJSON(data, eloterjesztoiFormData, "", true);
+    valueStore.fromJSON(data, "", true);
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     const committee = getFromObjectByKey(
         data,
         "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság"
     ) as string | undefined;
     const category = getCategory(committee || "");
-    store.set(
-        eloterjesztoiFormData[
-            "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
-        ],
-        [category]
+    valueStore.setField(
+        "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória",
+        category
     );
     const sciMetrics = JSON.parse(
         getFromObjectByKey(data, "Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") as string
     );
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|Független idézők száma"], [sciMetrics[9][0] || "0"]);
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám"], [sciMetrics[10][0] || "0"]);
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|WoS idézők száma"], [sciMetrics[11][0] || "0"]);
-    store.set(eloterjesztoiFormData["Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|H-index"], [sciMetrics[12][0] || "0"]);
+    valueStore.setField("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|Független idézők száma", sciMetrics[9][0] || "0");
+    valueStore.setField("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám", sciMetrics[10][0] || "0");
+    valueStore.setField("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|WoS idézők száma", sciMetrics[11][0] || "0");
+    valueStore.setField("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|H-index", sciMetrics[12][0] || "0");
 
     // load 5 most important citations
-    const summaryCache = store.get(mtmtPubSummaryCacheAtom);
+    const summaryCache = eloterjesztoiFormDescriptor["mtmtPubListMinimal"] as PubListMinimal | null;
+    if (!summaryCache) {
+        console.error("No mtmtPubListMinimal found in form descriptor");
+        return;
+    }
     const citedPapers = getFromObjectByKey(data, "Legfontosabb hivatkozások|Öt legfontosabb hivatkozás|Öt legfontosabb hivatkozás|Hivatkozott közlemény") as
         | string[]
         | undefined;
     if (citedPapers) {
         for (const mtid of citedPapers) {
             if (mtid) {
-                if (!summaryCache[mtid]) {
+                if (!summaryCache.publications[mtid]) {
                     await loadMTMTCitations(mtid);
                 }
             }
         }
     }
-    store.set(applicantDataLoaded, true);
+    // store.set(applicantDataLoaded, true);
 }
 
 export function getApplicantAuthorRecord(): AuthorData | null {
@@ -136,7 +175,7 @@ export function getNumOfAuthorsInPub(mtid: string): number {
 
 export function getRatingOfPub(mtid: string): string {
     if (!mtmtDataInForm) return "";
-    const pubSummaries = mtmtDataInForm["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>;
+    const pubSummaries = mtmtDataInForm["Adatlapon szereplő publikációk"] as Record<string, PubItemMinimal>;
     const summary = pubSummaries[mtid];
     return summary ? summary.rating : "";
 }
@@ -145,76 +184,18 @@ export async function loadApplicantDataFromForm(applicantContent: string | undef
     if (applicantContent) {
         const applicantData = JSON.parse(applicantContent);
         const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
+        const mtmtPubListMinimal = eloterjesztoiFormDescriptor["mtmtPubListMinimal"] as PubListMinimal | null;
+        const mtmtPubList = eloterjesztoiFormDescriptor["mtmtPubList"] as PubList | null;
         if ("Adatlapon szereplő publikációk" in mtmtData && "Társszerzők" in mtmtData) {
-            loadPubItemSummary(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemSummary>);
+            mtmtPubListMinimal?.load(mtmtData["Adatlapon szereplő publikációk"] as Record<string, PubItemMinimal>);
         } else {
             const mtmtId = String(
                 getFromObjectByKey(applicantData, "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító") || ""
             );
             if (mtmtId) {
-                await loadMTMTPublications(mtmtId);
+                await mtmtPubList?.loadMTMTPublications(mtmtId);
             }
         }
         await loadApplicantData(applicantData, mtmtData);
     }
 }
-
-// összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
-export const eloterjesztoiFormDescriptor: FormDescriptor = {
-    name: formName,
-    title: "MTA Műszaki Tudományok Osztálya",
-    subtitle: "MTA doktori pályázat, előterjesztői űrlap",
-    data: eloterjesztoiFormData,
-    pages,
-    buttons: [
-        {
-            label: "Adatlap mentése",
-            icon: <FileDown />,
-            onClick: async (formData, setDialogMessage: (message: string) => void) => {
-                setDialogMessage("Adatlap mentése");
-                await savePDF(pages, formData, formName, {
-                    "kerelmezo_form.json": JSON.stringify(applicantDataInForm, null, 4),
-                    "kerelmezo_mtmt.json": JSON.stringify(mtmtDataInForm, null, 4)
-                });
-                setDialogMessage("");
-            }
-        },
-        {
-            label: "Adatlap betöltése",
-            icon: <FileUp />,
-            onClick: async (formData, setDialogMessage: (message: string) => void) => {
-                const file = await new Promise<File | null>((resolve) => {
-                    const input = document.createElement("input");
-                    input.type = "file";
-                    input.accept = ".pdf,application/pdf";
-                    input.oncancel = () => resolve(null);
-                    input.onchange = () => resolve(input.files?.[0] ?? null);
-                    input.click();
-                });
-                if (!file) return;
-
-                setDialogMessage("Adatlap betöltése");
-                const [formContent, applicantContent, mtmtContent] = await Promise.all([
-                    readJsonFromPdf(file, "eloterjeszto_form.json"),
-                    readJsonFromPdf(file, "kerelmezo_form.json"),
-                    readJsonFromPdf(file, "kerelmezo_mtmt.json")
-                ]);
-                if (!formContent) {
-                    setDialogMessage("");
-                    alert("A kiválasztott PDF nem tartalmazza a szükséges adatokat. Kérem, válassza ki a form kitöltésekor letöltött PDF-et.");
-                    return;
-                }
-
-                const parsedContent = JSON.parse(formContent);
-
-                setDialogMessage("Publikációk és hivatkozások betöltése");
-                await loadApplicantDataFromForm(applicantContent, mtmtContent);
-
-                atomsFromJSON(parsedContent, formData);
-                setDialogMessage("");
-
-                console.log("Betöltött form adatok:", formData);
-            }
-        }
-    ]
-};

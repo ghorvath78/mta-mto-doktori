@@ -1,5 +1,4 @@
-import { store } from "@repo/form-engine";
-import { eloterjesztoiFormData } from "./eloterjesztoiform.tsx";
+import { valueStore } from "./eloterjesztoiform";
 
 export function getMinPaperQ(category: string) {
     switch (category) {
@@ -39,8 +38,8 @@ export function getMinTotalQ(category: string) {
 }
 
 export function getMinTotalI(category: string) {
-    const format = store.get(
-        eloterjesztoiFormData["Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája"]
+    const format = valueStore.getField(
+        "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája"
     );
     if (format[0] === "rövid értekezés") {
         return 750;

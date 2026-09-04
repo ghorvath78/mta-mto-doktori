@@ -4,6 +4,7 @@ import { PublicActivitySummary } from "./customgroups/publicactivitysummary";
 
 export const kozeletiTevekenyseg: PageDescriptor = {
     key: "Tudományos közéleti tevékenység",
+    label: "Közéleti tevékenység",
     enabledAtom: applicantDataLoaded,
     sections: [
         {

@@ -3,6 +3,7 @@ import { applicantDataLoaded } from "./atoms";
 
 export const osszefoglalo: PageDescriptor = {
     key: "Összefoglaló javaslat",
+    label: "Javaslat",
     enabledAtom: applicantDataLoaded,
     sections: [
         {

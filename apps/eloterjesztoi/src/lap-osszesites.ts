@@ -3,6 +3,7 @@ import { applicantDataLoaded } from "./atoms";
 
 export const osszesites: PageDescriptor = {
     key: "A tudományos minimumkövetelmények teljesítésének összesítése",
+    label: "Minimumkövetelmények",
     enabledAtom: applicantDataLoaded,
     sections: [
         {

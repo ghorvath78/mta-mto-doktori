@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useRef, useSyncExternalStore } from "react";
 import type { FormStore, Listener } from "./formstore";
 import type { FormDescriptor } from "./types";
 import { getIndexFromKey } from "./utils";
@@ -35,6 +35,61 @@ export function useFieldValue(key: string): string {
 
     const subscribe = useCallback((fn: Listener) => store.subscribeKey(key, fn), [store, key]);
     const getSnapshot = useCallback(() => store.getField(key), [store, key]);
+
+    return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+function arraysEqual(a: string[], b: string[]): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
+
+export function useFieldArrayValue(key: string): string[] {
+    const store = useValueStore();
+    const cacheRef = useRef<{ store: FormStore; key: string; value: string[] } | null>(null);
+
+    const getSnapshot = useCallback(() => {
+        const next = store.getArray(key);
+        const cache = cacheRef.current;
+        if (cache && cache.store === store && cache.key === key && arraysEqual(cache.value, next)) {
+            return cache.value;
+        }
+        cacheRef.current = { store, key, value: next };
+        return next;
+    }, [store, key]);
+
+    const subscribe = useCallback(
+        (fn: Listener) => {
+            let itemUnsubs: (() => void)[] = [];
+
+            const subscribeItems = () => {
+                for (const unsub of itemUnsubs) unsub();
+                itemUnsubs = [];
+                const length = store.getArrayLength(key);
+                for (let i = 0; i < length; i++) {
+                    const itemKey = store.getFieldKeyForArrayItem(key, i);
+                    itemUnsubs.push(store.subscribeKey(itemKey, fn));
+                }
+            };
+
+            subscribeItems();
+
+            const lengthKey = store.getArrayLengthKey(key);
+            const unsubLength = store.subscribeKey(lengthKey, () => {
+                subscribeItems();
+                fn();
+            });
+
+            return () => {
+                unsubLength();
+                for (const unsub of itemUnsubs) unsub();
+            };
+        },
+        [store, key]
+    );
 
     return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
