@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef, useEffect, createContext, useContext, Fragment } from "react";
-import { useAtomValue, atom } from "jotai";
-import { type GroupDescriptor, type FormData, store, deleteFromFormArray, appendToFormArray, SelectOrAddField } from "@repo/form-engine";
+import { type GroupDescriptor, type FormStore, useValueStore, useFieldValue, useFieldArrayValue, SelectOrAddField } from "@repo/form-engine";
 import { getAuthorRecord, MTMTIdFinder } from "@repo/mtmt-tools";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, Input, Spinner } from "@repo/ui";
 import { GripVertical, Trash, Search, UserPlus } from "lucide-react";
@@ -36,20 +35,50 @@ type DndItemId = string; // format: "groupKeyPrefix::index"
 // ─── DnD Context shared across all CommitteeTable instances on the page ──────
 
 type CommitteeDndContextValue = {
-    registerGroup: (keyPrefix: string, group: GroupDescriptor, formData: FormData) => void;
+    registerGroup: (keyPrefix: string, group: GroupDescriptor) => void;
     unregisterGroup: (keyPrefix: string) => void;
-    getGroups: () => Map<string, { group: GroupDescriptor; formData: FormData }>;
+    getGroups: () => Map<string, GroupDescriptor>;
     crossGroupOver: { targetPrefix: string; targetIndex: number } | null;
     activeSourcePrefix: string | null;
 };
 
 const CommitteeDndReactContext = createContext<CommitteeDndContextValue | null>(null);
 
+/** Inserts a row at an arbitrary index, shifting subsequent items up by one slot (the inverse of FormStore.deleteFromFormArray). */
+function insertRowAt(store: FormStore, group: GroupDescriptor, keyPrefix: string, index: number, row: RowData) {
+    const lengthKey = `${keyPrefix}|_length`;
+    const length = parseInt(store.getField(lengthKey)) || 0;
+
+    const fieldMap: Record<string, string> = {
+        "MTMT azonosító": row.mtmtId,
+        Név: row.name,
+        "Tudományos fokozat": row.degree,
+        Szakterület: row.discipline,
+        Munkahely: row.workplace
+    };
+
+    const toNotifyKeys: string[] = [lengthKey];
+    for (const field of group.fields) {
+        for (let i = length; i > index; i--) {
+            const key = `${keyPrefix}[[${i}]]|${field.key}`;
+            const prevKey = `${keyPrefix}[[${i - 1}]]|${field.key}`;
+            store.data[key] = store.data[prevKey];
+            toNotifyKeys.push(key);
+        }
+        const targetKey = `${keyPrefix}[[${index}]]|${field.key}`;
+        store.data[targetKey] = fieldMap[field.key] ?? "";
+        toNotifyKeys.push(targetKey);
+    }
+    store.data[lengthKey] = String(length + 1);
+    store.notifyListenersForKeys(toNotifyKeys);
+}
+
 /**
  * Wraps the page to provide a shared DndContext for cross-group drag & drop.
  */
 export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }) => {
-    const groupsRef = useRef(new Map<string, { group: GroupDescriptor; formData: FormData }>());
+    const store = useValueStore();
+    const groupsRef = useRef(new Map<string, GroupDescriptor>());
     const [activeId, setActiveId] = useState<DndItemId | null>(null);
     const [activeRowData, setActiveRowData] = useState<RowData | null>(null);
     const [crossGroupOver, setCrossGroupOver] = useState<{ targetPrefix: string; targetIndex: number } | null>(null);
@@ -60,8 +89,8 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
     );
 
-    const registerGroup = useCallback((keyPrefix: string, group: GroupDescriptor, formData: FormData) => {
-        groupsRef.current.set(keyPrefix, { group, formData });
+    const registerGroup = useCallback((keyPrefix: string, group: GroupDescriptor) => {
+        groupsRef.current.set(keyPrefix, group);
     }, []);
 
     const unregisterGroup = useCallback((keyPrefix: string) => {
@@ -70,63 +99,33 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
 
     const getGroups = useCallback(() => groupsRef.current, []);
 
-    const readRow = useCallback((keyPrefix: string, index: number, formData: FormData): RowData => {
-        const get = (field: string) => {
-            const a = formData[`${keyPrefix}|${field}`];
-            return a ? (store.get(a)[index] ?? "") : "";
-        };
-        return {
-            mtmtId: get("MTMT azonosító"),
-            name: get("Név"),
-            degree: get("Tudományos fokozat"),
-            discipline: get("Szakterület"),
-            workplace: get("Munkahely")
-        };
-    }, []);
+    const readRow = useCallback(
+        (keyPrefix: string, index: number): RowData => {
+            const get = (field: string) => store.getArrayItem(`${keyPrefix}|${field}`, index);
+            return {
+                mtmtId: get("MTMT azonosító"),
+                name: get("Név"),
+                degree: get("Tudományos fokozat"),
+                discipline: get("Szakterület"),
+                workplace: get("Munkahely")
+            };
+        },
+        [store]
+    );
 
-    const removeRow = useCallback((keyPrefix: string, index: number, group: GroupDescriptor, formData: FormData) => {
-        // Remove element at index from all field arrays and decrement length
-        const lengthKey = `${keyPrefix}|_length`;
-        const lengthAtom = formData[lengthKey];
-        if (!lengthAtom) return;
-        const length = parseInt(store.get(lengthAtom)[0]);
-        for (const field of group.fields) {
-            const key = `${keyPrefix}|${field.key}`;
-            const fieldAtom = formData[key];
-            if (fieldAtom) {
-                const arr = [...store.get(fieldAtom)];
-                arr.splice(index, 1);
-                store.set(fieldAtom, arr);
-            }
-        }
-        store.set(lengthAtom, [String(length - 1)]);
-    }, []);
+    const removeRow = useCallback(
+        (keyPrefix: string, index: number, group: GroupDescriptor) => {
+            store.deleteFromFormArray(group, keyPrefix, index);
+        },
+        [store]
+    );
 
-    const insertRow = useCallback((keyPrefix: string, index: number, group: GroupDescriptor, formData: FormData, row: RowData) => {
-        const lengthKey = `${keyPrefix}|_length`;
-        const lengthAtom = formData[lengthKey];
-        if (!lengthAtom) return;
-        const length = parseInt(store.get(lengthAtom)[0]);
-
-        const fieldMap: Record<string, string> = {
-            "MTMT azonosító": row.mtmtId,
-            Név: row.name,
-            "Tudományos fokozat": row.degree,
-            Szakterület: row.discipline,
-            Munkahely: row.workplace
-        };
-
-        for (const field of group.fields) {
-            const key = `${keyPrefix}|${field.key}`;
-            const fieldAtom = formData[key];
-            if (fieldAtom) {
-                const arr = [...store.get(fieldAtom)];
-                arr.splice(index, 0, fieldMap[field.key] ?? "");
-                store.set(fieldAtom, arr);
-            }
-        }
-        store.set(lengthAtom, [String(length + 1)]);
-    }, []);
+    const insertRow = useCallback(
+        (keyPrefix: string, index: number, group: GroupDescriptor, row: RowData) => {
+            insertRowAt(store, group, keyPrefix, index, row);
+        },
+        [store]
+    );
 
     const handleDragStart = useCallback(
         (event: DragStartEvent) => {
@@ -136,7 +135,7 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
             setActiveSourcePrefix(prefix);
             const entry = groupsRef.current.get(prefix);
             if (entry) {
-                setActiveRowData(readRow(prefix, parseInt(idxStr), entry.formData));
+                setActiveRowData(readRow(prefix, parseInt(idxStr)));
             }
         },
         [readRow]
@@ -212,12 +211,11 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
                 const targetPrefix = finalId;
                 const targetEntry = groupsRef.current.get(targetPrefix);
                 if (!targetEntry) return null;
-                const lengthAtom = targetEntry.formData[`${targetPrefix}|_length`];
-                const targetIdx = lengthAtom ? parseInt(store.get(lengthAtom)[0]) : 0;
+                const targetIdx = parseInt(store.getField(`${targetPrefix}|_length`)) || 0;
                 return { targetPrefix, targetIdx };
             }
         },
-        []
+        [store]
     );
 
     const handleDragOver = useCallback(
@@ -266,17 +264,17 @@ export const CommitteeDndProvider = ({ children }: { children: React.ReactNode }
             const targetEntry = groupsRef.current.get(targetPrefix);
             if (!targetEntry) return;
 
-            const rowData = readRow(sourcePrefix, sourceIdx, sourceEntry.formData);
+            const rowData = readRow(sourcePrefix, sourceIdx);
 
             if (sourcePrefix === targetPrefix) {
                 // Same group: reorder
                 if (sourceIdx === targetIdx) return;
-                removeRow(sourcePrefix, sourceIdx, sourceEntry.group, sourceEntry.formData);
-                insertRow(targetPrefix, targetIdx, targetEntry.group, targetEntry.formData, rowData);
+                removeRow(sourcePrefix, sourceIdx, sourceEntry);
+                insertRow(targetPrefix, targetIdx, targetEntry, rowData);
             } else {
                 // Cross-group: remove from source, insert into target
-                removeRow(sourcePrefix, sourceIdx, sourceEntry.group, sourceEntry.formData);
-                insertRow(targetPrefix, targetIdx, targetEntry.group, targetEntry.formData, rowData);
+                removeRow(sourcePrefix, sourceIdx, sourceEntry);
+                insertRow(targetPrefix, targetIdx, targetEntry, rowData);
             }
         },
         [readRow, removeRow, insertRow, resolveTarget]
@@ -551,26 +549,23 @@ const AddFromMTMTDialog = ({ open, onClose, onAdd }: { open: boolean; onClose: (
 
 // ─── Main CommitteeTable component (used as customComponent on each group) ───
 
-const lengthFallback = atom(["0"]);
-
-export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
+export const CommitteeTable = ({ group, keyPrefix }: { group: GroupDescriptor; keyPrefix: string; index: number }) => {
     const dndCtx = useContext(CommitteeDndReactContext);
-    const lengthAtom = formData[`${keyPrefix}|_length`] ?? lengthFallback;
-    const arrayLength = useAtomValue(lengthAtom);
-    const length = parseInt(arrayLength[0]) || 0;
+    const store = useValueStore();
+    const length = parseInt(useFieldValue(`${keyPrefix}|_length`)) || 0;
 
-    // Subscribe to field data changes (fixed set of atoms - no conditional hooks)
-    const mtmtIds = useAtomValue(formData[`${keyPrefix}|MTMT azonosító`] ?? lengthFallback);
-    const names = useAtomValue(formData[`${keyPrefix}|Név`] ?? lengthFallback);
-    const degrees = useAtomValue(formData[`${keyPrefix}|Tudományos fokozat`] ?? lengthFallback);
-    const disciplines = useAtomValue(formData[`${keyPrefix}|Szakterület`] ?? lengthFallback);
-    const workplaces = useAtomValue(formData[`${keyPrefix}|Munkahely`] ?? lengthFallback);
+    // Subscribe to field data changes (fixed set of fields - no conditional hooks)
+    const mtmtIds = useFieldArrayValue(`${keyPrefix}|MTMT azonosító`);
+    const names = useFieldArrayValue(`${keyPrefix}|Név`);
+    const degrees = useFieldArrayValue(`${keyPrefix}|Tudományos fokozat`);
+    const disciplines = useFieldArrayValue(`${keyPrefix}|Szakterület`);
+    const workplaces = useFieldArrayValue(`${keyPrefix}|Munkahely`);
 
     // Register with cross-group DnD context
     useEffect(() => {
-        dndCtx?.registerGroup(keyPrefix, group, formData);
+        dndCtx?.registerGroup(keyPrefix, group);
         return () => dndCtx?.unregisterGroup(keyPrefix);
-    }, [dndCtx, keyPrefix, group, formData]);
+    }, [dndCtx, keyPrefix, group]);
 
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [editIndex, setEditIndex] = useState(0);
@@ -607,12 +602,7 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
 
     const handleSaveEdit = (row: RowData) => {
         const set = (field: string, value: string) => {
-            const a = formData[`${keyPrefix}|${field}`];
-            if (a) {
-                const arr = [...store.get(a)];
-                arr[editIndex] = value;
-                store.set(a, arr);
-            }
+            store.setField(`${keyPrefix}[[${editIndex}]]|${field}`, value);
         };
         set("MTMT azonosító", row.mtmtId);
         set("Név", row.name);
@@ -622,21 +612,16 @@ export const CommitteeTable = ({ group, formData, keyPrefix }: { group: GroupDes
     };
 
     const handleDelete = (index: number) => {
-        deleteFromFormArray(group, formData, keyPrefix, index);
+        store.deleteFromFormArray(group, keyPrefix, index);
     };
 
     const handleAdd = (row: RowData) => {
         // Append an empty row first
-        appendToFormArray(group, formData, keyPrefix);
+        store.appendToFormArray(group, keyPrefix);
         // Then fill it with data
         const newIdx = length; // after append, this is the new last index
         const set = (field: string, value: string) => {
-            const a = formData[`${keyPrefix}|${field}`];
-            if (a) {
-                const arr = [...store.get(a)];
-                arr[newIdx] = value;
-                store.set(a, arr);
-            }
+            store.setField(`${keyPrefix}[[${newIdx}]]|${field}`, value);
         };
         set("MTMT azonosító", row.mtmtId);
         set("Név", row.name);
@@ -752,33 +737,24 @@ const MTA_DEGREES = new Set(["MTA doktora", "MTA rendes tagja", "MTA levelező t
 const PHD_DEGREES = new Set(["PhD", "Kandidátus"]);
 const VALID_DEGREES = new Set([...PHD_DEGREES, "Tudomány doktora", ...MTA_DEGREES, "MTA külső tagja"]);
 
-function grpLength(formData: FormData, key: string): number {
-    const a = formData[`${key}|_length`];
-    return a ? parseInt(store.get(a)[0]) || 0 : 0;
+function grpLength(store: FormStore, key: string): number {
+    return parseInt(store.getField(`${key}|_length`)) || 0;
 }
 
-function grpDegrees(formData: FormData, key: string): string[] {
-    const len = grpLength(formData, key);
-    const a = formData[`${key}|Tudományos fokozat`];
-    return a ? store.get(a).slice(0, len) : [];
+function grpDegrees(store: FormStore, key: string): string[] {
+    return store.getArray(`${key}|Tudományos fokozat`);
 }
 
-function grpNames(formData: FormData, key: string): string[] {
-    const len = grpLength(formData, key);
-    const a = formData[`${key}|Név`];
-    return a ? store.get(a).slice(0, len) : [];
+function grpNames(store: FormStore, key: string): string[] {
+    return store.getArray(`${key}|Név`);
 }
 
-function grpWorkplaces(formData: FormData, key: string): string[] {
-    const len = grpLength(formData, key);
-    const a = formData[`${key}|Munkahely`];
-    return a ? store.get(a).slice(0, len) : [];
+function grpWorkplaces(store: FormStore, key: string): string[] {
+    return store.getArray(`${key}|Munkahely`);
 }
 
-function grpMtmtIds(formData: FormData, key: string): string[] {
-    const len = grpLength(formData, key);
-    const a = formData[`${key}|MTMT azonosító`];
-    return a ? store.get(a).slice(0, len) : [];
+function grpMtmtIds(store: FormStore, key: string): string[] {
+    return store.getArray(`${key}|MTMT azonosító`);
 }
 
 /** Returns the common hierarchical prefix of two " / "-separated affiliation strings, or null. */
@@ -801,7 +777,8 @@ function affiliationOverlap(a: string, b: string): string | null {
 
 type CheckLine = { text: string; status: "" | "ok" | "warn" | "error"; indent?: boolean; links?: string[] };
 
-export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescriptor; formData: FormData; keyPrefix: string; index: number }) => {
+export const CommitteeChecker = ({ keyPrefix }: { group: GroupDescriptor; keyPrefix: string; index: number }) => {
+    const store = useValueStore();
     const [lines, setLines] = useState<CheckLine[]>([]);
     // keyPrefix is e.g. "formName|Bíráló bizottság|Ellenőrzés"
     // sibling group keys live one level up: "formName|Bíráló bizottság|<groupKey>"
@@ -824,7 +801,7 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
             [grp("Bíráló bizottság tartalék tagjai"), "Bíráló bizottság tartalék tagjai", 5]
         ];
         for (const [key, label, expected] of countChecks) {
-            const n = grpLength(formData, key);
+            const n = grpLength(store, key);
             if (n === expected) {
                 result.push({ text: `${label}: ${n} fő ✓`, status: "ok" });
             } else if (n < expected) {
@@ -838,7 +815,7 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
         result.push({ text: "── Fokozatok ──", status: "" });
 
         // Hivatalos bírálók
-        const biralokDeg = grpDegrees(formData, grp("Hivatalos bírálók"));
+        const biralokDeg = grpDegrees(store, grp("Hivatalos bírálók"));
         const biralokMta = biralokDeg.filter((d) => MTA_DEGREES.has(d)).length;
         const biralokPhd = biralokDeg.filter((d) => PHD_DEGREES.has(d)).length;
         result.push({
@@ -863,7 +840,7 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
         }
 
         // Tartalék bírálók
-        const tarBiralokDeg = grpDegrees(formData, grp("Tartalék bírálók"));
+        const tarBiralokDeg = grpDegrees(store, grp("Tartalék bírálók"));
         const tarBiralokMta = tarBiralokDeg.filter((d) => MTA_DEGREES.has(d)).length;
         const tarBiralokPhd = tarBiralokDeg.filter((d) => PHD_DEGREES.has(d)).length;
         result.push({
@@ -892,7 +869,7 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
             [grp("Bíráló bizottság elnöke"), "Bíráló bizottság elnöke"],
             [grp("Bíráló bizottság tartalék elnöke"), "Bíráló bizottság tartalék elnöke"]
         ] as [string, string][]) {
-            const deg = grpDegrees(formData, key);
+            const deg = grpDegrees(store, key);
             if (deg.length === 0) {
                 result.push({ text: `${label}: nincs megadva`, status: "warn" });
             } else if (!MTA_DEGREES.has(deg[0])) {
@@ -910,7 +887,7 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
             [grp("Bíráló bizottság titkára"), "Bíráló bizottság titkára"],
             [grp("Bíráló bizottság tartalék titkára"), "Bíráló bizottság tartalék titkára"]
         ] as [string, string][]) {
-            const deg = grpDegrees(formData, key);
+            const deg = grpDegrees(store, key);
             if (deg.length === 0) {
                 result.push({ text: `${label}: nincs megadva`, status: "warn" });
             } else if (!VALID_DEGREES.has(deg[0])) {
@@ -921,7 +898,7 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
         }
 
         // Tagjai — normally all MTA-level; exception: if ALL bírálók are MTA-level, 1 PhD is allowed
-        const tagokDeg = grpDegrees(formData, grp("Bíráló bizottság tagjai"));
+        const tagokDeg = grpDegrees(store, grp("Bíráló bizottság tagjai"));
         const allBiralokMta = biralokDeg.length > 0 && biralokDeg.every((d) => MTA_DEGREES.has(d));
         if (tagokDeg.length === 0) {
             result.push({ text: `Bíráló bizottság tagjai: nincs megadva`, status: "warn" });
@@ -973,8 +950,8 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
             ];
             let anyOverlap = false;
             for (const [key] of allGroupKeys) {
-                const names = grpNames(formData, key);
-                const workplaces = grpWorkplaces(formData, key);
+                const names = grpNames(store, key);
+                const workplaces = grpWorkplaces(store, key);
                 for (let i = 0; i < names.length; i++) {
                     const memberName = names[i] || `(${i + 1}. tag)`;
                     const memberAffs = (workplaces[i] ?? "")
@@ -1015,8 +992,8 @@ export const CommitteeChecker = ({ formData, keyPrefix }: { group: GroupDescript
             grp("Bíráló bizottság tartalék tagjai")
         ];
         for (const key of allGroupKeysForPubs) {
-            const names = grpNames(formData, key);
-            const memberMtmtIds = grpMtmtIds(formData, key);
+            const names = grpNames(store, key);
+            const memberMtmtIds = grpMtmtIds(store, key);
             for (let i = 0; i < names.length; i++) {
                 const memberName = names[i] || `(${i + 1}. tag)`;
                 const memberMtmtId = memberMtmtIds[i];

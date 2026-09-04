@@ -6,5 +6,6 @@ export * from "./utils.tsx";
 export * from "./inputfieldstore.ts";
 export * from "./inputfieldprinters.ts";
 export { readJsonFromPdf, chooseAndLoadPdf, chooseAndLoadJSON } from "./pdfloader.ts";
+export { SelectOrAddField } from "./inputfields/selectoraddinput.tsx";
 export * from "./pdftools.ts";
 export * from "./initform.ts";
