@@ -2,6 +2,14 @@ import { useCallback, useSyncExternalStore } from "react";
 import Cookies from "js-cookie";
 
 type Listener = () => void;
+
+// Mouse enter/leave on fields and groups can fire in rapid bursts while the user
+// scrolls the form under a stationary cursor. Notifying listeners on every single
+// event forces a React re-render per event and makes scrolling feel janky, so info
+// text updates are throttled to at most once per this many ms; state itself is
+// always kept up to date, only the re-render is delayed/coalesced.
+const INFO_TEXT_NOTIFY_THROTTLE_MS = 60;
+
 export class InfoState {
     private static instance: InfoState;
     state = {
@@ -11,6 +19,7 @@ export class InfoState {
         panelOpen: true
     };
     private listeners: Set<Listener> = new Set();
+    private notifyTimeout: ReturnType<typeof setTimeout> | null = null;
 
     private constructor() {
         // load panelOpen state from cookie
@@ -39,7 +48,7 @@ export class InfoState {
             panelOpen: this.state.panelOpen
         };
         this.state = newState;
-        this.notifyListeners();
+        this.scheduleNotify();
     }
 
     setPanelOpen(open: boolean) {
@@ -61,6 +70,17 @@ export class InfoState {
 
     notifyListeners() {
         this.listeners.forEach((fn) => fn());
+    }
+
+    // Trailing-edge throttle: while a notify is already pending, further calls just
+    // update this.state (see setInfoText) and wait for it to fire, instead of each
+    // scheduling their own timeout.
+    private scheduleNotify() {
+        if (this.notifyTimeout !== null) return;
+        this.notifyTimeout = setTimeout(() => {
+            this.notifyTimeout = null;
+            this.notifyListeners();
+        }, INFO_TEXT_NOTIFY_THROTTLE_MS);
     }
 }
 

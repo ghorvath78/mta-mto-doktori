@@ -19,22 +19,21 @@ export function useCondition(cond: ConditionalDescriptor, ix = -1): boolean {
 }
 
 function getConditionKey(store: FormStore, cond: ConditionalDescriptor, ix = -1): string | null {
-    let conditionKey = cond.conditionKey ?? "";
-    if (conditionKey && ix >= 0) {
-        // check if cond.conditionKey is in an array group and ix is valid
-        const keyParts = conditionKey.split("|");
-        const lengthKey = [...keyParts.slice(0, -1), "_length"].join("|");
-        const isArrayGroup = lengthKey in store.data;
-        if (isArrayGroup) {
-            const arrayLength = parseInt(store.data[lengthKey]) || 0;
-            if (ix < arrayLength) {
-                conditionKey = `${keyParts.slice(0, -1).join("|")}[[${ix}]]|${keyParts[keyParts.length - 1]}`;
-            }
-        }
-    }
+    const baseKey = cond.conditionKey;
+    if (!baseKey) return null;
+    if (ix < 0) return baseKey;
 
-    const keyExists = conditionKey !== "" && conditionKey in store.data;
-    return keyExists ? conditionKey : null;
+    // ix >= 0: evaluating the condition for one item of an array group. Only rewrite to the
+    // per-item key when baseKey sits inside a currently-existing array group and ix is within
+    // its current length - otherwise there's no such item to condition on.
+    const keyParts = baseKey.split("|");
+    const lengthKey = [...keyParts.slice(0, -1), "_length"].join("|");
+    const isArrayGroup = lengthKey in store.data;
+    if (!isArrayGroup) return baseKey;
+
+    const arrayLength = parseInt(store.data[lengthKey]) || 0;
+    if (ix >= arrayLength) return null;
+    return `${keyParts.slice(0, -1).join("|")}[[${ix}]]|${keyParts[keyParts.length - 1]}`;
 }
 
 export function evaluateCondition(store: FormStore, cond: ConditionalDescriptor, ix = -1): boolean {

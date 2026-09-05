@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Page } from "./page";
 import { useFormDescriptor } from "./hooks";
 import { useCondition } from "./conditions";
@@ -6,7 +6,10 @@ import type { PageDescriptor } from "./types";
 
 declare const BUILD_DATE: string;
 
-export const FormPanel = () => {
+// Memoized because MainScreen re-renders on every InfoState change (field/section
+// hover); FormPanel takes no props, so without memo it would re-render the entire
+// form tree on each hover transition even though it has no help-text dependency.
+export const FormPanel = memo(function FormPanel() {
     const formDescriptor = useFormDescriptor();
     const { formName, pages } = formDescriptor;
     const [activePage, setActivePage] = useState(pages ? pages[0]?.key : "");
@@ -24,7 +27,7 @@ export const FormPanel = () => {
             <div className="fixed bottom-1 left-1 text-xs text-muted-foreground">v{BUILD_DATE}</div>
         </main>
     );
-};
+});
 
 const PageSelectorItem = ({ page, active, setActivePage }: { page: PageDescriptor; active: boolean; setActivePage: (pageKey: string) => void }) => {
     const enabled = useCondition(page);
