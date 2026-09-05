@@ -16,6 +16,13 @@ import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 
 const mtmt = createMTMTTools();
 
+// FormStore key used as a page-visibility condition once the applicant's PDF data has been loaded.
+// The "__meta" prefix marks it as runtime-only bookkeeping, excluded from the saved/loaded form JSON.
+// The lap-*.ts page descriptors reference this same value as a string literal in their conditionKey
+// (they cannot import it from here: this module imports them, so importing back would be a circular
+// const import and throw "Cannot access before initialization").
+export const APPLICANT_DATA_LOADED_KEY = "__meta|Kérelmezői adatlap betöltve";
+
 // összeállítjuk és exportáljuk a formhoz tartozó információkat, amiket a form engine használni fog
 export const eloterjesztoiFormDescriptor = createFormDescriptor({
     formName: "Előterjesztői",
@@ -145,7 +152,7 @@ export async function loadApplicantData(data: Record<string, unknown>, mtmtData:
             }
         }
     }
-    // store.set(applicantDataLoaded, true);
+    valueStore.setField(APPLICANT_DATA_LOADED_KEY, "true");
 }
 
 export function getApplicantAuthorRecord(): AuthorData | null {

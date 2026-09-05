@@ -4,6 +4,14 @@ export type FormData = {
     [key: string]: string;
 };
 
+// Keys whose top-level segment is this prefix are runtime-only bookkeeping (e.g. a page's
+// visibility condition flag) and never form field data, so they are excluded from toJSON.
+const META_KEY_PREFIX = "__meta|";
+
+export function isMetaKey(key: string): boolean {
+    return key.startsWith(META_KEY_PREFIX);
+}
+
 export type Listener = () => void;
 export class FormStore {
     data: FormData = {};
@@ -304,6 +312,8 @@ export class FormStore {
         }
 
         for (const key in this.data) {
+            if (isMetaKey(key)) continue;
+
             const parts = key.split("|");
             const lastPart = parts[parts.length - 1];
             if (lastPart === "_length" || lastPart === "_open") continue;

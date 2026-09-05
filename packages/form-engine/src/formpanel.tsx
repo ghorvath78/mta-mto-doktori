@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Page } from "./page";
-import { atom, useAtomValue } from "jotai";
 import { useFormDescriptor } from "./hooks";
+import { useCondition } from "./conditions";
 import type { PageDescriptor } from "./types";
 
 declare const BUILD_DATE: string;
-
-const trueAtom = atom(true);
 
 export const FormPanel = () => {
     const formDescriptor = useFormDescriptor();
@@ -29,7 +27,11 @@ export const FormPanel = () => {
 };
 
 const PageSelectorItem = ({ page, active, setActivePage }: { page: PageDescriptor; active: boolean; setActivePage: (pageKey: string) => void }) => {
-    const enabled = useAtomValue(page?.enabledAtom ?? trueAtom);
+    const enabled = useCondition(page);
+
+    if (!enabled && page.attribs?.conditionUnmetBehavior !== "disable") {
+        return null;
+    }
 
     let normalStyle = "hover:bg-secondary hover:text-secondary-foreground";
     let activeStyle = "bg-primary text-primary-foreground";

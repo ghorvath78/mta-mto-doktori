@@ -1,5 +1,4 @@
 import type { PageDescriptor } from "@repo/form-engine";
-import { applicantDataLoaded } from "./atoms";
 import { SciScoringTable } from "./customgroups/sciscoringtable";
 import { QScoreSummary } from "./customgroups/qscoresummary";
 import { ItemizedRequirements } from "./customgroups/Itemizedrequirements";
@@ -9,7 +8,11 @@ import "./customgroups/iscoresummary";
 export const tudomanymetria: PageDescriptor = {
     key: "Tudományos minimumkövetelmények",
     label: "Tudománymetria",
-    enabledAtom: applicantDataLoaded,
+    conditionKey: "__meta|Kérelmezői adatlap betöltve", // = eloterjesztoiform.tsx: APPLICANT_DATA_LOADED_KEY
+    conditionValue: "true",
+    attribs: {
+        conditionUnmetBehavior: "disable"
+    },
     sections: [
         {
             key: "A kérelmezőre vonatkozó minimumkövetelmények",

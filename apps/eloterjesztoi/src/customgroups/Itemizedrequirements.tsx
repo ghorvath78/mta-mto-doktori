@@ -6,8 +6,8 @@ export const ItemizedRequirements = () => {
     const category = useFieldValue(
         "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
     );
-    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat");
-    const data = JSON.parse(rawData[0] || "[]");
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || "[]";
+    const data = JSON.parse(rawData);
     const iScore = parseInt(useFieldValue("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám") || "0");
 
     const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;

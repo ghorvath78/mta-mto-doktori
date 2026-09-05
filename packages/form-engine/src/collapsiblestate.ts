@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
-export function useCollapsibleState(key: string, defaultValue = false, cookieOptions = { expires: 365 }): [boolean, (value: boolean) => void] {
+export function useCollapsibleState(key: string, defaultValue = true, cookieOptions = { expires: 365 }): [boolean, (value: boolean) => void] {
     // 1. Kezdőérték kiolvasása a cookie-ból vagy fallback a defaultValue-ra
     const [value, setValue] = useState(() => {
         const savedCookie = Cookies.get(key);

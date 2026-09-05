@@ -1,8 +1,8 @@
 import { cD, useFieldValue } from "@repo/form-engine";
 
 export const SciScoringTable = () => {
-    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || [];
-    const data = JSON.parse(rawData[0] || "[]");
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || "[]";
+    const data = JSON.parse(rawData);
 
     const empty = "h-4";
     return (

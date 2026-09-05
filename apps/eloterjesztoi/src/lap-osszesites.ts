@@ -1,10 +1,13 @@
 import type { PageDescriptor } from "@repo/form-engine";
-import { applicantDataLoaded } from "./atoms";
 
 export const osszesites: PageDescriptor = {
     key: "A tudományos minimumkövetelmények teljesítésének összesítése",
     label: "Minimumkövetelmények",
-    enabledAtom: applicantDataLoaded,
+    conditionKey: "__meta|Kérelmezői adatlap betöltve", // = eloterjesztoiform.tsx: APPLICANT_DATA_LOADED_KEY
+    conditionValue: "true",
+    attribs: {
+        conditionUnmetBehavior: "disable"
+    },
     sections: [
         {
             key: "Összesítés",

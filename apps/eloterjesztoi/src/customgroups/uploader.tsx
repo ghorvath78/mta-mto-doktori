@@ -1,15 +1,13 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@repo/ui";
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
-import { loadApplicantDataFromForm } from "../eloterjesztoiform.tsx";
-import { readJsonFromPdf } from "@repo/form-engine";
-import { useAtomValue } from "jotai";
+import { APPLICANT_DATA_LOADED_KEY, loadApplicantDataFromForm } from "../eloterjesztoiform.tsx";
+import { readJsonFromPdf, useFieldValue } from "@repo/form-engine";
 import { UploadIcon } from "lucide-react";
 import { useState } from "react";
-import { applicantDataLoaded } from "@/atoms";
 
 export const ApplicationPdfUploader = () => {
-    const dataLoaded = useAtomValue(applicantDataLoaded);
+    const dataLoaded = useFieldValue(APPLICANT_DATA_LOADED_KEY) === "true";
     const [dialogText, setDialogText] = useState("");
     const dropzone = useDropzone({
         onDropFile: async (file: File) => {

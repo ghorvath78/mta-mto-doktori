@@ -1,6 +1,5 @@
 import type { JSX } from "react";
 import type { TableCell } from "pdfmake/interfaces";
-import type { PrimitiveAtom } from "jotai";
 import type { FormStore } from "./formstore";
 
 export type HeaderButtonDescriptor = {
@@ -61,7 +60,6 @@ export type PageWrapperComponent = ({ children }: { children: React.ReactNode })
 
 export type PageDescriptor = {
     sections: SectionDescriptor[];
-    enabledAtom?: PrimitiveAtom<boolean>;
     wrapperComponent?: PageWrapperComponent;
 } & FormComponentDescriptor;
 

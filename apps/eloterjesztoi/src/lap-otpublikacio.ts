@@ -1,9 +1,12 @@
 import type { PageDescriptor } from "@repo/form-engine";
-import { applicantDataLoaded } from "./atoms";
 
 export const otPublikacio: PageDescriptor = {
     key: "Öt kiemelt publikáció",
-    enabledAtom: applicantDataLoaded,
+    conditionKey: "__meta|Kérelmezői adatlap betöltve", // = eloterjesztoiform.tsx: APPLICANT_DATA_LOADED_KEY
+    conditionValue: "true",
+    attribs: {
+        conditionUnmetBehavior: "disable"
+    },
     sections: [
         {
             key: "A kérelmező által megjelölt öt legfontosabb publikáció",

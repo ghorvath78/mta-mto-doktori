@@ -1,6 +1,5 @@
 import { type PageDescriptor, type FieldDescriptor } from "@repo/form-engine";
 import { CommitteeTable, CommitteeDndProvider, CommitteeChecker } from "./customgroups/committeetable";
-import { applicantDataLoaded } from "./atoms";
 
 const bizottsagiTagFields: FieldDescriptor[] = [
     {
@@ -47,7 +46,11 @@ const extraHelp =
 
 export const biraloBizottsag: PageDescriptor = {
     key: "Bíráló bizottság",
-    enabledAtom: applicantDataLoaded,
+    conditionKey: "__meta|Kérelmezői adatlap betöltve", // = eloterjesztoiform.tsx: APPLICANT_DATA_LOADED_KEY
+    conditionValue: "true",
+    attribs: {
+        conditionUnmetBehavior: "disable"
+    },
     wrapperComponent: CommitteeDndProvider,
     sections: [
         {

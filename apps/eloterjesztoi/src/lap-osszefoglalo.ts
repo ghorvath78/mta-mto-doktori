@@ -1,10 +1,13 @@
 import type { PageDescriptor } from "@repo/form-engine";
-import { applicantDataLoaded } from "./atoms";
 
 export const osszefoglalo: PageDescriptor = {
     key: "Összefoglaló javaslat",
     label: "Javaslat",
-    enabledAtom: applicantDataLoaded,
+    conditionKey: "__meta|Kérelmezői adatlap betöltve", // = eloterjesztoiform.tsx: APPLICANT_DATA_LOADED_KEY
+    conditionValue: "true",
+    attribs: {
+        conditionUnmetBehavior: "disable"
+    },
     sections: [
         {
             key: "Összefoglaló javaslat",
