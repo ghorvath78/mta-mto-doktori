@@ -144,26 +144,27 @@ export const getPdfSection = async (
     const store = formDescriptor.valueStore;
     if (!evaluateCondition(store, section, 0)) return [];
     for (const group of section.groups) {
+        const groupBaseKeyPrefix = group.valueSource ?? `${sectionKey}|${group.key}`;
         if (group.isArray) {
             const length = group.lengthSource
                 ? parseInt(store.getField(group.lengthSource))
-                : parseInt(store.getField(`${sectionKey}|${group.key}|_length`)) || 0;
+                : parseInt(store.getField(`${groupBaseKeyPrefix}|_length`)) || 0;
             if (length === 0) {
                 rows.push({ text: "Nincs adat", style: "nodata" });
                 continue;
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
-                rows.push(...(await groupToPdfTableDefinition(String(label), group, formDescriptor, `${sectionKey}|${group.key}`, options)));
+                rows.push(...(await groupToPdfTableDefinition(String(label), group, formDescriptor, groupBaseKeyPrefix, options)));
             } else {
                 for (let i = 0; i < length; i++) {
-                    const groupKeyPrefix = `${sectionKey}|${group.key}[[${i}]]`;
+                    const groupKeyPrefix = `${groupBaseKeyPrefix}[[${i}]]`;
                     let grLabel: string = typeof label === "function" ? label(i) : label;
                     if (options.sectionIndex) grLabel = `${i + 1}. ${grLabel}`;
                     rows.push(...(await groupToPdfDocDefinition(grLabel, group, formDescriptor, groupKeyPrefix, options)));
                 }
             }
         } else {
-            const groupKeyPrefix = `${sectionKey}|${group.key}`;
+            const groupKeyPrefix = groupBaseKeyPrefix;
             if (options.hideEmptyGroup === "true" && isGroupEmpty(group, store, groupKeyPrefix)) {
                 rows.push({ text: "Nincs adat", style: "nodata" });
                 continue;

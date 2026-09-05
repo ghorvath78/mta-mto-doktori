@@ -8,8 +8,8 @@ export const ShortThesisRequirements = () => {
     );
     const d1Share = d1Pubs.reduce((sum, mtmt) => sum + 1 / getNumOfAuthorsInPub(mtmt), 0);
 
-    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || [];
-    const data = JSON.parse(rawData[0] || "[]");
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || "[]";
+    const data = JSON.parse(rawData);
     const wosNumber = cD(data[11][0] || 0);
     const thesisPubData = thesisPubs.map((mtmt) => {
         const rating = getRatingOfPub(mtmt);

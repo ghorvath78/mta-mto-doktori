@@ -184,9 +184,12 @@ export class FormStore {
         const setField = (objKey: string, value: string) => {
             // If objKey has only 4 parts, the section and group keys were merged;
             // expand by duplicating the section key (index 2) to restore the 5-part format.
+            // The section itself can never be an array (only the group can), so strip any
+            // "[[i]]" array-index suffix before duplicating it into the section slot.
             const keyParts = objKey.split("|");
             if (keyParts.length === 4) {
-                keyParts.splice(2, 0, keyParts[2]);
+                const sectionBase = keyParts[2].match(/^(.*)\[\[\d+\]\]$/)?.[1] ?? keyParts[2];
+                keyParts.splice(2, 0, sectionBase);
                 objKey = keyParts.join("|");
             }
             const fullKey = prefix ? prefix + "|" + objKey : objKey;
