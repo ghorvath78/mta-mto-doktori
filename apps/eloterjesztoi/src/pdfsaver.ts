@@ -30,9 +30,8 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
 
     const name = store.getField("Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|Név") || "Név";
     const bizottsag =
-        store.getField(
-            "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság"
-        ) || "Bizottság";
+        store.getField("Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság") ||
+        "Bizottság";
     const eloterjesztoNeve = store.getField("Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Előterjesztő neve");
     const eloterjesztoFokozata = store.getField("Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Tudományos fokozat");
 
@@ -132,7 +131,11 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
                 ""
             ),
             { text: "7.6. Tisztség, kiemelt/választott tagság hazai és/vagy nemzetközi tudományos szervezetben", style: "subsection" },
-            await getPdfSection(formDescriptor, "Előterjesztői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben", ""),
+            await getPdfSection(
+                formDescriptor,
+                "Előterjesztői|Tudományos közéleti tevékenység|Tisztség, kiemelt/választott tagság tudományos szervezetben",
+                ""
+            ),
             { text: "7.7. Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", style: "subsection" },
             await getPdfSection(formDescriptor, "Előterjesztői|Tudományos közéleti tevékenység|Folyóirat-szerkesztőbizottsági tagság legalább 2 évig", ""),
             { text: "7.8. Részvétel tudományos minősítésben (bíráló, bírálóbizottsági titkár)", style: "subsection" },
@@ -145,7 +148,11 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
             { text: "7.10. Külföldi tartózkodás", style: "subsection" },
             await getPdfSection(formDescriptor, "Előterjesztői|Tudományos közéleti tevékenység|Külföldi tartózkodás", ""),
             { text: "7.11. Állami vagy MTA által adományozott tudományos díj, kitüntetés", style: "subsection" },
-            await getPdfSection(formDescriptor, "Előterjesztői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés", ""),
+            await getPdfSection(
+                formDescriptor,
+                "Előterjesztői|Tudományos közéleti tevékenység|Állami vagy MTA által adományozott tudományos díj, kitüntetés",
+                ""
+            ),
             { text: "7.12. Tudományos közéleti tevékenység értékelése", style: "subsection" },
             getPublicActivitySummarySection(formDescriptor),
             await getPdfSection(formDescriptor, "Előterjesztői|Tudományos közéleti tevékenység|Tudományos közéleti tevékenység értékelése", ""),
@@ -247,8 +254,8 @@ const getQScoreSummarySection = (formDescriptor: FormDescriptor): Content => {
 
     const minPaperQ = getMinPaperQ(category);
     const maxBookQ = getMaxBookQ();
-    const maxAchievementQ = getMaxAchievementQ(category);
-    const totalQ = paperQValue + Math.min(bookQValue, maxBookQ) + Math.min(achievementQValue, maxAchievementQ);
+    const maxAchievementQ = Math.round(1000 * getMaxAchievementQ(category)) / 1000;
+    const totalQ = Math.round(10000 * (paperQValue + Math.min(bookQValue, maxBookQ) + Math.min(achievementQValue, maxAchievementQ))) / 10000;
     const minTotalQ = getMinTotalQ(category);
     const satisfied = totalQ >= minTotalQ;
 
@@ -333,8 +340,7 @@ const getItemizedRequirementsSection = async (formDescriptor: FormDescriptor): P
     const data = JSON.parse(rawData || "[]");
     const iScore = parseInt(store.getField("Előterjesztői|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám") || "0");
     const phdStudents = cD(
-        store.getField("Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma") ||
-            0
+        store.getField("Kérelmezői|Tudományos közéleti tevékenység|Doktori fokozatot szerzett hallgatók|Összes|Fokozatott szerzett doktoranduszok száma") || 0
     );
 
     const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
@@ -462,7 +468,9 @@ const getItemizedRequirementsSection = async (formDescriptor: FormDescriptor): P
 const getShortThesisRequirementsSection = (formDescriptor: FormDescriptor): Content[] => {
     const store = formDescriptor.valueStore;
     const d1Pubs = store.getArray("Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója");
-    const thesisPubs = store.getArray("Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója");
+    const thesisPubs = store.getArray(
+        "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"
+    );
     const d1Share = d1Pubs.reduce((sum, mtmt) => {
         const numAuthors = getNumOfAuthorsInPub(mtmt);
         return sum + (numAuthors > 0 ? 1 / numAuthors : 0);
