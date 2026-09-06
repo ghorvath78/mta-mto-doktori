@@ -2,7 +2,7 @@ import { Help } from "./help.tsx";
 import { FormPanel } from "./formpanel";
 import { ButtonPanel } from "./buttonpanel";
 import { useFormDescriptor } from "./hooks.ts";
-import { useInfoState } from "./infostate.ts";
+import { useInfoPanelOpen } from "./infostate.ts";
 
 const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
     <header className="flex items-center bg-primary text-primary-foreground p-4">
@@ -18,7 +18,7 @@ const Header = ({ title, subtitle }: { title: string; subtitle: string }) => (
 
 export const MainScreen = () => {
     const formDescriptor = useFormDescriptor();
-    const { panelOpen: infoOpen } = useInfoState();
+    const [infoOpen] = useInfoPanelOpen();
 
     return (
         <div className="flex min-h-svh flex-col bg-muted h-screen">

@@ -15,10 +15,11 @@ export class InfoState {
     state = {
         infoField: "",
         infoGroup: "",
-        infoSection: "",
-        panelOpen: true
+        infoSection: ""
     };
+    panelOpen = true;
     private listeners: Set<Listener> = new Set();
+    private panelListeners: Set<Listener> = new Set();
     private notifyTimeout: ReturnType<typeof setTimeout> | null = null;
 
     private constructor() {
@@ -26,9 +27,9 @@ export class InfoState {
         const savedCookie = Cookies.get("infoPanelOpen");
         if (savedCookie !== undefined) {
             try {
-                this.state.panelOpen = JSON.parse(savedCookie);
+                this.panelOpen = JSON.parse(savedCookie);
             } catch (e) {
-                this.state.panelOpen = savedCookie === "true";
+                this.panelOpen = savedCookie === "true";
             }
         }
     }
@@ -44,21 +45,16 @@ export class InfoState {
         const newState = {
             infoField: field ?? this.state.infoField,
             infoGroup: group ?? this.state.infoGroup,
-            infoSection: section ?? this.state.infoSection,
-            panelOpen: this.state.panelOpen
+            infoSection: section ?? this.state.infoSection
         };
         this.state = newState;
         this.scheduleNotify();
     }
 
     setPanelOpen(open: boolean) {
-        const newState = {
-            ...this.state,
-            panelOpen: open
-        };
-        this.state = newState;
+        this.panelOpen = open;
         Cookies.set("infoPanelOpen", JSON.stringify(open), { expires: 365 });
-        this.notifyListeners();
+        this.notifyPanelListeners();
     }
 
     subscribe = (fn: Listener): (() => void) => {
@@ -68,8 +64,19 @@ export class InfoState {
         };
     };
 
+    subscribePanel = (fn: Listener): (() => void) => {
+        this.panelListeners.add(fn);
+        return () => {
+            this.panelListeners.delete(fn);
+        };
+    };
+
     notifyListeners() {
         this.listeners.forEach((fn) => fn());
+    }
+
+    notifyPanelListeners() {
+        this.panelListeners.forEach((fn) => fn());
     }
 
     // Trailing-edge throttle: while a notify is already pending, further calls just
@@ -88,7 +95,6 @@ export function useInfoState(): {
     infoField: string;
     infoGroup: string;
     infoSection: string;
-    panelOpen: boolean;
 } {
     const infoState = InfoState.getInstance();
     const subscribe = useCallback((fn: Listener) => infoState.subscribe(fn), [infoState]);
@@ -110,12 +116,19 @@ export function useSetInfoState(): (newState: { field?: string; group?: string; 
     );
 }
 
-export function useSetPanelOpen(): (open: boolean) => void {
+export function useInfoPanelOpen(): [boolean, (open: boolean) => void] {
     const infoState = InfoState.getInstance();
-    return useCallback(
+    const subscribe = useCallback((fn: Listener) => infoState.subscribePanel(fn), [infoState]);
+    const panelOpen = useSyncExternalStore(
+        subscribe,
+        () => infoState.panelOpen,
+        () => infoState.panelOpen
+    );
+    const setPanelOpen = useCallback(
         (open: boolean) => {
             infoState.setPanelOpen(open);
         },
         [infoState]
     );
+    return [panelOpen, setPanelOpen];
 }

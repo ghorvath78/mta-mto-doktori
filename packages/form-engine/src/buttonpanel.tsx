@@ -2,11 +2,10 @@ import { Info } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button, Spinner, AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@repo/ui";
 import type { FormDescriptor } from "./index.ts";
-import { useInfoState, useSetPanelOpen } from "./infostate.ts";
+import { useInfoPanelOpen } from "./infostate.ts";
 
 export const ButtonPanel = ({ formDescriptor }: { formDescriptor: FormDescriptor }) => {
-    const { panelOpen: infoOpen } = useInfoState();
-    const setInfoOpen = useSetPanelOpen();
+    const [infoOpen, setInfoOpen] = useInfoPanelOpen();
 
     const [dialogText, setDialogText] = useState("");
 

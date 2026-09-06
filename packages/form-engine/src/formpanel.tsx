@@ -6,9 +6,9 @@ import type { PageDescriptor } from "./types";
 
 declare const BUILD_DATE: string;
 
-// Memoized because MainScreen re-renders on every InfoState change (field/section
-// hover); FormPanel takes no props, so without memo it would re-render the entire
-// form tree on each hover transition even though it has no help-text dependency.
+// Memoized because MainScreen re-renders when the info panel is toggled open/closed;
+// FormPanel takes no props, so without memo it would re-render the entire form tree
+// on each toggle even though it has no dependency on the panel's open state.
 export const FormPanel = memo(function FormPanel() {
     const formDescriptor = useFormDescriptor();
     const { formName, pages } = formDescriptor;
