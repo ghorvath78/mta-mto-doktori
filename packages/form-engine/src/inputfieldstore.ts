@@ -1,4 +1,5 @@
 import { BirthDataInput } from "./inputfields/birthdatainput";
+import { DateInput } from "./inputfields/dateinput";
 import { DecisionTextInput } from "./inputfields/decisiontext";
 import { DecisionYesNoInput } from "./inputfields/decisionyesnoinput";
 import { LongTextInput } from "./inputfields/longtextinput";
@@ -36,6 +37,7 @@ const builtInInputFields: Array<[InputFieldType, InputFieldRegistration]> = [
     ["text", { component: TextInput, printer: SimpleFieldPrinter }],
     ["number", { component: NumberInput, printer: SimpleFieldPrinter }],
     ["year", { component: YearInput, printer: SimpleFieldPrinter }],
+    ["date", { component: DateInput, printer: SimpleFieldPrinter }],
     ["yearRange", { component: YearRangeInput, printer: YearRangeFieldPrinter }],
     ["select", { component: SelectOrAddInput, printer: SimpleFieldPrinter }],
     ["selectAddOther", { component: SelectOrAddInput, printer: SimpleFieldPrinter }],

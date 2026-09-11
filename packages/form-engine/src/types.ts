@@ -15,6 +15,10 @@ export type FormDescriptor = {
     pages: PageDescriptor[];
     valueStore: FormStore;
     buttons?: HeaderButtonDescriptor[];
+    // Az általános (semmire nem mutató) súgószöveg felülírására, pl. ha az adott app nem
+    // rendelkezik "Adatlap mentése/betöltése" gombokkal. Ha nincs megadva, az alapértelmezett
+    // (PDF mentésről/betöltésről szóló) szöveg jelenik meg - ld. help.tsx.
+    generalHelpText?: string;
     [key: string]: any;
 };
 
@@ -23,7 +27,18 @@ export type CustomGroupComponent = ({ group, keyPrefix, index }: { group: GroupD
 // export type AttribType = { [key: string]: string | number | boolean | string[] | any };
 export type AttribType = { [key: string]: any };
 
-export type InputFieldType = "text" | "number" | "year" | "yearRange" | "select" | "selectAddOther" | "longtext" | "birthYearPlace" | "link" | (string & {});
+export type InputFieldType =
+    | "text"
+    | "number"
+    | "year"
+    | "date"
+    | "yearRange"
+    | "select"
+    | "selectAddOther"
+    | "longtext"
+    | "birthYearPlace"
+    | "link"
+    | (string & {});
 
 export type FieldDescriptor = {
     type: InputFieldType;

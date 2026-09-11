@@ -76,8 +76,6 @@ export const eloterjesztoiFormDescriptor = createFormDescriptor({
 
                 valueStore.fromJSON(parsedContent);
                 setDialogMessage("");
-
-                console.log("Betöltött form adatok:", valueStore.toJSON());
             }
         }
     ],

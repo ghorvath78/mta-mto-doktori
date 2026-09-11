@@ -6,9 +6,11 @@
     "scripts": {
         "dev:kerelmezoi": "pnpm --filter mta-mto-kerelmezoi-adatlap dev",
         "dev:eloterjesztoi": "pnpm --filter mta-mto-eloterjesztoi-adatlap dev",
+        "dev:bizottsagi": "pnpm --filter mta-mto-bizottsagi-adatlap dev",
         "dev:doktori": "pnpm --filter mta-mto-doktori-landing dev",
         "build:kerelmezoi": "pnpm --filter mta-mto-kerelmezoi-adatlap build",
         "build:eloterjesztoi": "pnpm --filter mta-mto-eloterjesztoi-adatlap build",
+        "build:bizottsagi": "pnpm --filter mta-mto-bizottsagi-adatlap build",
         "build:doktori": "pnpm --filter mta-mto-doktori-landing build"
     },
     "keywords": [],

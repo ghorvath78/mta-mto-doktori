@@ -5,6 +5,7 @@ export function createFormDescriptor({
     formName,
     title,
     subtitle,
+    generalHelpText,
     pages,
     buttons,
     extra
@@ -12,6 +13,7 @@ export function createFormDescriptor({
     formName: string;
     title: string;
     subtitle?: string;
+    generalHelpText?: string;
     pages: PageDescriptor[];
     buttons?: HeaderButtonDescriptor[];
     extra: object;
@@ -20,6 +22,7 @@ export function createFormDescriptor({
         formName,
         title,
         subtitle,
+        generalHelpText,
         pages,
         valueStore: new FormStore(formName, pages),
         buttons,

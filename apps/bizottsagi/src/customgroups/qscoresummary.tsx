@@ -1,0 +1,78 @@
+import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalQ } from "@/requirements";
+import { cD, invertedText, useFieldArrayValue, useFieldValue } from "@repo/form-engine";
+
+export const QScoreSummary = () => {
+    const achievementQ = useFieldArrayValue("Bizottsági|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|Bizottsági pontszám") || [];
+    const category = useFieldValue(
+        "Bizottsági|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Kategória"
+    );
+    const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat");
+    const data = JSON.parse(rawData || "[]");
+
+    const achievementQValue = Math.round(10000 * achievementQ.reduce((sum, val) => sum + cD(val), 0)) / 10000;
+    const paperQValue = cD(data[1][6]) + cD(data[4][6]);
+    const bookQValue = cD(data[6][6]) + cD(data[7][6]);
+
+    const minPaperQ = getMinPaperQ(category);
+    const maxBookQ = getMaxBookQ();
+    const maxAchievementQ = Math.round(1000 * getMaxAchievementQ(category)) / 1000;
+    const totalQ = Math.round(10000 * (paperQValue + Math.min(bookQValue, maxBookQ) + Math.min(achievementQValue, maxAchievementQ))) / 10000;
+    const minTotalQ = getMinTotalQ(category);
+
+    return (
+        <>
+            <table className="form-table">
+                <tbody>
+                    <tr className="form-table-head">
+                        <td>Összetevői</td>
+                        <td className="text-center">Előírt</td>
+                        <td className="text-center">Elért</td>
+                        <td className="text-center">Figyelembe vehető</td>
+                    </tr>
+                    <tr>
+                        <td className="form-table-fcol">Tudományos cikk</td>
+                        <td>minimum {minPaperQ}</td>
+                        <td>{paperQValue}</td>
+                        <td>{paperQValue}</td>
+                    </tr>
+                    <tr>
+                        <td className="form-table-fcol">Tudományos könyv, könyvrészlet</td>
+                        <td>maximum {maxBookQ}</td>
+                        <td>{bookQValue}</td>
+                        <td>{Math.min(bookQValue, maxBookQ)}</td>
+                    </tr>
+                    <tr>
+                        <td className="form-table-fcol">Kiemelkedő alkotás (bizottsági pontszám alapján)</td>
+                        <td>maximum {maxAchievementQ}</td>
+                        <td>{achievementQValue}</td>
+                        <td>{Math.min(achievementQValue, maxAchievementQ)}</td>
+                    </tr>
+                    <tr>
+                        <td className="form-table-fcol">Összesen</td>
+                        <td></td>
+                        <td></td>
+                        <td>{totalQ}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div className="w-full mt-2 pt-2">
+                <table className="form-table">
+                    <tbody>
+                        <tr>
+                            <td className="form-table-fcol font-bold">A kérelmező által elért publikációs (alkotási, Q) érték:</td>
+                            <td className="font-bold">{totalQ}</td>
+                        </tr>
+                        <tr>
+                            <td className="form-table-fcol font-bold">Minimum követelmény (Qmin):</td>
+                            <td className="font-bold">{minTotalQ}</td>
+                        </tr>
+                        <tr>
+                            <td className="form-table-fcol font-bold">A kérelmező teljesítette a Q ≥ Qmin követelményt:</td>
+                            <td className="font-bold">{invertedText(totalQ >= minTotalQ ? "IGEN" : "NEM")}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </>
+    );
+};
