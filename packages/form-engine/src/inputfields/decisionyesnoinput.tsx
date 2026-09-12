@@ -1,6 +1,6 @@
 import { useFieldWithValueSource } from "../hooks";
 import type { FieldInputProps } from "../types";
-import { getFieldLabel, isFieldReadonly } from "../utils";
+import { getFieldLabel, isFieldReadonly, tagText } from "../utils";
 import { SimpleCombobox, SimpleComboboxContent, SimpleComboboxInput, SimpleComboboxItem, SimpleComboboxList } from "@repo/ui";
 
 export const DecisionYesNoInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
@@ -16,7 +16,7 @@ export const DecisionYesNoInput = ({ fieldKey, fieldDescr }: FieldInputProps) =>
         return (
             <div className={baseClass}>
                 <div className={labelClass}>{label}</div>
-                <div className="py-1 px-2 flex-3">{value || <span className="italic text-gray-500">Nincs megadva</span>}</div>
+                <div className="py-1 px-2">{tagText(value) || <span className="italic text-primary-foreground">Nincs megadva</span>}</div>
             </div>
         );
     }

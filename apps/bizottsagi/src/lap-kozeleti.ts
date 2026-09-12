@@ -76,7 +76,7 @@ function evaluationGroups(sectionKey: string, opts?: { conditionOnList?: boolean
 export const kozeletiTevekenyseg: PageDescriptor = {
     key: "Tudományos közéleti tevékenység",
     label: "Közéleti tevékenység",
-    conditionKey: "__meta|Legalább 2 előterjesztő betöltve", // = bizottsagiform.tsx: NOMINATORS_LOADED_KEY
+    conditionKey: "__meta|Habitusvizsgálat lefolytatható", // = bizottsagiform.tsx: HABITUSVIZSGALAT_LEFOLYTATHATO_KEY
     conditionValue: "true",
     attribs: {
         conditionUnmetBehavior: "disable"

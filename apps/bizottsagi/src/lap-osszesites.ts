@@ -6,7 +6,7 @@ const ELOTERJESZTOI_OSSZESITES_PREFIX = "A tudományos minimumkövetelmények te
 export const osszesites: PageDescriptor = {
     key: "A tudományos minimumkövetelmények teljesítésének összesítése",
     label: "Minimumkövetelmények",
-    conditionKey: "__meta|Legalább 2 előterjesztő betöltve", // = bizottsagiform.tsx: NOMINATORS_LOADED_KEY
+    conditionKey: "__meta|Habitusvizsgálat lefolytatható", // = bizottsagiform.tsx: HABITUSVIZSGALAT_LEFOLYTATHATO_KEY
     conditionValue: "true",
     attribs: {
         conditionUnmetBehavior: "disable"

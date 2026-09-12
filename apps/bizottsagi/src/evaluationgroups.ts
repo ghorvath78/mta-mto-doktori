@@ -18,15 +18,10 @@ export function nominatorOpinionsGroup(opts: { key: string; label?: string; yesN
 }
 
 // A bizottság saját, szerkesztendő (important) véleménye: igen/nem + szöveges indoklás.
-export function bizottsagiOpinionGroup(opts: {
-    key: string;
-    yesNoLabel: string;
-    textLabel: string;
-    maxLength?: number;
-    rows?: number;
-}): GroupDescriptor {
+export function bizottsagiOpinionGroup(opts: { key: string; yesNoLabel: string; textLabel: string; maxLength?: number; rows?: number }): GroupDescriptor {
     return {
         key: opts.key,
+        label: "A bizottság véleménye",
         attribs: {
             important: true
         },

@@ -16,13 +16,26 @@ export const NOMINATORS_LOADED_KEY = "__meta|Legalább 2 előterjesztő betöltv
 // A ténylegesen megkövetelt minimum előterjesztő-szám - a feltöltő UI és a kapu-logika egyaránt ezt használja.
 export const MIN_NOMINATORS = 2;
 
+// A "Határozatképesség megállapítása" csoport readonly mezője - a customgroups/quorumsummary.tsx
+// írja automatikusan ("igen"/"nem"), a szabályzat 3 feltétele (ld. lap-bizottsag.ts helpText-je)
+// alapján.
+export const HATAROZATKEPESSEG_KEY =
+    "Bizottsági|Bizottság|Határozatképesség|Határozatképesség megállapítása|A habitusvizsgálatot lefolytató bizottsági ülés határozatképes";
+
+// A további lapok (Tudománymetria, Közéleti tevékenység, Minimumkövetelmények, Javaslat) csak akkor
+// válnak láthatóvá, ha legalább 2 előterjesztői adatlap be van töltve ÉS a bizottság határozatképes.
+// A form-engine conditionKey/conditionValue egyetlen kulcsot tud figyelni, ezért ezt a két feltételt
+// egy közös, automatikusan frissülő "__meta" jelzőbe vonjuk össze. A lap-*.ts oldal-leírók ugyanezt
+// az értéket string literálként hivatkozzák (körkörös import elkerülése végett, ld. fenti megjegyzés).
+export const HABITUSVIZSGALAT_LEFOLYTATHATO_KEY = "__meta|Habitusvizsgálat lefolytatható";
+
 export const bizottsagiFormDescriptor = createFormDescriptor({
     formName: "Bizottsági",
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, bizottsági űrlap",
     pages: [bizottsag, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo],
     generalHelpText:
-        "Bizottsági adatlap\n\nEz az adatlap egyelőre csak a kitöltést támogatja - a kitöltött adatok mentése/PDF-exportja még nem elérhető, az oldal frissítésekor elvesznek.\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban - ez nyitja meg a további lapokat.",
+        "Bizottsági adatlap\n\nEz az adatlap egyelőre csak a kitöltést támogatja - a kitöltött adatok mentése/PDF-exportja még nem elérhető, az oldal frissítésekor elvesznek.\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban, és töltse ki a \"Határozatképesség\" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.",
     extra: {}
 });
 
@@ -49,6 +62,17 @@ function onCategoryChange() {
         );
     }
 }
+
+// a habitusvizsgálat pontosan akkor folytatható le, ha legalább 2 előterjesztő be van töltve ÉS a
+// bizottság (a QuorumSummary komponens által automatikusan megállapított) határozatképes
+function recomputeHabitusVizsgalatLefolytathato() {
+    const nominatorsLoaded = valueStore.getField(NOMINATORS_LOADED_KEY) === "true";
+    const hatarozatkepes = valueStore.getField(HATAROZATKEPESSEG_KEY) === "igen";
+    valueStore.setField(HABITUSVIZSGALAT_LEFOLYTATHATO_KEY, nominatorsLoaded && hatarozatkepes ? "true" : "false");
+}
+
+valueStore.subscribeKey(NOMINATORS_LOADED_KEY, recomputeHabitusVizsgalatLefolytathato);
+valueStore.subscribeKey(HATAROZATKEPESSEG_KEY, recomputeHabitusVizsgalatLefolytathato);
 
 type PubRatingItem = { rating: string };
 

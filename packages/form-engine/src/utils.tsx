@@ -13,6 +13,10 @@ export function invertedText(text: string) {
     return <span className="bg-primary text-primary-foreground font-bold rounded px-2 py-1">{text}</span>;
 }
 
+export function tagText(text: string) {
+    return <span className="text-primary bg-primary-foreground font-bold rounded px-2 py-1">{text}</span>;
+}
+
 export function getFieldLabel(fieldDescr: FieldDescriptor): string {
     return fieldDescr.label ?? fieldDescr.key;
 }

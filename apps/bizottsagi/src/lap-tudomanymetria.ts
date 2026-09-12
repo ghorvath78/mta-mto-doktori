@@ -10,7 +10,7 @@ import "./customgroups/iscoresummary";
 export const tudomanymetria: PageDescriptor = {
     key: "Tudományos minimumkövetelmények",
     label: "Tudománymetria",
-    conditionKey: "__meta|Legalább 2 előterjesztő betöltve", // = bizottsagiform.tsx: NOMINATORS_LOADED_KEY
+    conditionKey: "__meta|Habitusvizsgálat lefolytatható", // = bizottsagiform.tsx: HABITUSVIZSGALAT_LEFOLYTATHATO_KEY
     conditionValue: "true",
     attribs: {
         conditionUnmetBehavior: "disable"

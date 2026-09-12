@@ -33,7 +33,7 @@ export const bizottsag: PageDescriptor = {
                             type: "text"
                         },
                         {
-                            key: "Akadémikus és MTA (tudomány) doktora tagjainak száma",
+                            key: "Akadémikus és MTA doktora tagok száma",
                             type: "number"
                         },
                         {
@@ -52,17 +52,9 @@ export const bizottsag: PageDescriptor = {
             key: "Előterjesztők",
             helpText:
                 "Töltse fel a kérelemről véleményt alkotó 2-3 előterjesztő mentett PDF adatlapját. Az első feltöltéskor a benne beágyazott kérelmezői adatlap is betöltésre kerül; a további feltöltéseknél a rendszer ellenőrzi, hogy ugyanarról a kérelmezőről van-e szó, és eltérés esetén elutasítja a feltöltést.",
-            attribs: {
-                alwaysOpen: true
-            },
             groups: [
                 {
                     key: "Feltöltés",
-                    // Az egyes előterjesztők adatai NEM ebben a (tömb-)csoportban tárolódnak: a
-                    // NominatorUploader saját, rögzített nevű "Előterjesztő1/2/3" csoportokba írja
-                    // őket közvetlenül (ld. apps/bizottsagi/src/nominators.ts), hogy elkerülje a
-                    // form-engine "[[i]]" tömb-indexelését. Ez a csoport csak a customComponent
-                    // felakasztására szolgál.
                     customComponent: NominatorUploader,
                     noPersist: true,
                     fields: []
@@ -88,15 +80,18 @@ export const bizottsag: PageDescriptor = {
                             }
                         },
                         {
-                            key: "Akadémikus és MTA (tudomány) doktora tagjainak száma",
+                            key: "Akadémikus és MTA doktora tagok száma",
+                            helpText: "Csak azokat a tagokat vegye figyelembe, akik az ügykezelő bizottságban nem lettek még figyelembe véve.",
                             type: "number"
                         },
                         {
                             key: "Ebből a jelölttel nem összeférhetetlen tagok száma",
+                            helpText: "Csak azokat a tagokat vegye figyelembe, akik az ügykezelő bizottságban nem lettek még figyelembe véve.",
                             type: "number"
                         },
                         {
                             key: "Ebből jelen van",
+                            helpText: "Csak azokat a tagokat vegye figyelembe, akik az ügykezelő bizottságban nem lettek még figyelembe véve.",
                             type: "number"
                         }
                     ]
@@ -117,14 +112,16 @@ export const bizottsag: PageDescriptor = {
                             type: "date"
                         },
                         {
-                            key: "Az ülésen jelen van minden előterjesztő",
-                            type: "decisionYesNo"
+                            key: "Jelen van minden előterjesztő",
+                            type: "select",
+                            attribs: {
+                                options: ["Igen", "Nem"]
+                            }
                         }
                     ]
                 },
                 {
                     key: "Összesítés",
-                    label: "A résztvevő bizottságok összesített létszáma",
                     noPersist: true,
                     customComponent: QuorumSummary,
                     fields: []
@@ -150,7 +147,14 @@ export const bizottsag: PageDescriptor = {
                     fields: [
                         {
                             key: "A habitusvizsgálatot lefolytató bizottsági ülés határozatképes",
-                            type: "decisionYesNo"
+                            type: "decisionYesNo",
+                            readonly: true,
+                            helpText:
+                                "A bizottsági ülés a doktori eljárásban akkor határozatképes, ha mindhárom alábbi feltétel teljesül:\n" +
+                                "a) jelen van az összes felkért előterjesztő;\n" +
+                                "b) az ügykezelő bizottságban a doktori eljárásban szavazati joggal rendelkező, összeférhetetlenség miatt ki nem zárt bizottsági tagoknak legalább a fele jelen van;\n" +
+                                "c) a doktori eljárásban szavazati joggal rendelkező, összeférhetetlenség miatt ki nem zárt jelenlévő ügykezelő bizottsági és vendégbizottsági tagok számának összege - az előterjesztőket nem számítva - legalább 7.\n\n" +
+                                'Az értéket a rendszer a fenti "Összesítés" táblázat és a jelenléti adatok alapján automatikusan állapítja meg.'
                         }
                     ]
                 }

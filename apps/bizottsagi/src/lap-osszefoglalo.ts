@@ -7,7 +7,7 @@ const ELOTERJESZTOI_ROVID_JAVASLAT_PREFIX = "Összefoglaló javaslat|Javaslat a 
 export const osszefoglalo: PageDescriptor = {
     key: "Összefoglaló javaslat",
     label: "Javaslat",
-    conditionKey: "__meta|Legalább 2 előterjesztő betöltve", // = bizottsagiform.tsx: NOMINATORS_LOADED_KEY
+    conditionKey: "__meta|Habitusvizsgálat lefolytatható", // = bizottsagiform.tsx: HABITUSVIZSGALAT_LEFOLYTATHATO_KEY
     conditionValue: "true",
     attribs: {
         conditionUnmetBehavior: "disable"
