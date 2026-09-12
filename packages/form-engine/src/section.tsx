@@ -18,6 +18,7 @@ export const Section = ({ section, keyPrefix }: { section: SectionDescriptor; ke
             style={{ display: isVisible ? "block" : "none" }}
             keyPrefix={keyPrefix}
             helpText={section.helpText}
+            description={section.description}
             attribs={section.attribs}
         >
             {section.groups.map((group, ix) => {
@@ -54,6 +55,7 @@ const SectionCollapsible = ({
     children,
     style,
     helpText,
+    description,
     keyPrefix,
     attribs
 }: {
@@ -61,6 +63,7 @@ const SectionCollapsible = ({
     children: React.ReactNode;
     style?: React.CSSProperties;
     helpText?: string;
+    description?: string;
     keyPrefix: string;
     attribs?: any;
 }) => {
@@ -97,7 +100,10 @@ const SectionCollapsible = ({
                         </span>
                     </Button>
                 </CollapsibleTrigger>
-                <CollapsibleContent className="my-1 ml-8 mr-2">{children}</CollapsibleContent>
+                <CollapsibleContent className="my-1 ml-8 mr-2">
+                    {description && <div className="font-bold italic my-2">{description}</div>}
+                    {children}
+                </CollapsibleContent>
             </Collapsible>
         </>
     );

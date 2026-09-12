@@ -93,3 +93,20 @@ export function getCategory(committee: string) {
 
 // A bizottsági "Ügykezelő bizottság" és "Vendégbizottság" legördülő menük közös opciólistája.
 export const tudomanyosBizottsagOptions = Object.keys(categoryMap);
+
+// Az MTA tudományos osztályainak listája (illetékesség bővítésénél a bevonandó osztály kiválasztásához).
+export const mtaOsztalyOptions = [
+    "I. Nyelv- és Irodalomtudományok",
+    "II. Filozófiai és Történettudományok",
+    "III. Matematikai Tudományok",
+    "IV. Agrártudományok",
+    "V. Orvosi Tudományok",
+    "VI. Műszaki Tudományok",
+    "VII. Kémiai Tudományok",
+    "VIII. Biológiai Tudományok",
+    "IX. Gazdaság- és Jogtudományok",
+    "X. Földtudományok",
+    "XI. Fizikai Tudományok"
+];
+
+export const MUSZAKI_TUDOMANYOK_OSZTALY = "VI. Műszaki Tudományok";

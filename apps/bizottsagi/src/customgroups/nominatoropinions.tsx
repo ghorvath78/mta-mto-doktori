@@ -9,19 +9,21 @@ const NominatorOpinionRow = ({
     name,
     fokozat,
     yesNoPath,
-    textPath
+    textPath,
+    isLast
 }: {
     index: number;
     name: string;
     fokozat: string;
     yesNoPath?: string;
     textPath?: string;
+    isLast: boolean;
 }) => {
     const yesNo = useFieldValue(yesNoPath ? `${nominatorPrefix(index)}|${yesNoPath}` : "");
     const text = useFieldValue(textPath ? `${nominatorPrefix(index)}|${textPath}` : "");
 
     return (
-        <div className="border-b border-dotted border-primary pb-1">
+        <div className={`pb-1 ${isLast ? "" : "border-b border-dotted border-primary"}`}>
             <div className="font-semibold flex items-center gap-2">
                 <span>
                     {name || `${index}. előterjesztő`}
@@ -29,7 +31,11 @@ const NominatorOpinionRow = ({
                 </span>
                 {yesNoPath && <span className="uppercase">{yesNo || "Nincs megadva"}</span>}
             </div>
-            {textPath && <div className="whitespace-pre-wrap">{text || <span className="italic text-gray-500">Nincs megadva</span>}</div>}
+            {textPath && (
+                <div className="whitespace-pre-wrap">
+                    {text || <span className="italic text-gray-500">Szöveges vélemény nincs megadva</span>}
+                </div>
+            )}
         </div>
     );
 };
@@ -52,8 +58,16 @@ export const NominatorOpinions: CustomGroupComponent = ({ group }) => {
 
     return (
         <div className="space-y-2">
-            {slots.map((slot) => (
-                <NominatorOpinionRow key={slot.index} index={slot.index} name={slot.name} fokozat={slot.fokozat} yesNoPath={yesNoPath} textPath={textPath} />
+            {slots.map((slot, i) => (
+                <NominatorOpinionRow
+                    key={slot.index}
+                    index={slot.index}
+                    name={slot.name}
+                    fokozat={slot.fokozat}
+                    yesNoPath={yesNoPath}
+                    textPath={textPath}
+                    isLast={i === slots.length - 1}
+                />
             ))}
         </div>
     );

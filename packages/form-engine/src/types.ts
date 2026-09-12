@@ -52,6 +52,11 @@ export type FieldDescriptor = {
 export type SectionDescriptor = {
     hidden?: boolean;
     helpText?: string;
+    // Rövid, mindig látható (nem hover-súgó) szöveg, ami a szekció címe alatt, a csoportok előtt
+    // jelenik meg, amikor a szekció ki van nyitva. Arra való, hogy egy a szekció összes csoportjára
+    // egyaránt vonatkozó leírást/kérdést egyszer, a szekció elején mondjunk ki - ne kelljen minden
+    // egyes csoport saját label-jeként megismételni.
+    description?: string;
     groups: GroupDescriptor[];
     noPersist?: boolean;
     readonly?: boolean;

@@ -2,6 +2,7 @@ import { createFormDescriptor, getFromObjectByKey } from "@repo/form-engine";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorPrefix } from "./nominators.ts";
 import { bizottsag } from "./lap-bizottsag.ts";
+import { palyazoAdatai } from "./lap-palyazoadatai.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
 import { kozeletiTevekenyseg } from "./lap-kozeleti.ts";
 import { osszesites } from "./lap-osszesites.ts";
@@ -33,7 +34,7 @@ export const bizottsagiFormDescriptor = createFormDescriptor({
     formName: "Bizottsági",
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, bizottsági űrlap",
-    pages: [bizottsag, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo],
+    pages: [bizottsag, palyazoAdatai, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo],
     generalHelpText:
         "Bizottsági adatlap\n\nEz az adatlap egyelőre csak a kitöltést támogatja - a kitöltött adatok mentése/PDF-exportja még nem elérhető, az oldal frissítésekor elvesznek.\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban, és töltse ki a \"Határozatképesség\" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.",
     extra: {}
