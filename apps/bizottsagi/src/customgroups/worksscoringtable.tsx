@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { getFromObjectByKey, useField, useFieldArrayValue, useFieldValue, useValueStore, type CustomGroupComponent } from "@repo/form-engine";
+import { useField, useFieldArrayValue, useFieldValue, useValueStore, type CustomGroupComponent } from "@repo/form-engine";
+import { MAX_NOMINATORS, nominatorPrefix, useNominatorSlots } from "../nominators";
 
 const KERELMEZO_ALKOTAS_PREFIX = "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása";
-const NOMINATORS_PREFIX = "Bizottsági|Bizottság|Előterjesztők|Előterjesztők";
+const ELOTERJESZTOI_ALKOTAS_RELATIVE_PATH = "Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye";
 
 function sanitizeScore(raw: string): string {
     let result = "";
@@ -27,40 +28,32 @@ const WorkRow = ({
     keyPrefix,
     description,
     type,
-    nominatorNames,
-    nominatorRawJsons
+    nominatorCount
 }: {
     index: number;
     keyPrefix: string;
     description: string;
     type: string;
-    nominatorNames: string[];
-    nominatorRawJsons: string[];
+    nominatorCount: number;
 }) => {
     const [score, setScore] = useField(`${keyPrefix}[[${index}]]|Bizottsági pontszám`);
 
-    const getNominatorScore = (nominatorIndex: number): string => {
-        const raw = nominatorRawJsons[nominatorIndex];
-        if (!raw) return "";
-        try {
-            const json = JSON.parse(raw);
-            const value = getFromObjectByKey(
-                json,
-                `Előterjesztői|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye[[${index}]]|Pontszám`
-            );
-            return value !== undefined && value !== null ? String(value) : "";
-        } catch {
-            return "";
-        }
-    };
+    // Rögzített (MAX_NOMINATORS) számú hívás, hogy a hookok száma/sorrendje minden renderben azonos
+    // legyen, függetlenül attól, hogy ténylegesen hány előterjesztő van betöltve.
+    const nomScores: string[] = [];
+    for (let i = 1; i <= MAX_NOMINATORS; i++) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks -- MAX_NOMINATORS fix konstans
+        const value = useFieldValue(`${nominatorPrefix(i)}|${ELOTERJESZTOI_ALKOTAS_RELATIVE_PATH}[[${index}]]|Pontszám`);
+        nomScores.push(value);
+    }
 
     return (
         <tr>
             <td className="form-table-fcol">{description}</td>
             <td>{type}</td>
-            {nominatorNames.map((_, ni) => (
+            {nomScores.slice(0, nominatorCount).map((value, ni) => (
                 <td key={ni} className="text-center">
-                    {getNominatorScore(ni)}
+                    {value}
                 </td>
             ))}
             <td className="text-center">
@@ -78,17 +71,15 @@ const WorkRow = ({
 
 // Az előterjesztői "A kérelmező alkotási teljesítménye" táblázat bizottsági megfelelője: a
 // kérelmező által megadott alkotások leírását a kérelmezői adatból veszi át, minden betöltött
-// előterjesztő saját pontszámát (RawJSON-jukból kiolvasva) csak megjeleníti, és egy önálló,
-// szerkeszthető "Bizottsági pontszám" oszlopot ad hozzá.
+// előterjesztő saját pontszámát (a közös store-ba mergelt "Előterjesztő<n>|..." adatukból) csak
+// megjeleníti, és egy önálló, szerkeszthető "Bizottsági pontszám" oszlopot ad hozzá.
 export const WorksScoringTable: CustomGroupComponent = ({ keyPrefix }) => {
     const store = useValueStore();
     const length = parseInt(useFieldValue(`${KERELMEZO_ALKOTAS_PREFIX}|_length`)) || 0;
     const descriptions = useFieldArrayValue(`${KERELMEZO_ALKOTAS_PREFIX}|Műszaki alkotás leírása`);
     const types = useFieldArrayValue(`${KERELMEZO_ALKOTAS_PREFIX}|Műszaki alkotás típusa`);
 
-    const nominatorCount = parseInt(useFieldValue(`${NOMINATORS_PREFIX}|_length`)) || 0;
-    const nominatorNames = useFieldArrayValue(`${NOMINATORS_PREFIX}|Előterjesztő neve`);
-    const nominatorRawJsons = useFieldArrayValue(`${NOMINATORS_PREFIX}|RawJSON`);
+    const nominatorSlots = useNominatorSlots();
 
     // A "Bizottsági pontszám" saját tömbünk hosszát a kérelmező alkotás-listájának hosszához
     // igazítjuk, hogy pl. a QScoreSummary useFieldArrayValue-val helyesen tudja összegezni.
@@ -103,7 +94,7 @@ export const WorksScoringTable: CustomGroupComponent = ({ keyPrefix }) => {
         return <div className="italic text-gray-500">A kérelmező nem adott meg műszaki alkotást.</div>;
     }
 
-    const displayedNominatorNames = Array.from({ length: nominatorCount }, (_, i) => nominatorNames[i] || `${i + 1}. előterjesztő`);
+    const displayedNominatorNames = nominatorSlots.map((slot) => slot.name || `${slot.index}. előterjesztő`);
 
     return (
         <table className="form-table">
@@ -125,8 +116,7 @@ export const WorksScoringTable: CustomGroupComponent = ({ keyPrefix }) => {
                         keyPrefix={keyPrefix}
                         description={descriptions[wi]}
                         type={types[wi]}
-                        nominatorNames={displayedNominatorNames}
-                        nominatorRawJsons={nominatorRawJsons}
+                        nominatorCount={nominatorSlots.length}
                     />
                 ))}
             </tbody>

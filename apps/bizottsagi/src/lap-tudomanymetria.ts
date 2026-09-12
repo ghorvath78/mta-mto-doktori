@@ -143,7 +143,7 @@ export const tudomanymetria: PageDescriptor = {
                 nominatorOpinionsGroup({
                     key: "Előterjesztők véleménye",
                     textPath:
-                        "Előterjesztői|Tudományos minimumkövetelmények|Publikációs teljesítmény értékelése|Publikációs teljesítmény értékelése|Szöveges értékelés"
+                        "Tudományos minimumkövetelmények|Publikációs teljesítmény értékelése|Publikációs teljesítmény értékelése|Szöveges értékelés"
                 }),
                 bizottsagiOpinionGroup({
                     key: "Bizottsági értékelés",
@@ -177,7 +177,7 @@ export const tudomanymetria: PageDescriptor = {
                 nominatorOpinionsGroup({
                     key: "Előterjesztők véleménye",
                     textPath:
-                        "Előterjesztői|Tudományos minimumkövetelmények|Rövid értekezésre vonatkozó értékelés|Rövid értekezésre vonatkozó értékelés|Szöveges értékelés"
+                        "Tudományos minimumkövetelmények|Rövid értekezésre vonatkozó értékelés|Rövid értekezésre vonatkozó értékelés|Szöveges értékelés"
                 }),
                 bizottsagiOpinionGroup({
                     key: "Bizottsági értékelés",

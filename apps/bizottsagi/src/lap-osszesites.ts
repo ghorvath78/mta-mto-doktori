@@ -1,7 +1,7 @@
 import type { PageDescriptor } from "@repo/form-engine";
 import { nominatorOpinionsGroup, bizottsagiOpinionGroup } from "./evaluationgroups";
 
-const ELOTERJESZTOI_OSSZESITES_PREFIX = "Előterjesztői|A tudományos minimumkövetelmények teljesítésének összesítése|Összesítés|Összesítés";
+const ELOTERJESZTOI_OSSZESITES_PREFIX = "A tudományos minimumkövetelmények teljesítésének összesítése|Összesítés|Összesítés";
 
 export const osszesites: PageDescriptor = {
     key: "A tudományos minimumkövetelmények teljesítésének összesítése",

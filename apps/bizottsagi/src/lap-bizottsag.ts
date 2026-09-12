@@ -57,18 +57,15 @@ export const bizottsag: PageDescriptor = {
             },
             groups: [
                 {
-                    key: "Előterjesztők",
-                    isArray: true,
-                    arrayMin: 0,
-                    arrayMax: 3,
+                    key: "Feltöltés",
+                    // Az egyes előterjesztők adatai NEM ebben a (tömb-)csoportban tárolódnak: a
+                    // NominatorUploader saját, rögzített nevű "Előterjesztő1/2/3" csoportokba írja
+                    // őket közvetlenül (ld. apps/bizottsagi/src/nominators.ts), hogy elkerülje a
+                    // form-engine "[[i]]" tömb-indexelését. Ez a csoport csak a customComponent
+                    // felakasztására szolgál.
                     customComponent: NominatorUploader,
-                    fields: [
-                        { key: "Előterjesztő neve", type: "text" },
-                        { key: "Tudományos fokozat", type: "text" },
-                        { key: "RawJSON", type: "text", attribs: { noPrint: true } },
-                        { key: "RawApplicantJSON", type: "text", attribs: { noPrint: true } },
-                        { key: "RawMtmtJSON", type: "text", attribs: { noPrint: true } }
-                    ]
+                    noPersist: true,
+                    fields: []
                 }
             ]
         },

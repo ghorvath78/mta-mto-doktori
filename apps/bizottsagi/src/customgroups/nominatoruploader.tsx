@@ -1,18 +1,16 @@
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, Button } from "@repo/ui";
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
-import { readJsonFromPdf, getFromObjectByKey, useFieldArrayValue, useFieldValue, type CustomGroupComponent } from "@repo/form-engine";
+import { readJsonFromPdf, getFromObjectByKey, type CustomGroupComponent } from "@repo/form-engine";
 import { registerNominator, removeNominator, MIN_NOMINATORS } from "../bizottsagiform.tsx";
+import { MAX_NOMINATORS, useNominatorSlots } from "../nominators.ts";
 import { UploadIcon, Trash } from "lucide-react";
 import { useState } from "react";
 
-export const NominatorUploader: CustomGroupComponent = ({ group, keyPrefix }) => {
+export const NominatorUploader: CustomGroupComponent = () => {
     const [dialogText, setDialogText] = useState("");
-    const length = parseInt(useFieldValue(`${keyPrefix}|_length`)) || 0;
-    const names = useFieldArrayValue(`${keyPrefix}|Előterjesztő neve`);
-    const fokozatok = useFieldArrayValue(`${keyPrefix}|Tudományos fokozat`);
-    const arrayMax = group.arrayMax ?? 3;
-    const arrayMin = MIN_NOMINATORS;
+    const slots = useNominatorSlots();
+    const length = slots.length;
 
     const dropzone = useDropzone({
         onDropFile: async (file: File) => {
@@ -39,16 +37,13 @@ export const NominatorUploader: CustomGroupComponent = ({ group, keyPrefix }) =>
                 const name = String(
                     getFromObjectByKey(eloJson, "Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Előterjesztő neve") || ""
                 );
-                const fokozat = String(
-                    getFromObjectByKey(eloJson, "Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Tudományos fokozat") || ""
-                );
                 if (!name) {
                     const message = "A kiválasztott PDF-ben nem található az előterjesztő neve - kérem ellenőrizze, hogy a megfelelő fájlt választotta-e.";
                     alert(message);
                     return { status: "error", error: message };
                 }
 
-                const result = registerNominator(group, keyPrefix, { eloJson, kerJson, mtmtJson, name, fokozat });
+                const result = registerNominator({ eloJson, kerJson, mtmtJson });
                 if (!result.ok) {
                     alert(result.error);
                     return { status: "error", error: result.error };
@@ -79,18 +74,18 @@ export const NominatorUploader: CustomGroupComponent = ({ group, keyPrefix }) =>
                             <td>Tudományos fokozat</td>
                             <td></td>
                         </tr>
-                        {Array.from({ length }).map((_, i) => (
-                            <tr key={i}>
-                                <td>{i + 1}.</td>
-                                <td>{names[i] || <span className="italic text-gray-500">(nincs név)</span>}</td>
-                                <td>{fokozatok[i] || ""}</td>
+                        {slots.map((slot) => (
+                            <tr key={slot.index}>
+                                <td>{slot.index}.</td>
+                                <td>{slot.name || <span className="italic text-gray-500">(nincs név)</span>}</td>
+                                <td>{slot.fokozat || ""}</td>
                                 <td>
                                     <Button
                                         className="has-[>svg]:px-1"
                                         variant="ghost"
                                         size="sm"
                                         title="Előterjesztő eltávolítása"
-                                        onClick={() => removeNominator(group, keyPrefix, i)}
+                                        onClick={() => removeNominator(slot.index)}
                                     >
                                         <Trash />
                                     </Button>
@@ -100,12 +95,12 @@ export const NominatorUploader: CustomGroupComponent = ({ group, keyPrefix }) =>
                     </tbody>
                 </table>
             )}
-            {length < arrayMin && (
+            {length < MIN_NOMINATORS && (
                 <div className="text-sm italic">
-                    Legalább {arrayMin} előterjesztői adatlap feltöltése szükséges (jelenleg {length} van feltöltve).
+                    Legalább {MIN_NOMINATORS} előterjesztői adatlap feltöltése szükséges (jelenleg {length} van feltöltve).
                 </div>
             )}
-            {length < arrayMax && (
+            {length < MAX_NOMINATORS && (
                 <Dropzone {...dropzone}>
                     <DropZoneArea>
                         <DropzoneTrigger className="flex flex-col items-center gap-4 bg-transparent p-10 text-center text-sm">

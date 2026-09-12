@@ -1,10 +1,42 @@
-import { getFromObjectByKey, useFieldArrayValue, useFieldValue, type CustomGroupComponent } from "@repo/form-engine";
+import { useFieldValue, type CustomGroupComponent } from "@repo/form-engine";
+import { nominatorPrefix, useNominatorSlots } from "../nominators";
 
-const NOMINATORS_PREFIX = "Bizottsági|Bizottság|Előterjesztők|Előterjesztők";
+// Egy sor: az adott előterjesztő igen/nem és/vagy szöveges véleménye. A group.attribs-ban megadott
+// yesNoPath/textPath az előterjesztői form saját mezőjének RELATÍV útvonala (a gyökér
+// "Előterjesztő<n>" szegmens NÉLKÜL), pl. "Tudományos minimumkövetelmények|...|Követelmény teljesül".
+const NominatorOpinionRow = ({
+    index,
+    name,
+    fokozat,
+    yesNoPath,
+    textPath
+}: {
+    index: number;
+    name: string;
+    fokozat: string;
+    yesNoPath?: string;
+    textPath?: string;
+}) => {
+    const yesNo = useFieldValue(yesNoPath ? `${nominatorPrefix(index)}|${yesNoPath}` : "");
+    const text = useFieldValue(textPath ? `${nominatorPrefix(index)}|${textPath}` : "");
 
-// Generikus, csak-olvasható komponens, amely az összes betöltött előterjesztő RawJSON adatából
-// kiolvas egy-egy "Előterjesztői|..."-vel kezdődő teljes kulcsot (igen/nem és/vagy szöveges
-// vélemény), és névvel/fokozattal együtt megjeleníti. A konkrét kulcsokat a group.attribs adja meg:
+    return (
+        <div className="border-b border-dotted border-primary pb-1">
+            <div className="font-semibold flex items-center gap-2">
+                <span>
+                    {name || `${index}. előterjesztő`}
+                    {fokozat ? ` (${fokozat})` : ""}
+                </span>
+                {yesNoPath && <span className="uppercase">{yesNo || "Nincs megadva"}</span>}
+            </div>
+            {textPath && <div className="whitespace-pre-wrap">{text || <span className="italic text-gray-500">Nincs megadva</span>}</div>}
+        </div>
+    );
+};
+
+// Generikus, csak-olvasható komponens, amely az összes betöltött előterjesztő véleményét
+// megjeleníti egy adott "Előterjesztő<n>|..." mezőre vonatkozóan (igen/nem és/vagy szöveges
+// vélemény). A konkrét (relatív) kulcsokat a group.attribs adja meg:
 //   attribs: { yesNoPath?: string; textPath?: string }
 // Ha yesNoPath nincs megadva (mert az adott előterjesztői mezőnek nincs igen/nem párja), csak a
 // szöveg jelenik meg.
@@ -12,43 +44,17 @@ export const NominatorOpinions: CustomGroupComponent = ({ group }) => {
     const yesNoPath = group.attribs?.yesNoPath as string | undefined;
     const textPath = group.attribs?.textPath as string | undefined;
 
-    const length = parseInt(useFieldValue(`${NOMINATORS_PREFIX}|_length`)) || 0;
-    const names = useFieldArrayValue(`${NOMINATORS_PREFIX}|Előterjesztő neve`);
-    const fokozatok = useFieldArrayValue(`${NOMINATORS_PREFIX}|Tudományos fokozat`);
-    const rawJsons = useFieldArrayValue(`${NOMINATORS_PREFIX}|RawJSON`);
+    const slots = useNominatorSlots();
 
-    if (length === 0) {
+    if (slots.length === 0) {
         return <div className="italic text-gray-500">Nincs betöltött előterjesztői vélemény.</div>;
     }
 
     return (
         <div className="space-y-2">
-            {Array.from({ length }).map((_, i) => {
-                const raw = rawJsons[i];
-                let json: unknown = null;
-                try {
-                    json = raw ? JSON.parse(raw) : null;
-                } catch {
-                    json = null;
-                }
-                const yesNo = yesNoPath && json ? ((getFromObjectByKey(json, yesNoPath) as string) ?? "") : "";
-                const text = textPath && json ? ((getFromObjectByKey(json, textPath) as string) ?? "") : "";
-
-                return (
-                    <div key={i} className="border-b border-dotted border-primary pb-1">
-                        <div className="font-semibold flex items-center gap-2">
-                            <span>
-                                {names[i] || `${i + 1}. előterjesztő`}
-                                {fokozatok[i] ? ` (${fokozatok[i]})` : ""}
-                            </span>
-                            {yesNoPath && <span className="uppercase">{yesNo || "Nincs megadva"}</span>}
-                        </div>
-                        {textPath && (
-                            <div className="whitespace-pre-wrap">{text || <span className="italic text-gray-500">Nincs megadva</span>}</div>
-                        )}
-                    </div>
-                );
-            })}
+            {slots.map((slot) => (
+                <NominatorOpinionRow key={slot.index} index={slot.index} name={slot.name} fokozat={slot.fokozat} yesNoPath={yesNoPath} textPath={textPath} />
+            ))}
         </div>
     );
 };

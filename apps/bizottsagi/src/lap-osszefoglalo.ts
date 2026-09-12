@@ -1,9 +1,8 @@
 import type { PageDescriptor } from "@repo/form-engine";
 import { nominatorOpinionsGroup, bizottsagiOpinionGroup } from "./evaluationgroups";
 
-const ELOTERJESZTOI_JAVASLAT_PREFIX = "Előterjesztői|Összefoglaló javaslat|Összefoglaló javaslat|Összefoglaló javaslat";
-const ELOTERJESZTOI_ROVID_JAVASLAT_PREFIX =
-    "Előterjesztői|Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról|Javaslat a rövid értekezés benyújtásáról";
+const ELOTERJESZTOI_JAVASLAT_PREFIX = "Összefoglaló javaslat|Összefoglaló javaslat|Összefoglaló javaslat";
+const ELOTERJESZTOI_ROVID_JAVASLAT_PREFIX = "Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról|Javaslat a rövid értekezés benyújtásáról";
 
 export const osszefoglalo: PageDescriptor = {
     key: "Összefoglaló javaslat",

@@ -3,7 +3,7 @@ import { PublicActivitySummary } from "./customgroups/publicactivitysummary";
 import { nominatorOpinionsGroup, bizottsagiOpinionGroup } from "./evaluationgroups";
 
 const KOZELETI_PREFIX = "Kérelmezői|Tudományos közéleti tevékenység";
-const ELOTERJESZTOI_KOZELETI_PREFIX = "Előterjesztői|Tudományos közéleti tevékenység";
+const ELOTERJESZTOI_KOZELETI_PREFIX = "Tudományos közéleti tevékenység";
 
 function listGroup(sectionKey: string, fields: FieldDescriptor[]): GroupDescriptor {
     const base = `${KOZELETI_PREFIX}|${sectionKey}|Lista`;
