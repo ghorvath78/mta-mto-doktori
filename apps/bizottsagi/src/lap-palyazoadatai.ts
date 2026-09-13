@@ -167,14 +167,14 @@ export const palyazoAdatai: PageDescriptor = {
                     key: "A bizottság véleménye",
                     label: "A bizottság véleménye",
                     attribs: {
-                        // important: true
+                        important: true
                     },
                     fields: [
                         {
                             key: "Bizottsági megállapítás",
                             type: "select",
                             attribs: {
-                                important: true,
+                                primaryBackground: true,
                                 options: [ELBIRALHATO, NEM_BIRALHATO_EL, BEVONASSAL_ELBIRALHATO]
                             }
                         }

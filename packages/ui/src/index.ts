@@ -1,3 +1,4 @@
+export { cn } from "./lib/utils";
 export * from "./components/ui/alert-dialog";
 export * from "./components/ui/button";
 export * from "./components/ui/calendar";
