@@ -16,13 +16,23 @@ export const sampleDownloads: SampleDownload[] = [
         path: "./mintak/kerelmezoi-teszt-rovid.pdf"
     },
     {
-        title: "eloterjesztoi-teszt-teljes.pdf",
+        title: "eloterjesztoi-teszt-1-teljes.pdf",
         description: "Kitalált adatokkal kitöltött példa az előterjesztői adatlaphoz, teljes értekezéses pályázat esetén",
-        path: "./mintak/eloterjesztoi-teszt-teljes.pdf"
+        path: "./mintak/eloterjesztoi-teszt-1-teljes.pdf"
+    },
+    {
+        title: "eloterjesztoi-teszt-2-teljes.pdf",
+        description: "Más kitalált adatokkal kitöltött példa az előterjesztői adatlaphoz, teljes értekezéses pályázat esetén",
+        path: "./mintak/eloterjesztoi-teszt-2-teljes.pdf"
     },
     {
         title: "eloterjesztoi-teszt-rovid.pdf",
         description: "Kitalált adatokkal kitöltött példa az előterjesztői adatlaphoz, rövid értekezéses pályázat esetén",
         path: "./mintak/eloterjesztoi-teszt-rovid.pdf"
+    },
+    {
+        title: "bizottsagi-teszt-teljes.pdf",
+        description: "Kitalált adatokkal kitöltött példa a bizottsági adatlaphoz",
+        path: "./mintak/bizottsagi-teszt-teljes.pdf"
     }
 ];

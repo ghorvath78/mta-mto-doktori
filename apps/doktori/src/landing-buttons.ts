@@ -32,7 +32,7 @@ export const landingButtons: LandingButton[] = [
         title: "Bizottsági adatlap",
         subtitle: "A tudományos bizottság elnöke vagy titkára tölti ki",
         tooltip: "A bizottsági adatlap kitöltése (hamarosan)",
-        enabled: false,
-        url: "#"
+        enabled: true,
+        url: "bizottsagi/"
     }
 ];
