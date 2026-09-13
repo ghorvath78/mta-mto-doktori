@@ -153,6 +153,19 @@ function getCanonicalIdentity(): { name: string; mtmtId: string } {
     };
 }
 
+// A kérelmező műszaki alkotásai, és a hozzájuk tartozó bizottsági pontszámok tömbje. A kettő
+// párhuzamos: a bizottsági tömbnek pontosan annyi eleme van, ahány alkotást a kérelmező megadott.
+const KERELMEZO_ALKOTAS_LENGTH_KEY = "Kérelmezői|Műszaki alkotások|Műszaki alkotások megadása|Műszaki alkotások megadása|_length";
+const BIZOTTSAGI_ALKOTAS_LENGTH_KEY = "Bizottsági|Tudományos minimumkövetelmények|Q-szám|A kérelmező alkotási teljesítménye|_length";
+
+// A WorksScoringTable is igazítja a hosszt, de csak amíg a Tudománymetria lap nyitva van - ezért a
+// kérelmezői adat megjelenésekor (előterjesztő feltöltése, adatlap visszatöltése) itt is
+// beállítjuk. Enélkül a mentett JSON-ban üres tömb szerepelne akkor is, ha a kérelmezőnek vannak
+// alkotásai, csak a bizottság még nem nyitotta meg azt a lapot.
+function syncWorksScoreLength() {
+    valueStore.setField(BIZOTTSAGI_ALKOTAS_LENGTH_KEY, valueStore.getField(KERELMEZO_ALKOTAS_LENGTH_KEY) || "0");
+}
+
 function applyCategoryFromCanonicalApplicant() {
     const committee = valueStore.getField(
         "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Illetékes bizottság"
@@ -169,6 +182,8 @@ function applyCategoryFromCanonicalApplicant() {
     valueStore.setField("Bizottsági|Tudományos minimumkövetelmények|I-szám|I-szám|I-szám", sciMetrics?.[10]?.[0] || "0");
     valueStore.setField("Bizottsági|Tudományos minimumkövetelmények|I-szám|I-szám|WoS idézők száma", sciMetrics?.[11]?.[0] || "0");
     valueStore.setField("Bizottsági|Tudományos minimumkövetelmények|I-szám|I-szám|H-index", sciMetrics?.[12]?.[0] || "0");
+
+    syncWorksScoreLength();
 }
 
 // Visszaadja, hány előterjesztő van jelenleg betöltve - a legmagasabb index, amelynél még van
@@ -278,6 +293,7 @@ export function loadFormFromJson(formJson: Record<string, unknown>, mtmtJson: Re
     // előterjesztői PDF feltöltésekor is (ld. mergeNominatorIntoStore).
     valueStore.fromJSON(formJson, "", true);
     canonicalMtmtJson = mtmtJson;
+    syncWorksScoreLength();
     restoreNominatorFlags();
 }
 

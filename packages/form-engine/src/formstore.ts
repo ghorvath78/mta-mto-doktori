@@ -267,11 +267,17 @@ export class FormStore {
             }
         }
 
-        // For groups that use lengthSource, override with the actual source length
+        // For groups that use lengthSource, override with the actual source length.
+        // A noPersist szakaszok/csoportok kimaradnak - ezeknek az initialize sem hoz létre kulcsot,
+        // tehát nincs saját adatuk. Enélkül a csak-olvasható, más névtér adatát tükröző listák (pl.
+        // a bizottsági adatlap közéleti "Lista" csoportjai) üres tömbként bekerülnének a mentett
+        // JSON-ba, holott a tartalmuk a forrás-névtérben (Kérelmezői|...) már ott van.
         if (pages && formName) {
             for (const page of pages) {
                 for (const section of page.sections) {
+                    if (section.noPersist) continue;
                     for (const group of section.groups) {
+                        if (group.noPersist) continue;
                         if (group.isArray && group.lengthSource && this.data[group.lengthSource]) {
                             const parentPath = `${formName}|${page.key}|${section.key}|${group.key}`;
                             const len = parseInt(this.data[group.lengthSource]) || 0;
