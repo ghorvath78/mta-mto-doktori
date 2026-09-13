@@ -1,5 +1,7 @@
 export * from "./components/ui/alert-dialog";
 export * from "./components/ui/button";
+export * from "./components/ui/calendar";
+export { hu as calendarLocaleHu } from "react-day-picker/locale";
 export * from "./components/ui/input";
 export * from "./components/ui/textarea";
 export * from "./components/ui/collapsible";

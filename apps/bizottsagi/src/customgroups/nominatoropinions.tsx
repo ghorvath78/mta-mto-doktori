@@ -27,15 +27,11 @@ const NominatorOpinionRow = ({
             <div className="font-semibold flex items-center gap-2">
                 <span>
                     {name || `${index}. előterjesztő`}
-                    {fokozat ? ` (${fokozat})` : ""}
+                    {fokozat ? ` (${fokozat}):` : ":"}
                 </span>
                 {yesNoPath && <span className="uppercase">{yesNo || "Nincs megadva"}</span>}
             </div>
-            {textPath && (
-                <div className="whitespace-pre-wrap">
-                    {text || <span className="italic text-gray-500">Szöveges vélemény nincs megadva</span>}
-                </div>
-            )}
+            {textPath && <div className="whitespace-pre-wrap">{text || <span className="italic text-gray-500">Szöveges vélemény nincs megadva</span>}</div>}
         </div>
     );
 };

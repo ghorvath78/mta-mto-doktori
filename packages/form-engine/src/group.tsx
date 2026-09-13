@@ -91,7 +91,7 @@ export const ArrayGroupPanel = ({ group, keyPrefix, readonly }: { group: GroupDe
     }
 
     return (
-        <div style={{ display: isVisible ? "block" : "none" }}>
+        <div className="formarray" style={{ display: isVisible ? "block" : "none" }}>
             {label && <div className="space-y-2 mb-1">{label}</div>}
             <div className="space-y-2 mb-1">{groups.length > 0 ? groups : <div className="italic text-muted-foreground">Nincs megjeleníthető blokk.</div>}</div>
             {!readonly && groups.length < (group.arrayMax ?? Infinity) && (

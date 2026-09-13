@@ -62,8 +62,7 @@ function nominatorHabitusOpinionGroup(index: number): GroupDescriptor {
                 key: "Rövid értekezéssel is",
                 type: "text",
                 readonly: true,
-                conditionKey:
-                    "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája",
+                conditionKey: "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája",
                 conditionValue: "rövid értekezés",
                 valueSource: `${prefix}|Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról|Javaslat a rövid értekezés benyújtásáról|Javaslat`
             }
@@ -193,7 +192,7 @@ export const palyazoAdatai: PageDescriptor = {
                     key: "Illetékesség",
                     label: "A bizottság véleménye",
                     attribs: {
-                        important: true
+                        // important: true
                     },
                     fields: [
                         {
@@ -211,7 +210,7 @@ export const palyazoAdatai: PageDescriptor = {
                     isArray: true,
                     arrayMin: 1,
                     arrayMax: 2,
-                    arrayAddLabel: "Bevonandó bizottság/osztály hozzáadása",
+                    arrayAddLabel: "Bevonandó bizottság/osztály",
                     conditionKey: ILLETEKESSEG_MEGALLAPITAS_KEY,
                     conditionValue: BEVONASSAL_ELBIRALHATO,
                     fields: [
@@ -219,7 +218,7 @@ export const palyazoAdatai: PageDescriptor = {
                             key: "Bevonandó osztály",
                             type: "select",
                             attribs: {
-                                important: true,
+                                // important: true,
                                 options: mtaOsztalyOptions
                             }
                         },
@@ -229,7 +228,7 @@ export const palyazoAdatai: PageDescriptor = {
                             conditionKey: BEVONANDO_OSZTALY_KEY,
                             conditionValue: MUSZAKI_TUDOMANYOK_OSZTALY,
                             attribs: {
-                                important: true,
+                                // important: true,
                                 options: tudomanyosBizottsagOptions
                             }
                         }
@@ -264,7 +263,7 @@ export const palyazoAdatai: PageDescriptor = {
         {
             key: "Az előterjesztők véleménye a kérelmező doktori habitusáról",
             helpText:
-                "Az egyes előterjesztők záró javaslata a kérelmező doktori habitusáról, az előterjesztői adatlapok \"Javaslat\" lapjáról átvéve. Ez a szekció csak megjelenít, a bizottságnak itt nem kell semmit megadnia.",
+                'Az egyes előterjesztők záró javaslata a kérelmező doktori habitusáról, az előterjesztői adatlapok "Javaslat" lapjáról átvéve. Ez a szekció csak megjelenít, a bizottságnak itt nem kell semmit megadnia.',
             description: "Az előterjesztők a tudományos munkássága alapján alkalmasnak tartják-e a kérelmezőt az MTA doktora cím megszerzésére",
             groups: Array.from({ length: MAX_NOMINATORS }, (_, i) => nominatorHabitusOpinionGroup(i + 1))
         }

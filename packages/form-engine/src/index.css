@@ -68,6 +68,7 @@
     text-decoration: underline;
 }
 
-.formgroup + .formgroup {
+.formgroup + .formgroup,
+.formgroup + .formarray {
     @apply mt-2;
 }
