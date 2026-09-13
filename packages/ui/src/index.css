@@ -1,11 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* A Tailwind automatikus forrásfelderítése csak ennek a CSS-nek a környezetét járja be, és a
+   node_modules-t (így a @repo/* csomagokra mutató workspace-symlinkeket) kihagyja - ezért minden
+   olyan könyvtárat fel kell itt sorolni, amelyben Tailwind osztálynevek szerepelnek. Ha egy új
+   csomag vagy app készül, ide is be kell venni, különben a benne használt osztályok csendben
+   kimaradnak a generált CSS-ből. */
 @source "../src";
 @source "../../form-engine/src";
 @source "../../mtmt-tools/src";
+@source "../../committee/src";
 @source "../../../apps/kerelmezoi/src";
 @source "../../../apps/eloterjesztoi/src";
+@source "../../../apps/bizottsagi/src";
 
 @custom-variant dark (&:is(.dark *));
 
