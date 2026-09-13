@@ -1,8 +1,7 @@
 import type { GroupDescriptor, PageDescriptor } from "@repo/form-engine";
 import { mtaOsztalyOptions, MUSZAKI_TUDOMANYOK_OSZTALY, tudomanyosBizottsagOptions } from "./requirements";
-import { nominatorOpinionsGroup, bizottsagiOpinionGroup } from "./evaluationgroups";
+import { nominatorOpinionsGroup, bizottsagiOpinionGroup, votingResultGroup } from "./evaluationgroups";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorNameKey, nominatorPrefix } from "./nominators";
-import "./customgroups/votepercentage";
 
 const ILLETEKESSEG_MEGALLAPITAS_KEY = "Bizottsági|Pályázó adatai|Illetékesség|Illetékesség|Bizottsági megállapítás";
 const BEVONANDO_OSZTALY_KEY = "Bizottsági|Pályázó adatai|Illetékesség|Bevonandó bizottságok/osztályok|Bevonandó osztály";
@@ -11,32 +10,8 @@ const ELBIRALHATO = "A megnevezett szakterületen és bizottságban elbírálhat
 const NEM_BIRALHATO_EL = "A megnevezett szakterületen és bizottságban nem bírálható el";
 const BEVONASSAL_ELBIRALHATO = "A megnevezett szakterület és bizottság részvételével elbírálható, további bizottság és/vagy osztály bevonásával";
 
-function votingResultGroup(key: string): GroupDescriptor {
-    return {
-        key,
-        label: "Szavazás eredménye",
-        attribs: {
-            important: true
-        },
-        fields: [
-            {
-                key: "Igen szavazatok száma",
-                type: "number",
-                helpText:
-                    "A fentiekben kialakult álláspontot a bizottság vita után egyszerű többségi, tartózkodásmentes nyílt szavazással az alábbi szavazati eredménnyel támasztotta alá."
-            },
-            {
-                key: "Nem szavazatok száma",
-                type: "number"
-            },
-            {
-                key: "Támogatottság",
-                type: "votePercentage",
-                noPersist: true
-            }
-        ]
-    };
-}
+const ALLASPONT_SZAVAZAS_HELP =
+    "A fentiekben kialakult álláspontot a bizottság vita után egyszerű többségi, tartózkodásmentes nyílt szavazással az alábbi szavazati eredménnyel támasztotta alá.";
 
 function nominatorHabitusOpinionGroup(index: number): GroupDescriptor {
     const prefix = nominatorPrefix(index);
@@ -234,7 +209,7 @@ export const palyazoAdatai: PageDescriptor = {
                         }
                     ]
                 },
-                votingResultGroup("Illetékesség szavazás eredménye")
+                votingResultGroup("Illetékesség szavazás eredménye", ALLASPONT_SZAVAZAS_HELP)
             ]
         },
         {
@@ -257,7 +232,7 @@ export const palyazoAdatai: PageDescriptor = {
                     yesNoLabel: "A bizottság véleménye szerint a benyújtott doktori mű formailag alkalmas az elbírálásra",
                     textLabel: "Nemleges vélemény indoklása"
                 }),
-                votingResultGroup("Alkalmasság szavazás eredménye")
+                votingResultGroup("Alkalmasság szavazás eredménye", ALLASPONT_SZAVAZAS_HELP)
             ]
         },
         {

@@ -13,9 +13,12 @@ export const NumberInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
     const twoColumn = fieldDescr.attribs?.noAlign ? false : true;
     const important = fieldDescr.attribs?.important === true;
     const maxValue = fieldDescr.attribs?.maxValue as number | undefined;
+    // Primary (piros) hátterű, pl. important csoportban: világos címke, fehér szövegdoboz, mint a decision mezőknél
+    const primaryBackground = fieldDescr.attribs?.primaryBackground === true;
 
     const baseClass = inline ? "flex items-center space-x-2" : "";
-    const labelClass = inline ? (twoColumn ? "text-end w-1/4" : "") + " leading-[0.95em]" : "";
+    const labelClass = (inline ? (twoColumn ? "text-end w-1/4" : "") + " leading-[0.95em]" : "") + (primaryBackground ? " text-primary-foreground" : "");
+    const boxClass = primaryBackground ? "border-primary-foreground bg-primary-foreground" : important ? "border-primary border-2" : "border-gray-300";
 
     const sanitize = (raw: string) => {
         let result: string;
@@ -65,9 +68,9 @@ export const NumberInput = ({ fieldKey, fieldDescr }: FieldInputProps) => {
             <label className={`block mb-1 font-medium ${labelClass}`} htmlFor={fieldKey}>
                 {label}
             </label>
-            <InputGroup className={`w-full border rounded py-1 px-2 flex-3 h-9 min-w-16 ${important ? "border-primary border-2" : "border-gray-300"}`}>
+            <InputGroup className={`w-full border rounded py-1 px-2 flex-3 h-9 min-w-16 ${boxClass}`}>
                 <InputGroupInput
-                    className="h-[unset] px-0 py-0 md:text-base"
+                    className={`h-[unset] px-0 py-0 md:text-base ${primaryBackground ? "!font-bold !text-primary" : ""}`}
                     type="text"
                     inputMode="numeric"
                     pattern="\\d*"

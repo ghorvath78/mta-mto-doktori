@@ -10,6 +10,10 @@ import {
 } from "@repo/committee";
 import { BiraloBizottsagWrapper } from "./customgroups/nominatorproposals";
 import { getApplicantAffiliations, getCommonPubsWithApplicant } from "./bizottsagiform";
+import { votingResultGroup } from "./evaluationgroups";
+
+// A bíráló bizottság összetételét megerősítő szavazás szakaszának kulcsa (a pdfsaver.ts is ezt használja).
+export const BIRALOBIZOTTSAG_SZAVAZAS_SECTION_KEY = "Összetétel megerősítése";
 
 // A táblák, a kulcsok és az ellenőrzés a @repo/committee csomagból jönnek - pontosan ugyanazok,
 // amiket az előterjesztői adatlap használ (ld. apps/eloterjesztoi/src/lap-biralobizottsag.ts),
@@ -87,6 +91,21 @@ export const biraloBizottsag: PageDescriptor = {
                     customComponent: CommitteeChecker,
                     fields: []
                 }
+            ]
+        },
+        {
+            key: BIRALOBIZOTTSAG_SZAVAZAS_SECTION_KEY,
+            label: "A bíráló bizottság összetételének megerősítése",
+            helpText: "A bizottság a fentiekben összeállított bírálókra és bíráló bizottságra vonatkozó javaslatot nyílt szavazással erősíti meg.",
+            attribs: {
+                alwaysOpen: true,
+                important: true
+            },
+            groups: [
+                votingResultGroup(
+                    "Összetétel szavazás eredménye",
+                    "A fentiekben kialakult személyi összetételről szóló javaslatot a bizottság vita után egyszerű többségi, tartózkodásmentes nyílt szavazással az alábbi szavazati eredménnyel támasztotta alá."
+                )
             ]
         }
     ]

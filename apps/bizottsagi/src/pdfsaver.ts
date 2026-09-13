@@ -10,12 +10,14 @@ import {
     type GroupDescriptor,
     type SectionDescriptor
 } from "@repo/form-engine";
-import type { Content, TableCell } from "pdfmake/interfaces";
+import type { Content, ContentTable, TableCell } from "pdfmake/interfaces";
 import { COMMITTEE_ROLES, committeeArrayKey, committeeArrayLength, COMMITTEE_PAGE_KEY } from "@repo/committee";
 import { getMaxAchievementQ, getMaxBookQ, getMinCommunityCount, getMinHIndex, getMinPaperQ, getMinTotalI, getMinTotalQ } from "./requirements";
 import { getNumOfAuthorsInPub, getRatingOfPub } from "./bizottsagiform";
 import { MAX_NOMINATORS, nominatorFokozatKey, nominatorLoadedKey, nominatorNameKey } from "./nominators";
 import { activityRequirementSectionKeys } from "./customgroups/publicactivitysummary";
+import { formatVotePercentage } from "./customgroups/votepercentage";
+import { BIRALOBIZOTTSAG_SZAVAZAS_SECTION_KEY } from "./lap-biralobizottsag";
 import { kozeletiTevekenyseg } from "./lap-kozeleti";
 
 // A bizottsági adatlap PDF-exportja. Két elvi különbség az előterjesztői exporthoz képest:
@@ -246,8 +248,8 @@ async function getCommitteeSection(formDescriptor: FormDescriptor, sectionKey: s
             ? await getArrayGroupContent(formDescriptor, group, groupKeyPrefix, groupLabel)
             : await groupToPdfDocDefinition(groupLabel, group, formDescriptor, groupKeyPrefix, {});
         if (content.length > 0) labelUsed = true;
+        if (!group.isArray) addVotePercentageRow(store, group, groupKeyPrefix, content);
         rows.push(...content);
-        rows.push(...getVotePercentage(store, group, groupKeyPrefix));
     }
     return rows;
 }
@@ -276,17 +278,18 @@ function isGroupConditionMet(formDescriptor: FormDescriptor, group: GroupDescrip
 }
 
 /**
- * A "votePercentage" mező printere üres (számított, csak a képernyőn jelenik meg), ezért a
- * támogatottságot a szavazatszámokból itt állítjuk elő a szavazócsoportok alá.
+ * A "votePercentage" mező számított, nincs tárolt értéke, így a form-engine a printerét meg sem
+ * hívja. Ezért a támogatottságot itt illesztjük be a szavazócsoport táblázatába, közvetlenül a
+ * szavazatszámok alá, ugyanolyan "címke: érték" sorként.
  */
-function getVotePercentage(store: FormDescriptor["valueStore"], group: GroupDescriptor, groupKeyPrefix: string): Content[] {
-    if (!group.fields.some((f) => f.type === "votePercentage")) return [];
+function addVotePercentageRow(store: FormDescriptor["valueStore"], group: GroupDescriptor, groupKeyPrefix: string, content: Content[]): void {
+    const field = group.fields.find((f) => f.type === "votePercentage");
+    if (!field) return;
+    const table = content.find((c): c is ContentTable => typeof c === "object" && c !== null && "table" in c);
+    if (!table) return;
     const igen = cD(store.getField(`${groupKeyPrefix}|Igen szavazatok száma`));
     const nem = cD(store.getField(`${groupKeyPrefix}|Nem szavazatok száma`));
-    const total = igen + nem;
-    if (total === 0) return [];
-    const percent = Math.round((igen / total) * 1000) / 10;
-    return [{ text: ["Támogatottság: ", { text: `${percent}%`, bold: true }, ` (igen: ${igen}, nem: ${nem})`], margin: [20, 3, 0, 5] }];
+    table.table.body.push([{ text: `${field.label || field.key}:` }, { text: formatVotePercentage(igen, nem) ?? "-", bold: true }]);
 }
 
 // ─── D. Tudománymetria ───────────────────────────────────────────────────────
@@ -670,5 +673,12 @@ async function getBiraloBizottsagSection(formDescriptor: FormDescriptor): Promis
             result.push(...(await groupToPdfTableDefinition("", group, formDescriptor, arrayKey, {})));
         }
     }
+    result.push(
+        ...(await getCommitteeSection(
+            formDescriptor,
+            `${pagePrefix}|${BIRALOBIZOTTSAG_SZAVAZAS_SECTION_KEY}`,
+            "A bíráló bizottság összetételének megerősítése:"
+        ))
+    );
     return result;
 }

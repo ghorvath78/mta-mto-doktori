@@ -1,5 +1,38 @@
 import type { GroupDescriptor } from "@repo/form-engine";
 import { NominatorOpinions } from "./customgroups/nominatoropinions";
+import "./customgroups/votepercentage";
+
+// A bizottság nyílt szavazásának eredménye (igen/nem szavazatok + számított támogatottság). A
+// helpText az "Igen szavazatok száma" mezőhöz kerül, a szavazás tárgyát fogalmazza meg.
+// A PDF-ben a támogatottság sorát a pdfsaver.ts addVotePercentageRow függvénye illeszti be.
+export function votingResultGroup(key: string, helpText: string): GroupDescriptor {
+    return {
+        key,
+        label: "Szavazás eredménye",
+        attribs: {
+            important: true
+        },
+        fields: [
+            {
+                key: "Igen szavazatok száma",
+                type: "number",
+                attribs: { primaryBackground: true },
+                helpText
+            },
+            {
+                key: "Nem szavazatok száma",
+                type: "number",
+                attribs: { primaryBackground: true }
+            },
+            {
+                key: "Támogatottság",
+                type: "votePercentage",
+                attribs: { primaryBackground: true },
+                noPersist: true
+            }
+        ]
+    };
+}
 
 // Csak-olvasható csoport, amely a betöltött előterjesztők véleményét jeleníti meg egy adott,
 // "Előterjesztői|..."-vel kezdődő teljes kulcsra vonatkozóan (igen/nem és/vagy szöveges vélemény).
