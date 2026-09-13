@@ -206,7 +206,20 @@ export class FormStore {
                 const lookupKey = (prefix ? prefix + "|" : "") + pathParts.join("|");
                 if (collapsedSections.has(lookupKey)) {
                     // Insert the section key again as the group key
-                    flatten(obj, [...pathParts, pathParts[2]]);
+                    if (Array.isArray(obj) || !obj || typeof obj !== "object") {
+                        flatten(obj, [...pathParts, pathParts[2]]);
+                        return;
+                    }
+                    // The section may have further groups next to the collapsed one: toJSON writes them
+                    // beside the collapsed group's (always string) field values as nested objects/arrays,
+                    // so those keep their own group key instead of being nested under the section key.
+                    for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
+                        if (Array.isArray(value) || (value && typeof value === "object")) {
+                            flatten(value, [...pathParts, key]);
+                        } else {
+                            setField([...pathParts, pathParts[2], key].join("|"), String(value ?? ""));
+                        }
+                    }
                     return;
                 }
             }
@@ -258,13 +271,39 @@ export class FormStore {
         }
 
         // Identify array groups and their lengths (in original key space)
+        // A saját névtér (formName) leírókban tömbként megadott csoportjai. Egy korábban hibásan
+        // visszatöltött adatlapból maradhat a store-ban nem létező tömbre utaló "_length" kulcs (pl.
+        // "…|Illetékesség|Illetékesség|_length"), ami a teljes szakaszt tömbbé tenné a kimenetben.
+        // Az idegen névterek (pl. Kérelmezői, Előterjesztő<n>) csoportjai nincsenek a leírókban, azokat nem szűrjük.
+        const describedArrayPaths = new Set<string>();
+        if (pages && formName) {
+            for (const page of pages) {
+                for (const section of page.sections) {
+                    for (const group of section.groups) {
+                        if (group.isArray) describedArrayPaths.add(`${formName}|${page.key}|${section.key}|${group.key}`);
+                    }
+                }
+            }
+        }
+
+        // Azok a csoportok, amelyeknek ténylegesen van indexelt ("[[i]]") eleme a store-ban.
+        const indexedGroupPaths = new Set<string>();
+        for (const key in this.data) {
+            const parts = key.split("|");
+            if (parts.length !== 5) continue;
+            const { base, index } = parseGroupPart(parts[3]);
+            if (index !== null) indexedGroupPaths.add([parts[0], parts[1], parts[2], base].join("|"));
+        }
+
         const arrayPaths = new Map<string, number>();
         for (const key in this.data) {
             const parts = key.split("|");
-            if (parts[parts.length - 1] === "_length") {
-                const parentPath = parts.slice(0, -1).join("|");
-                arrayPaths.set(parentPath, parseInt(this.data[key]) || 0);
-            }
+            // Érvényes kulcs mindig 5 tagú; a hosszabbak hibás visszatöltésből maradt szemetek.
+            if (parts.length !== 5 || parts[4] !== "_length") continue;
+            const parentPath = parts.slice(0, 4).join("|");
+            // Saját névtérben a leíróban nem szereplő, elem nélküli "tömb" csak szemét lehet (ld. fent).
+            if (pages && formName && parts[0] === formName && !describedArrayPaths.has(parentPath) && !indexedGroupPaths.has(parentPath)) continue;
+            arrayPaths.set(parentPath, parseInt(this.data[key]) || 0);
         }
 
         // For groups that use lengthSource, override with the actual source length.
@@ -301,7 +340,8 @@ export class FormStore {
             for (let i = 0; i < parts.length; i++) {
                 const part = parts[i];
                 const pathSoFar = parts.slice(0, i + 1).join("|");
-                if (!(part in current)) {
+                // Egy hibás visszatöltésből maradt, a csoport nevén álló szöveges érték nem blokkolhatja a csoportot
+                if (!(part in current) || current[part] === null || typeof current[part] !== "object") {
                     if (outputArrayPaths.has(pathSoFar)) {
                         const len = outputArrayPaths.get(pathSoFar)!;
                         current[part] = Array.from({ length: len }, () => ({}));
@@ -324,6 +364,7 @@ export class FormStore {
             if (isMetaKey(key)) continue;
 
             const parts = key.split("|");
+            if (parts.length !== 5) continue;
             const lastPart = parts[parts.length - 1];
             if (lastPart === "_length" || lastPart === "_open") continue;
 
@@ -335,9 +376,17 @@ export class FormStore {
             const value = this.data[key];
             const parent = ensurePath(containerParts);
 
+            // Ha a kulcs szerkezete nem illik a kimenet szerkezetéhez (tömb vs. objektum), a kulcsot
+            // kihagyjuk, különben kivétel keletkezne, vagy az érték a JSON.stringify-ban nyomtalanul elveszne.
             if (index !== null) {
-                (parent as Record<string, unknown>[])[index][fieldName] = value ?? "";
+                const item = Array.isArray(parent) ? parent[index] : undefined;
+                if (!item) continue;
+                item[fieldName] = value ?? "";
             } else {
+                if (Array.isArray(parent)) continue;
+                // ...és fordítva: egy ilyen szöveges érték nem írhatja felül a már felépített csoportot
+                const existing = (parent as Record<string, unknown>)[fieldName];
+                if (existing !== null && typeof existing === "object") continue;
                 (parent as Record<string, unknown>)[fieldName] = value ?? "";
             }
         }

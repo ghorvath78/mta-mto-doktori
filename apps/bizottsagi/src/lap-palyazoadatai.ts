@@ -3,7 +3,7 @@ import { mtaOsztalyOptions, MUSZAKI_TUDOMANYOK_OSZTALY, tudomanyosBizottsagOptio
 import { nominatorOpinionsGroup, bizottsagiOpinionGroup, votingResultGroup } from "./evaluationgroups";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorNameKey, nominatorPrefix } from "./nominators";
 
-const ILLETEKESSEG_MEGALLAPITAS_KEY = "Bizottsági|Pályázó adatai|Illetékesség|Illetékesség|Bizottsági megállapítás";
+const ILLETEKESSEG_MEGALLAPITAS_KEY = "Bizottsági|Pályázó adatai|Illetékesség|A bizottság véleménye|Bizottsági megállapítás";
 const BEVONANDO_OSZTALY_KEY = "Bizottsági|Pályázó adatai|Illetékesség|Bevonandó bizottságok/osztályok|Bevonandó osztály";
 
 const ELBIRALHATO = "A megnevezett szakterületen és bizottságban elbírálható";
@@ -164,7 +164,7 @@ export const palyazoAdatai: PageDescriptor = {
                     yesNoPath: "Pályázó adatai|Illetékesség|Illetékesség|Illetékesség megállapítása"
                 }),
                 {
-                    key: "Illetékesség",
+                    key: "A bizottság véleménye",
                     label: "A bizottság véleménye",
                     attribs: {
                         // important: true
