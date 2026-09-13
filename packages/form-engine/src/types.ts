@@ -109,6 +109,8 @@ export type PdfPrintingOptions = {
     sectionIndex?: string | boolean;
     useGroupLabelAsHeader?: string | boolean;
     hideEmptyGroup?: string;
+    // Üres (elem nélküli) tömb vagy üres csoport esetén a "Nincs adat" felirat se jelenjen meg
+    omitNoData?: boolean;
     fieldContext?: PdfPrintingContext;
     [key: string]: string | number | boolean | PdfPrintingContext | { [key: string]: string } | undefined;
 };

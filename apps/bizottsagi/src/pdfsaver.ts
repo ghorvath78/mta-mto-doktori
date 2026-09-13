@@ -89,7 +89,7 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
             ...(await getPdfSection(formDescriptor, "Bizottsági|Bizottság|Bizottság összetétele", "Az ügykezelő bizottság:")),
             { text: "A felkért előterjesztők", style: "grouplabel" },
             getNominatorsTable(formDescriptor),
-            ...(await getPdfSection(formDescriptor, "Bizottsági|Bizottság|Vendégbizottságok", "Vendégbizottság:")),
+            ...(await getPdfSection(formDescriptor, "Bizottsági|Bizottság|Vendégbizottságok", "Vendégbizottság:", { omitNoData: true })),
             { text: "A habitusvizsgálati ülés", style: "grouplabel" },
             ...getQuorumSummary(formDescriptor),
             ...(await getCommitteeSection(formDescriptor, "Bizottsági|Bizottság|Határozatképesség", "Az ülés adatai:")),

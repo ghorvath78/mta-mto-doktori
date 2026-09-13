@@ -150,7 +150,7 @@ export const getPdfSection = async (
                 ? parseInt(store.getField(group.lengthSource))
                 : parseInt(store.getField(`${groupBaseKeyPrefix}|_length`)) || 0;
             if (length === 0) {
-                rows.push({ text: "Nincs adat", style: "nodata" });
+                if (!options.omitNoData) rows.push({ text: "Nincs adat", style: "nodata" });
                 continue;
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
@@ -166,7 +166,7 @@ export const getPdfSection = async (
         } else {
             const groupKeyPrefix = groupBaseKeyPrefix;
             if (options.hideEmptyGroup === "true" && isGroupEmpty(group, store, groupKeyPrefix)) {
-                rows.push({ text: "Nincs adat", style: "nodata" });
+                if (!options.omitNoData) rows.push({ text: "Nincs adat", style: "nodata" });
                 continue;
             }
             if (group.attribs?.printTabular === true || group.attribs?.pdfTabular === true) {
