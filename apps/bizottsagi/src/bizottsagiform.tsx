@@ -1,6 +1,8 @@
-import { createFormDescriptor, getFromObjectByKey } from "@repo/form-engine";
+import { createFormDescriptor, getFromObjectByKey, readJsonFromPdf } from "@repo/form-engine";
+import { FileDown, FileUp } from "lucide-react";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorPrefix } from "./nominators.ts";
+import { EMBEDDED_FORM_NAME, EMBEDDED_MTMT_NAME, savePDF } from "./pdfsaver.ts";
 import { bizottsag } from "./lap-bizottsag.ts";
 import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
@@ -36,8 +38,56 @@ export const bizottsagiFormDescriptor = createFormDescriptor({
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, bizottsági űrlap",
     pages: [bizottsag, palyazoAdatai, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
+    buttons: [
+        {
+            label: "Adatlap mentése",
+            icon: <FileDown />,
+            onClick: async (_: unknown, setDialogMessage: (message: string) => void) => {
+                setDialogMessage("Adatlap mentése");
+                try {
+                    await savePDF(bizottsagiFormDescriptor, {
+                        [EMBEDDED_MTMT_NAME]: JSON.stringify(canonicalMtmtJson ?? {}, null, 4)
+                    });
+                } finally {
+                    setDialogMessage("");
+                }
+            }
+        },
+        {
+            label: "Adatlap betöltése",
+            icon: <FileUp />,
+            onClick: async (_: unknown, setDialogMessage: (message: string) => void) => {
+                const file = await new Promise<File | null>((resolve) => {
+                    const input = document.createElement("input");
+                    input.type = "file";
+                    input.accept = ".pdf,application/pdf";
+                    input.oncancel = () => resolve(null);
+                    input.onchange = () => resolve(input.files?.[0] ?? null);
+                    input.click();
+                });
+                if (!file) return;
+
+                setDialogMessage("Adatlap betöltése");
+                try {
+                    const [formContent, mtmtContent] = await Promise.all([
+                        readJsonFromPdf(file, EMBEDDED_FORM_NAME),
+                        readJsonFromPdf(file, EMBEDDED_MTMT_NAME)
+                    ]);
+                    if (!formContent) {
+                        alert(
+                            "A kiválasztott PDF nem tartalmazza a szükséges adatokat. Kérem, azt a PDF-et válassza ki, amit ez a bizottsági adatlap mentett."
+                        );
+                        return;
+                    }
+                    loadFormFromJson(JSON.parse(formContent), mtmtContent ? JSON.parse(mtmtContent) : null);
+                } finally {
+                    setDialogMessage("");
+                }
+            }
+        }
+    ],
     generalHelpText:
-        "Bizottsági adatlap\n\nEz az adatlap egyelőre csak a kitöltést támogatja - a kitöltött adatok mentése/PDF-exportja még nem elérhető, az oldal frissítésekor elvesznek.\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban, és töltse ki a \"Határozatképesség\" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.",
+        "Bizottsági adatlap\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban, és töltse ki a \"Határozatképesség\" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.\n\nAz \"Adatlap mentése\" gomb egy PDF-et készít, amely egyben a bizottsági értékelés dokumentuma, és amelyből az \"Adatlap betöltése\" gombbal a kitöltés bármikor folytatható (a betöltött előterjesztői adatlapokkal együtt). Őrizze meg ezt a PDF-et: ez a szerkeszthető munkapéldány.",
     extra: {}
 });
 
@@ -212,6 +262,34 @@ export function registerNominator(data: NominatorUploadData): { ok: true } | { o
     recomputeNominatorsLoadedFlag();
 
     return { ok: true };
+}
+
+// ─── Mentett adatlap visszatöltése ───────────────────────────────────────────
+
+// A PDF-be csatolt "bizottsagi_form.json" a TELJES store-t tartalmazza: a bizottság saját
+// ("Bizottsági|...") adatait, a kérelmezőét ("Kérelmezői|...") és a betöltött előterjesztőkét
+// ("Előterjesztő<n>|...") is - így egyetlen fájlból visszaáll a teljes munkaállapot. A
+// "__meta" könyvelő kulcsok (melyik slot van betöltve, kapu-jelzők) nem kerülnek a JSON-ba
+// (ld. FormStore.toJSON), ezért azokat a visszatöltött adatból számoljuk újra.
+export function loadFormFromJson(formJson: Record<string, unknown>, mtmtJson: Record<string, unknown> | null) {
+    valueStore.initialize(bizottsagiFormDescriptor);
+    // createMissing = true: a "Kérelmezői|..." és "Előterjesztő<n>|..." névterek nincsenek benne a
+    // lap-leírókban, tehát az initialize nem hozza létre őket - ugyanígy kerülnek be a store-ba
+    // előterjesztői PDF feltöltésekor is (ld. mergeNominatorIntoStore).
+    valueStore.fromJSON(formJson, "", true);
+    canonicalMtmtJson = mtmtJson;
+    restoreNominatorFlags();
+}
+
+// Egy slot akkor számít betöltöttnek, ha van alatta bármilyen nem üres érték.
+function restoreNominatorFlags() {
+    for (let i = 1; i <= MAX_NOMINATORS; i++) {
+        const prefix = `${nominatorPrefix(i)}|`;
+        const loaded = Object.entries(valueStore.data).some(([key, value]) => key.startsWith(prefix) && value !== "");
+        valueStore.setField(nominatorLoadedKey(i), loaded ? "true" : "false");
+    }
+    recomputeNominatorsLoadedFlag();
+    recomputeHabitusVizsgalatLefolytathato();
 }
 
 export function removeNominator(index: number) {

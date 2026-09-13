@@ -14,6 +14,7 @@
         "@repo/form-engine": "workspace:*",
         "@repo/mtmt-tools": "workspace:*",
         "@repo/ui": "workspace:*",
+        "@types/pdfmake": "^0.2.11",
         "lucide-react": "^0.545.0",
         "react": "^19.1.1",
         "react-dom": "^19.1.1"
