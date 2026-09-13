@@ -9,3 +9,5 @@ export { readJsonFromPdf, chooseAndLoadPdf, chooseAndLoadJSON } from "./pdfloade
 export { SelectOrAddField } from "./inputfields/selectoraddinput.tsx";
 export * from "./pdftools.ts";
 export * from "./initform.ts";
+export { useCollapsibleState } from "./collapsiblestate.ts";
+export { useInfoState, useSetInfoState, useInfoPanelOpen } from "./infostate.ts";

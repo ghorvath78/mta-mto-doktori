@@ -2,6 +2,7 @@ import { createFormDescriptor, getFromObjectByKey } from "@repo/form-engine";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorPrefix } from "./nominators.ts";
 import { bizottsag } from "./lap-bizottsag.ts";
+import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
 import { kozeletiTevekenyseg } from "./lap-kozeleti.ts";
@@ -34,7 +35,7 @@ export const bizottsagiFormDescriptor = createFormDescriptor({
     formName: "Bizottsági",
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, bizottsági űrlap",
-    pages: [bizottsag, palyazoAdatai, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo],
+    pages: [bizottsag, palyazoAdatai, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
     generalHelpText:
         "Bizottsági adatlap\n\nEz az adatlap egyelőre csak a kitöltést támogatja - a kitöltött adatok mentése/PDF-exportja még nem elérhető, az oldal frissítésekor elvesznek.\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban, és töltse ki a \"Határozatképesség\" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.",
     extra: {}
@@ -245,4 +246,29 @@ export function getRatingOfPub(mtid: string): string {
     const pubSummaries = (canonicalMtmtJson["Adatlapon szereplő publikációk"] as Record<string, PubRatingItem>) || {};
     const summary = pubSummaries[mtid];
     return summary ? summary.rating : "";
+}
+
+// A bírálóbizottsági ellenőrzés (CommitteeChecker) adatforrásai, ugyanabból a kanonikus MTMT
+// gyorsítótárból, mint a fenti két függvény. Az előterjesztői appban ezek a saját betöltött MTMT
+// adatra épülő megfelelői szolgálnak ki ugyanezt az ellenőrzést (ld. eloterjesztoiform.tsx:
+// getApplicantAuthorRecord / getCommonPubsWithApplicant).
+export function getApplicantAffiliations(): string[] {
+    if (!canonicalMtmtJson) return [];
+    const authorData = canonicalMtmtJson["Szerzői adatok"] as { affiliations?: string[] } | undefined;
+    return authorData?.affiliations ?? [];
+}
+
+// Azok a publikációk, amelyeknek a megadott személy (MTMT azonosító) társszerzője - a
+// gyorsítótár csak a kérelmező publikációit tartalmazza, tehát a találatok egyben a kérelmezővel
+// közös publikációk.
+export function getCommonPubsWithApplicant(mtid: string): string[] {
+    if (!canonicalMtmtJson) return [];
+    const coAuthors = (canonicalMtmtJson["Társszerzők"] as Record<string, string[]>) || {};
+    const commonPubs: string[] = [];
+    for (const [pubId, authors] of Object.entries(coAuthors)) {
+        if (authors.map((a) => String(a)).includes(mtid)) {
+            commonPubs.push(pubId);
+        }
+    }
+    return commonPubs;
 }

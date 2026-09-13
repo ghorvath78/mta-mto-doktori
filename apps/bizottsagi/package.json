@@ -10,7 +10,9 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@repo/committee": "workspace:*",
         "@repo/form-engine": "workspace:*",
+        "@repo/mtmt-tools": "workspace:*",
         "@repo/ui": "workspace:*",
         "lucide-react": "^0.545.0",
         "react": "^19.1.1",

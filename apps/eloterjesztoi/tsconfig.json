@@ -3,6 +3,8 @@
     "compilerOptions": {
         "paths": {
             "@/*": ["./src/*", "../../packages/ui/src/*", "../../packages/form-engine/src/*"],
+            "@repo/committee": ["../../packages/committee/src/index.ts"],
+            "@repo/committee/*": ["../../packages/committee/src/*"],
             "@repo/ui": ["../../packages/ui/src/index.ts"],
             "@repo/ui/*": ["../../packages/ui/src/*"],
             "@repo/form-engine": ["../../packages/form-engine/src/index.ts"],

@@ -59,9 +59,15 @@ importers:
 
   apps/bizottsagi:
     dependencies:
+      '@repo/committee':
+        specifier: workspace:*
+        version: link:../../packages/committee
       '@repo/form-engine':
         specifier: workspace:*
         version: link:../../packages/form-engine
+      '@repo/mtmt-tools':
+        specifier: workspace:*
+        version: link:../../packages/mtmt-tools
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -121,15 +127,9 @@ importers:
 
   apps/eloterjesztoi:
     dependencies:
-      '@dnd-kit/core':
-        specifier: ^6.3.1
-        version: 6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@dnd-kit/sortable':
-        specifier: ^10.0.0
-        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
-      '@dnd-kit/utilities':
-        specifier: ^3.2.2
-        version: 3.2.2(react@19.2.4)
+      '@repo/committee':
+        specifier: workspace:*
+        version: link:../../packages/committee
       '@repo/form-engine':
         specifier: workspace:*
         version: link:../../packages/form-engine
@@ -249,6 +249,49 @@ importers:
       vite:
         specifier: ^7.1.7
         version: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.31.1)
+
+  packages/committee:
+    dependencies:
+      '@dnd-kit/core':
+        specifier: ^6.3.1
+        version: 6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@dnd-kit/sortable':
+        specifier: ^10.0.0
+        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+      '@dnd-kit/utilities':
+        specifier: ^3.2.2
+        version: 3.2.2(react@19.2.4)
+      '@repo/form-engine':
+        specifier: workspace:*
+        version: link:../form-engine
+      '@repo/mtmt-tools':
+        specifier: workspace:*
+        version: link:../mtmt-tools
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../ui
+      lucide-react:
+        specifier: ^0.545.0
+        version: 0.545.0(react@19.2.4)
+      react:
+        specifier: ^19.1.1
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.7.0
+        version: 24.12.0
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
 
   packages/form-engine:
     dependencies:
