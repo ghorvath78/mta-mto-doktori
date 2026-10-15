@@ -447,9 +447,18 @@ function getIScoreSummary(formDescriptor: FormDescriptor): Content {
     const iScore = parseInt(store.getField(ISZAM_KEY) || "0");
     const minIScore = getMinTotalI(store.getField(KATEGORIA_KEY));
     return {
-        text: ["A kérelmező teljesítette az I ≥ Imin követelményt: ", { text: iScore >= minIScore ? "IGEN" : "NEM", bold: true }],
-        bold: true,
-        margin: [20, 5, 0, 5]
+        margin: [20, 5, 0, 5],
+        layout: { defaultBorder: false },
+        table: {
+            widths: ["*", 80],
+            body: [
+                [{ text: "Minimum követelmény (Imin):" }, { text: String(minIScore), bold: true, alignment: "center" as const }],
+                [
+                    { text: "A kérelmező teljesítette az I ≥ Imin követelményt:" },
+                    { text: iScore >= minIScore ? "IGEN" : "NEM", bold: true, alignment: "center" as const }
+                ]
+            ]
+        }
     };
 }
 

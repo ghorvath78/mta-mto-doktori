@@ -86,6 +86,11 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
             { text: "B. A benyújtott doktori mű formai alkalmassága", style: "section" },
             await getPdfSection(formDescriptor, "Előterjesztői|Alkalmasság|Alkalmasság", ""),
             { text: "C. A tudományos minimumkövetelmények teljesítésének ellenőrzése", style: "section" },
+            await getPdfSection(
+                formDescriptor,
+                "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények",
+                "A kérelmezőre vonatkozó minimumkövetelmények:"
+            ),
             { text: "1. A kérelmező publikációs és alkotási teljesítménye (Q-szám)", style: "subsection" },
             getQScoringTableSection(formDescriptor),
             {
@@ -336,9 +341,15 @@ const getIScoreSummarySection = (formDescriptor: FormDescriptor): Content => {
     const minIScore = getMinTotalI(category);
     const satisfied = iScore >= minIScore;
     return {
-        text: ["A kérelmező teljesítette az I ≥ Imin követelményt: ", { text: satisfied ? "IGEN" : "NEM", bold: true }],
-        bold: true,
-        margin: [20, 5, 0, 5]
+        margin: [20, 5, 0, 5],
+        layout: { defaultBorder: false },
+        table: {
+            widths: ["*", 80],
+            body: [
+                [{ text: "Minimum követelmény (Imin):" }, { text: String(minIScore), bold: true, alignment: "center" as const }],
+                [{ text: "A kérelmező teljesítette az I ≥ Imin követelményt:" }, { text: satisfied ? "IGEN" : "NEM", bold: true, alignment: "center" as const }]
+            ]
+        }
     };
 };
 
