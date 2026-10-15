@@ -1126,7 +1126,7 @@ export const kozeletiTevekenyseg: PageDescriptor = {
         {
             key: "Tudományos közéleti tevékenység értékelése",
             helpText:
-                "A közéleti tevékenység pozitív megítéléséhez a 11 terület közül legalább 5-ben (rövid értekezéssel pályázók esetén legalább 6-ban) kell értékelhető tevékenységet felmutatni. Az előterjesztői értékelésben ki kell térni arra, hogy mely közéleti tevékenység elemeket tartja kiemelkedőeknek szakmai szempontból.",
+                "A közéleti tevékenység pozitív megítéléséhez a 11 terület közül legalább 5-ben (rövid értekezéssel pályázók esetén is) kell értékelhető tevékenységet felmutatni. Az előterjesztői értékelésben ki kell térni arra, hogy mely közéleti tevékenység elemeket tartja kiemelkedőeknek szakmai szempontból.",
             attribs: {
                 important: true,
                 alwaysOpen: true

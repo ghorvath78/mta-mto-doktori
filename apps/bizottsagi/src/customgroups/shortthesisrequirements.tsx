@@ -1,16 +1,15 @@
-import { cD, invertedText, useFieldArrayValue, useFieldValue } from "@repo/form-engine";
+import { invertedText, useFieldArrayValue, useFieldValue } from "@repo/form-engine";
 import { getNumOfAuthorsInPub, getRatingOfPub } from "@/bizottsagiform";
+import { getShortThesisD1Share, getWosCitationCount, shortThesisNumericalRequirementsMet } from "@/requirements";
 
 export const ShortThesisRequirements = () => {
-    const d1Pubs = useFieldArrayValue("Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója");
     const thesisPubs = useFieldArrayValue(
         "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"
     );
-    const d1Share = d1Pubs.reduce((sum, mtmt) => sum + 1 / getNumOfAuthorsInPub(mtmt), 0);
-
     const rawData = useFieldValue("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat") || "[]";
     const data = JSON.parse(rawData);
-    const wosNumber = cD(data[11][0] || 0);
+    const d1Share = getShortThesisD1Share(data);
+    const wosNumber = getWosCitationCount(data);
     const thesisPubData = thesisPubs.map((mtmt) => {
         const rating = getRatingOfPub(mtmt);
         const numAuthors = getNumOfAuthorsInPub(mtmt);
@@ -25,7 +24,7 @@ export const ShortThesisRequirements = () => {
                 <div>Független WoS hivatkozások száma:</div>
                 <div>{wosNumber}</div>
                 <div>A kérelmező teljesítette a rövid értekezés speciális numerikus követelményeit:</div>
-                <div>{invertedText(d1Share >= 3 && wosNumber >= 750 ? "IGEN" : "NEM")}</div>
+                <div>{invertedText(shortThesisNumericalRequirementsMet(d1Share, wosNumber) ? "IGEN" : "NEM")}</div>
             </div>
             <div className="w-full my-1">A kérelmező által megjelölt téziseket alátámasztó publikációk:</div>
             <table className="form-table [&_td]:px-2">

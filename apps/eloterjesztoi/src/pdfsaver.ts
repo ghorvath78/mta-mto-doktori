@@ -9,7 +9,18 @@ import {
 } from "@repo/form-engine";
 import { serializeEmbedded } from "@repo/form-schemas";
 import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
-import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ, getMinCommunityCount } from "./requirements";
+import {
+    getMaxBookQ,
+    getMaxAchievementQ,
+    getMinPaperQ,
+    getMinTotalI,
+    getMinHIndex,
+    getMinTotalQ,
+    getMinCommunityCount,
+    getShortThesisD1Share,
+    getWosCitationCount,
+    shortThesisNumericalRequirementsMet
+} from "./requirements";
 import { biraloBizottsag } from "./lap-biralobizottsag";
 import { getNumOfAuthorsInPub, getRatingOfPub } from "./eloterjesztoiform";
 import { activityRequirementSectionKeys } from "./customgroups/publicactivitysummary";
@@ -468,19 +479,14 @@ const getItemizedRequirementsSection = async (formDescriptor: FormDescriptor): P
 
 const getShortThesisRequirementsSection = (formDescriptor: FormDescriptor): Content[] => {
     const store = formDescriptor.valueStore;
-    const d1Pubs = store.getArray("Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója");
     const thesisPubs = store.getArray(
         "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"
     );
-    const d1Share = d1Pubs.reduce((sum, mtmt) => {
-        const numAuthors = getNumOfAuthorsInPub(mtmt);
-        return sum + (numAuthors > 0 ? 1 / numAuthors : 0);
-    }, 0);
-
     const rawData = store.getField("Kérelmezői|Tudománymetria|Tudománymetriai táblázat|Tudománymetriai táblázat|Tudománymetriai táblázat");
     const data = JSON.parse(rawData || "[]");
-    const wosNumber = cD(data[11]?.[0] ?? 0);
-    const numericalRequirementsMet = d1Share >= 3 && wosNumber >= 750;
+    const d1Share = getShortThesisD1Share(data);
+    const wosNumber = getWosCitationCount(data);
+    const numericalRequirementsMet = shortThesisNumericalRequirementsMet(d1Share, wosNumber);
 
     const thesisPubRows = thesisPubs.map((mtmt, index) => {
         const rating = getRatingOfPub(mtmt);

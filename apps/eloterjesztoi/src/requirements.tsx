@@ -1,4 +1,4 @@
-import { valueStore } from "./eloterjesztoiform";
+import { cD } from "@repo/form-engine";
 
 export function getMinPaperQ(category: string) {
     switch (category) {
@@ -37,13 +37,9 @@ export function getMinTotalQ(category: string) {
     }
 }
 
+// Rövid értekezés esetén is a kategória szerinti küszöb érvényes: a 750-es határ a független WoS
+// hivatkozások számára vonatkozó külön követelmény (ld. shortThesisNumericalRequirementsMet).
 export function getMinTotalI(category: string) {
-    const format = valueStore.getField(
-        "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája"
-    );
-    if (format[0] === "rövid értekezés") {
-        return 750;
-    }
     switch (category) {
         case "A":
             return 90;
@@ -65,14 +61,30 @@ export function getMinHIndex(category: string) {
     }
 }
 
+// A 11 terület közül legalább 5 - rövid értekezéssel pályázók esetén is.
 export function getMinCommunityCount() {
-    /*const format = store.get(
-        eloterjesztoiFormData["Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája"]
-    );
-    if (format[0] === "rövid értekezés") {
-        return 6;
-    }*/
     return 5;
+}
+
+// Rövid értekezéssel pályázók speciális számszerű követelményei (mindhárom kategóriában): az SJR D1
+// cikkek összegzett szerzői aránya 3,00-nál több, a független WoS hivatkozások száma 750-nél nagyobb
+// legyen. (A tudományos közéleti követelmény számukra is ugyanaz, ld. getMinCommunityCount.)
+export const SHORT_THESIS_MIN_D1_SHARE = 3;
+export const SHORT_THESIS_MIN_WOS = 750;
+
+export function shortThesisNumericalRequirementsMet(d1Share: number, wosNumber: number): boolean {
+    return d1Share > SHORT_THESIS_MIN_D1_SHARE && wosNumber > SHORT_THESIS_MIN_WOS;
+}
+
+// A tudománymetriai táblázat (MTMT) "Rövid értekezéssel pályázók adatai" sora: az SJR D1 cikkek
+// összegzett szerzői aránya, az MTMT által a teljes szerzőlista alapján számolva.
+export function getShortThesisD1Share(sciMetrics: unknown[][]): number {
+    return cD(String(sciMetrics[17]?.[0] ?? 0));
+}
+
+// A tudománymetriai táblázat (MTMT) független WoS hivatkozásainak száma.
+export function getWosCitationCount(sciMetrics: unknown[][]): number {
+    return cD(String(sciMetrics[11]?.[0] ?? 0));
 }
 
 const categoryMap: Record<string, string> = {

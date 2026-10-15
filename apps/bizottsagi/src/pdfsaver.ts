@@ -13,7 +13,18 @@ import {
 import { serializeEmbedded } from "@repo/form-schemas";
 import type { Content, ContentTable, TableCell } from "pdfmake/interfaces";
 import { COMMITTEE_ROLES, committeeArrayKey, committeeArrayLength, COMMITTEE_PAGE_KEY } from "@repo/committee";
-import { getMaxAchievementQ, getMaxBookQ, getMinCommunityCount, getMinHIndex, getMinPaperQ, getMinTotalI, getMinTotalQ } from "./requirements";
+import {
+    getMaxAchievementQ,
+    getMaxBookQ,
+    getMinCommunityCount,
+    getMinHIndex,
+    getMinPaperQ,
+    getMinTotalI,
+    getMinTotalQ,
+    getShortThesisD1Share,
+    getWosCitationCount,
+    shortThesisNumericalRequirementsMet
+} from "./requirements";
 import { getNumOfAuthorsInPub, getRatingOfPub } from "./bizottsagiform";
 import { MAX_NOMINATORS, nominatorFokozatKey, nominatorLoadedKey, nominatorNameKey } from "./nominators";
 import { activityRequirementSectionKeys } from "./customgroups/publicactivitysummary";
@@ -575,13 +586,12 @@ function getItemizedRequirements(formDescriptor: FormDescriptor): Content[] {
 
 function getShortThesisRequirements(formDescriptor: FormDescriptor): Content[] {
     const store = formDescriptor.valueStore;
-    const d1Pubs = store.getArray("Kérelmezői|A doktori mű adatai|D1 közlemények listája|D1 közlemények listája|Cikk MTMT azonosítója");
-    const thesisPubs = store.getArray("Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója");
-    const d1Share = d1Pubs.reduce((sum, mtmt) => {
-        const numAuthors = getNumOfAuthorsInPub(mtmt);
-        return sum + (numAuthors > 0 ? 1 / numAuthors : 0);
-    }, 0);
-    const wosNumber = cD(getSciMetrics(formDescriptor)[11]?.[0] ?? 0);
+    const thesisPubs = store.getArray(
+        "Kérelmezői|A doktori mű adatai|Téziseket alátámasztó publikációk|Téziseket alátámasztó publikációk|Cikk MTMT azonosítója"
+    );
+    const sciMetrics = getSciMetrics(formDescriptor);
+    const d1Share = getShortThesisD1Share(sciMetrics);
+    const wosNumber = getWosCitationCount(sciMetrics);
 
     const thesisPubRows: TableCell[][] = thesisPubs.map((mtmt, index) => {
         const rating = getRatingOfPub(mtmt);
@@ -607,7 +617,7 @@ function getShortThesisRequirements(formDescriptor: FormDescriptor): Content[] {
                     [{ text: "Független WoS hivatkozások száma:" }, { text: String(wosNumber), alignment: "right" as const }],
                     [
                         { text: "A kérelmező teljesítette a rövid értekezés speciális számszerű követelményeit:" },
-                        { text: d1Share >= 3 && wosNumber >= 750 ? "IGEN" : "NEM", bold: true, alignment: "right" as const }
+                        { text: shortThesisNumericalRequirementsMet(d1Share, wosNumber) ? "IGEN" : "NEM", bold: true, alignment: "right" as const }
                     ]
                 ]
             }
