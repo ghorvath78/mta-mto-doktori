@@ -13,7 +13,7 @@
         "build:bizottsagi": "pnpm --filter mta-mto-bizottsagi-adatlap build",
         "build:doktori": "pnpm --filter mta-mto-doktori-landing build",
         "test": "vitest run",
-        "typecheck:test": "tsc -p apps/kerelmezoi/tsconfig.test.json && tsc -p apps/eloterjesztoi/tsconfig.test.json && tsc -p apps/bizottsagi/tsconfig.test.json && tsc -p packages/form-schemas/tsconfig.test.json"
+        "typecheck:test": "tsc -p apps/kerelmezoi/tsconfig.test.json && tsc -p apps/eloterjesztoi/tsconfig.test.json && tsc -p apps/bizottsagi/tsconfig.test.json && tsc -p packages/form-schemas/tsconfig.test.json && tsc -p packages/mtmt-tools/tsconfig.test.json"
     },
     "keywords": [],
     "author": "",

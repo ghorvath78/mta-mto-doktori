@@ -59,6 +59,16 @@ export async function listEmbeddedForms(): Promise<EmbeddedForm[]> {
     return forms;
 }
 
+/** Az összes minta PDF-be ágyazott kérelmezői MTMT gyorsítótár (kerelmezo_mtmt.json), nyersen. */
+export async function listEmbeddedMtmtData(): Promise<{ label: string; data: Record<string, unknown> }[]> {
+    const result: { label: string; data: Record<string, unknown> }[] = [];
+    for (const path of listFixturePdfs()) {
+        const text = await readJsonFromPdf(new File([readFileSync(path)], basename(path)), "kerelmezo_mtmt.json");
+        if (text) result.push({ label: `${basename(join(path, ".."))}/${basename(path)}`, data: JSON.parse(text) });
+    }
+    return result;
+}
+
 /** Az összes minta PDF összes beágyazott form JSON-jából kigyűjti az adott fajtájú névtereket, migrálva. */
 export async function loadMigratedNamespaces(kind: FormKind): Promise<NamespaceSample[]> {
     const samples: NamespaceSample[] = [];

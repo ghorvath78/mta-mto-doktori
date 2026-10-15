@@ -2,7 +2,15 @@ import { createFormDescriptor, readJsonFromPdf } from "@repo/form-engine";
 import { getFromObjectByKey } from "@repo/form-engine";
 import { FormDataError, loadEmbedded, serializeEmbedded, type Tree } from "@repo/form-schemas";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
-import { createMTMTTools, loadMTMTCitations, PubList, PubListMinimal, type AuthorData, type PubItemMinimal } from "@repo/mtmt-tools";
+import {
+    createMTMTTools,
+    loadMTMTCitations,
+    PubList,
+    PubListMinimal,
+    withAuthorCountsInMtmtData,
+    type AuthorData,
+    type PubItemMinimal
+} from "@repo/mtmt-tools";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
 import { illetekesseg } from "./lap-illetekesseg.ts";
@@ -31,7 +39,19 @@ export const eloterjesztoiFormDescriptor = createFormDescriptor({
     formName: "Előterjesztői",
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, előterjesztői űrlap",
-    pages: [eloterjesztoAdatai, palyazoAdatai, illetekesseg, alkalmassag, tudomanymetria, otPublikacio, otHivatkozas, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
+    pages: [
+        eloterjesztoAdatai,
+        palyazoAdatai,
+        illetekesseg,
+        alkalmassag,
+        tudomanymetria,
+        otPublikacio,
+        otHivatkozas,
+        kozeletiTevekenyseg,
+        osszesites,
+        osszefoglalo,
+        biraloBizottsag
+    ],
     buttons: [
         {
             label: "Adatlap mentése",
@@ -187,6 +207,10 @@ export function getCommonPubsWithApplicant(mtid: string): string[] {
 
 export function getNumOfAuthorsInPub(mtid: string): number {
     if (!mtmtDataInForm) return 0;
+    const pubSummaries = (mtmtDataInForm["Adatlapon szereplő publikációk"] as Record<string, PubItemMinimal> | undefined) ?? {};
+    const authorCount = pubSummaries[mtid]?.authorCount;
+    if (authorCount) return authorCount;
+    // végső tartalék: a társszerzők listája csak az MTMT-azonosítóval rendelkező szerzőket tartalmazza
     const coAuthors = mtmtDataInForm["Társszerzők"] as Record<string, string[]>;
     const authors = coAuthors[mtid] || [];
     return authors.length;
@@ -202,7 +226,8 @@ export function getRatingOfPub(mtid: string): string {
 // applicantData: a kérelmezői PDF-ből loadEmbedded-del beolvasott (tehát már az aktuális verzióra migrált) adat
 export async function loadApplicantDataFromForm(applicantData: Tree | null, mtmtContent: string | undefined) {
     if (applicantData) {
-        const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
+        // a régebbi mentésekből hiányzó szerzőszámokat a publikációk sablonjából pótoljuk
+        const mtmtData = withAuthorCountsInMtmtData(mtmtContent ? JSON.parse(mtmtContent) : {});
         const mtmtPubListMinimal = eloterjesztoiFormDescriptor["mtmtPubListMinimal"] as PubListMinimal | null;
         const mtmtPubList = eloterjesztoiFormDescriptor["mtmtPubList"] as PubList | null;
         if ("Adatlapon szereplő publikációk" in mtmtData && "Társszerzők" in mtmtData) {

@@ -1,5 +1,6 @@
 import { createFormDescriptor, getFromObjectByKey, readJsonFromPdf } from "@repo/form-engine";
 import { FormDataError, loadEmbedded } from "@repo/form-schemas";
+import { withAuthorCountsInMtmtData, type PubItemMinimal } from "@repo/mtmt-tools";
 import { FileDown, FileUp } from "lucide-react";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorPrefix } from "./nominators.ts";
@@ -131,8 +132,6 @@ function recomputeHabitusVizsgalatLefolytathato() {
 
 valueStore.subscribeKey(NOMINATORS_LOADED_KEY, recomputeHabitusVizsgalatLefolytathato);
 valueStore.subscribeKey(HATAROZATKEPESSEG_KEY, recomputeHabitusVizsgalatLefolytathato);
-
-type PubRatingItem = { rating: string };
 
 const CANONICAL_NAME_KEY = "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|Név";
 const CANONICAL_MTMT_ID_KEY = "Kérelmezői|A kérelmező főbb adatai|Személyes adatok|Személyes adatok|MTMT azonosító";
@@ -275,7 +274,7 @@ export function registerNominator(data: NominatorUploadData): { ok: true } | { o
 
     if (count === 0) {
         valueStore.fromJSON(data.kerJson, "", true);
-        canonicalMtmtJson = data.mtmtJson;
+        canonicalMtmtJson = withAuthorCountsInMtmtData(data.mtmtJson);
         applyCategoryFromCanonicalApplicant();
     }
 
@@ -298,7 +297,7 @@ export function loadFormFromJson(formJson: Record<string, unknown>, mtmtJson: Re
     // lap-leírókban, tehát az initialize nem hozza létre őket - ugyanígy kerülnek be a store-ba
     // előterjesztői PDF feltöltésekor is (ld. mergeNominatorIntoStore).
     valueStore.fromJSON(formJson, "", true);
-    canonicalMtmtJson = mtmtJson;
+    canonicalMtmtJson = mtmtJson ? withAuthorCountsInMtmtData(mtmtJson) : null;
     syncWorksScoreLength();
     restoreNominatorFlags();
 }
@@ -336,6 +335,10 @@ export function removeNominator(index: number) {
 // tartozó tudománymetriai gyorsítótárból (kerelmezo_mtmt.json) származnak.
 export function getNumOfAuthorsInPub(mtid: string): number {
     if (!canonicalMtmtJson) return 0;
+    const pubSummaries = (canonicalMtmtJson["Adatlapon szereplő publikációk"] as Record<string, PubItemMinimal>) || {};
+    const authorCount = pubSummaries[mtid]?.authorCount;
+    if (authorCount) return authorCount;
+    // végső tartalék: a társszerzők listája csak az MTMT-azonosítóval rendelkező szerzőket tartalmazza
     const coAuthors = (canonicalMtmtJson["Társszerzők"] as Record<string, string[]>) || {};
     const authors = coAuthors[mtid] || [];
     return authors.length;
@@ -343,7 +346,7 @@ export function getNumOfAuthorsInPub(mtid: string): number {
 
 export function getRatingOfPub(mtid: string): string {
     if (!canonicalMtmtJson) return "";
-    const pubSummaries = (canonicalMtmtJson["Adatlapon szereplő publikációk"] as Record<string, PubRatingItem>) || {};
+    const pubSummaries = (canonicalMtmtJson["Adatlapon szereplő publikációk"] as Record<string, PubItemMinimal>) || {};
     const summary = pubSummaries[mtid];
     return summary ? summary.rating : "";
 }
