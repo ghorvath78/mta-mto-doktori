@@ -96,9 +96,11 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
             ...(await getCommitteeSection(formDescriptor, "Bizottsági|Bizottság|Határozatképesség", "Az ülés adatai:")),
 
             { text: "B. A szakterületi illetékesség megállapítása", style: "section" },
+            { text: "1. A doktori mű", style: "subsection" },
             ...(await getPdfSection(formDescriptor, "Bizottsági|Pályázó adatai|A pályázó személyes adatai", "A pályázó személyes adatai:")),
             ...(await getPdfSection(formDescriptor, "Bizottsági|Pályázó adatai|Aktuális munkahelyek", "Aktuális munkahelyek:")),
             ...(await getPdfSection(formDescriptor, "Bizottsági|Alkalmasság|A doktori mű", "A doktori mű:")),
+            { text: "2. A tudományági és szakterületi illetékesség megállapítása", style: "subsection" },
             ...(await getPdfSection(
                 formDescriptor,
                 "Bizottsági|Illetékesség|A kérelmező által megnevezett szakterület és tudományos bizottság",
@@ -194,6 +196,7 @@ function getQuorumSummary(formDescriptor: FormDescriptor): Content[] {
     return [
         {
             margin: [20, 5, 0, 0],
+            layout: { defaultBorder: false },
             table: {
                 widths: ["*", 50],
                 body: [
