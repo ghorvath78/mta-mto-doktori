@@ -167,7 +167,11 @@ export class FormStore {
         this.notifyListenersForKeys(toNotifyKeys);
     }
 
-    fromJSON(json: Record<string, unknown>, prefix: string = "", createMissing = false) {
+    // Visszaadja azokat a kulcsokat, amelyeknek nincs megfelelője a store-ban, ezért kimaradtak (csak
+    // createMissing = false mellett fordulhat elő). Egy nem üres lista azt jelzi, hogy a betöltött adat
+    // szerkezete eltér az aktuális leíróktól - jellemzően egy hiányzó migráció miatt (ld. @repo/form-schemas).
+    fromJSON(json: Record<string, unknown>, prefix: string = "", createMissing = false): string[] {
+        const droppedKeys: string[] = [];
         // Build a set of section keys that were collapsed (section == group) in the target formData.
         // Key: "form|page|section" -> group key (which equals section key when collapsed).
         const collapsedSections = new Set<string>();
@@ -195,6 +199,9 @@ export class FormStore {
             const fullKey = prefix ? prefix + "|" + objKey : objKey;
             if (createMissing || fullKey in this.data || this.isFieldinArrayGroup(fullKey)) {
                 this.data[fullKey] = value;
+            } else if (!objKey.endsWith("|_length")) {
+                // egy tömb hossza önmagában nem adat: ha a tömbnek voltak elemei, azok kulcsai külön bekerülnek a listába
+                droppedKeys.push(fullKey);
             }
         };
 
@@ -255,6 +262,10 @@ export class FormStore {
 
         flatten(json, []);
         this.notifyAllListeners();
+        if (droppedKeys.length > 0) {
+            console.warn("A betöltött adatlap alábbi mezői nem illeszkednek az űrlaphoz, ezért kimaradtak:", droppedKeys);
+        }
+        return droppedKeys;
     }
 
     toJSON(pages?: PageDescriptor[], formName?: string): Record<string, unknown> {

@@ -10,6 +10,7 @@ import {
     type GroupDescriptor,
     type SectionDescriptor
 } from "@repo/form-engine";
+import { serializeEmbedded } from "@repo/form-schemas";
 import type { Content, ContentTable, TableCell } from "pdfmake/interfaces";
 import { COMMITTEE_ROLES, committeeArrayKey, committeeArrayLength, COMMITTEE_PAGE_KEY } from "@repo/committee";
 import { getMaxAchievementQ, getMaxBookQ, getMinCommunityCount, getMinHIndex, getMinPaperQ, getMinTotalI, getMinTotalQ } from "./requirements";
@@ -144,7 +145,7 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
     };
 
     savePdfWithFormData(saveTarget, docDefinition, "bizottsagi_adatlap.pdf", {
-        [EMBEDDED_FORM_NAME]: JSON.stringify(store.toJSON(formDescriptor.pages, formDescriptor.formName), null, 4),
+        [EMBEDDED_FORM_NAME]: serializeEmbedded(store.toJSON(formDescriptor.pages, formDescriptor.formName)),
         ...additionalData
     });
 };

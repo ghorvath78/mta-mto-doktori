@@ -11,13 +11,14 @@
         "build:kerelmezoi": "pnpm --filter mta-mto-kerelmezoi-adatlap build",
         "build:eloterjesztoi": "pnpm --filter mta-mto-eloterjesztoi-adatlap build",
         "build:bizottsagi": "pnpm --filter mta-mto-bizottsagi-adatlap build",
-        "build:doktori": "pnpm --filter mta-mto-doktori-landing build"
+        "build:doktori": "pnpm --filter mta-mto-doktori-landing build",
+        "test": "vitest run",
+        "typecheck:test": "tsc -p apps/kerelmezoi/tsconfig.test.json && tsc -p apps/eloterjesztoi/tsconfig.test.json && tsc -p apps/bizottsagi/tsconfig.test.json && tsc -p packages/form-schemas"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "packageManager": "pnpm@10.28.2",
-    "dependencies": {},
     "devDependencies": {
         "@eslint/js": "^9.36.0",
         "@types/react": "^19.1.16",
@@ -30,10 +31,12 @@
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.22",
         "globals": "^16.4.0",
+        "jsdom": "^30.1.3",
         "postcss": "^8.5.6",
         "prettier": "^3.6.2",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "typescript": "~5.9.3",
-        "typescript-eslint": "^8.45.0"
+        "typescript-eslint": "^8.45.0",
+        "vitest": "^5.0.5"
     }
 }

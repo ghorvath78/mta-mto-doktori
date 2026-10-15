@@ -1,4 +1,5 @@
 import { createFormDescriptor, getFromObjectByKey, readJsonFromPdf } from "@repo/form-engine";
+import { FormDataError, loadEmbedded } from "@repo/form-schemas";
 import { FileDown, FileUp } from "lucide-react";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorPrefix } from "./nominators.ts";
@@ -79,7 +80,10 @@ export const bizottsagiFormDescriptor = createFormDescriptor({
                         );
                         return;
                     }
-                    loadFormFromJson(JSON.parse(formContent), mtmtContent ? JSON.parse(mtmtContent) : null);
+                    loadFormFromJson(loadEmbedded(formContent), mtmtContent ? JSON.parse(mtmtContent) : null);
+                } catch (e) {
+                    if (!(e instanceof FormDataError)) throw e;
+                    alert(e.message);
                 } finally {
                     setDialogMessage("");
                 }

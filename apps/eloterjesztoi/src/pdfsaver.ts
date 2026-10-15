@@ -7,6 +7,7 @@ import {
     savePdfWithFormData,
     type FormDescriptor
 } from "@repo/form-engine";
+import { serializeEmbedded } from "@repo/form-schemas";
 import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 import { getMaxBookQ, getMaxAchievementQ, getMinPaperQ, getMinTotalI, getMinHIndex, getMinTotalQ, getMinCommunityCount } from "./requirements";
 import { biraloBizottsag } from "./lap-biralobizottsag";
@@ -167,7 +168,7 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
     };
 
     savePdfWithFormData(saveTarget, docDefinition, "eloterjesztoi_adatlap.pdf", {
-        "eloterjeszto_form.json": JSON.stringify(store.toJSON(formDescriptor.pages, formDescriptor.formName), null, 4),
+        "eloterjeszto_form.json": serializeEmbedded(store.toJSON(formDescriptor.pages, formDescriptor.formName)),
         ...additionalData
     });
 };

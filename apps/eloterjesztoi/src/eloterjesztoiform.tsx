@@ -1,5 +1,6 @@
 import { createFormDescriptor, readJsonFromPdf } from "@repo/form-engine";
 import { getFromObjectByKey } from "@repo/form-engine";
+import { FormDataError, loadEmbedded, serializeEmbedded, type Tree } from "@repo/form-schemas";
 import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { createMTMTTools, loadMTMTCitations, PubList, PubListMinimal, type AuthorData, type PubItemMinimal } from "@repo/mtmt-tools";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
@@ -36,7 +37,8 @@ export const eloterjesztoiFormDescriptor = createFormDescriptor({
             onClick: async (_, setDialogMessage: (message: string) => void) => {
                 setDialogMessage("Adatlap mentése");
                 await savePDF(eloterjesztoiFormDescriptor, {
-                    "kerelmezo_form.json": JSON.stringify(applicantDataInForm, null, 4),
+                    // a betöltéskor már az aktuális verzióra migrált kérelmezői adat, ezért friss "_meta"-val ágyazzuk vissza
+                    "kerelmezo_form.json": serializeEmbedded(applicantDataInForm ?? {}),
                     "kerelmezo_mtmt.json": JSON.stringify(mtmtDataInForm, null, 4)
                 });
                 setDialogMessage("");
@@ -68,11 +70,21 @@ export const eloterjesztoiFormDescriptor = createFormDescriptor({
                     return;
                 }
 
-                const parsedContent = JSON.parse(formContent);
+                let parsedContent: Tree;
+                let applicantData: Tree | null;
+                try {
+                    parsedContent = loadEmbedded(formContent);
+                    applicantData = applicantContent ? loadEmbedded(applicantContent) : null;
+                } catch (e) {
+                    setDialogMessage("");
+                    if (!(e instanceof FormDataError)) throw e;
+                    alert(e.message);
+                    return;
+                }
                 const valueStore = eloterjesztoiFormDescriptor.valueStore;
                 valueStore.initialize(eloterjesztoiFormDescriptor);
                 setDialogMessage("Publikációk és hivatkozások betöltése");
-                await loadApplicantDataFromForm(applicantContent, mtmtContent);
+                await loadApplicantDataFromForm(applicantData, mtmtContent);
 
                 valueStore.fromJSON(parsedContent);
                 setDialogMessage("");
@@ -185,9 +197,9 @@ export function getRatingOfPub(mtid: string): string {
     return summary ? summary.rating : "";
 }
 
-export async function loadApplicantDataFromForm(applicantContent: string | undefined, mtmtContent: string | undefined) {
-    if (applicantContent) {
-        const applicantData = JSON.parse(applicantContent);
+// applicantData: a kérelmezői PDF-ből loadEmbedded-del beolvasott (tehát már az aktuális verzióra migrált) adat
+export async function loadApplicantDataFromForm(applicantData: Tree | null, mtmtContent: string | undefined) {
+    if (applicantData) {
         const mtmtData = mtmtContent ? JSON.parse(mtmtContent) : {};
         const mtmtPubListMinimal = eloterjesztoiFormDescriptor["mtmtPubListMinimal"] as PubListMinimal | null;
         const mtmtPubList = eloterjesztoiFormDescriptor["mtmtPubList"] as PubList | null;

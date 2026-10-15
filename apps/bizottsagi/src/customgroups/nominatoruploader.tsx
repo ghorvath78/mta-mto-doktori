@@ -2,6 +2,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTit
 import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
 import { readJsonFromPdf, getFromObjectByKey, type CustomGroupComponent } from "@repo/form-engine";
+import { FormDataError, loadEmbedded, type Tree } from "@repo/form-schemas";
 import { registerNominator, removeNominator, MIN_NOMINATORS } from "../bizottsagiform.tsx";
 import { MAX_NOMINATORS, useNominatorSlots } from "../nominators.ts";
 import { UploadIcon, Trash } from "lucide-react";
@@ -30,8 +31,16 @@ export const NominatorUploader: CustomGroupComponent = () => {
                 }
                 const mtmtText = await readJsonFromPdf(file, "kerelmezo_mtmt.json");
 
-                const eloJson = JSON.parse(eloText);
-                const kerJson = JSON.parse(kerText);
+                let eloJson: Tree;
+                let kerJson: Tree;
+                try {
+                    eloJson = loadEmbedded(eloText);
+                    kerJson = loadEmbedded(kerText);
+                } catch (e) {
+                    if (!(e instanceof FormDataError)) throw e;
+                    alert(e.message);
+                    return { status: "error", error: e.message };
+                }
                 const mtmtJson = mtmtText ? JSON.parse(mtmtText) : {};
 
                 const name = String(

@@ -3,6 +3,7 @@ import { Dropzone, DropZoneArea, DropzoneTrigger, useDropzone } from "@repo/ui";
 import { Spinner } from "@repo/ui";
 import { APPLICANT_DATA_LOADED_KEY, loadApplicantDataFromForm } from "../eloterjesztoiform.tsx";
 import { readJsonFromPdf, useFieldValue } from "@repo/form-engine";
+import { FormDataError, loadEmbedded, type Tree } from "@repo/form-schemas";
 import { UploadIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -16,6 +17,14 @@ export const ApplicationPdfUploader = () => {
                 alert("Nem található érvényes kérelmezői adatlap a PDF-ben.");
                 return { status: "error", error: "Nem található érvényes kérelmezői adatlap a PDF-ben." };
             }
+            let applicantData: Tree;
+            try {
+                applicantData = loadEmbedded(formContent);
+            } catch (e) {
+                if (!(e instanceof FormDataError)) throw e;
+                alert(e.message);
+                return { status: "error", error: e.message };
+            }
             const mtmtContent = await readJsonFromPdf(file, "kerelmezo_mtmt.json");
             if (!mtmtContent) {
                 alert("Nem található érvényes publikációs adat a kérelmezői PDF-ben.");
@@ -23,7 +32,7 @@ export const ApplicationPdfUploader = () => {
             }
 
             setDialogText("Publikációk és hivatkozások betöltése");
-            await loadApplicantDataFromForm(formContent, mtmtContent);
+            await loadApplicantDataFromForm(applicantData, mtmtContent);
             setDialogText("");
 
             return {

@@ -1,4 +1,5 @@
 import { chooseAndLoadPdf, createFormDescriptor } from "@repo/form-engine";
+import { FormDataError, loadEmbedded, type Tree } from "@repo/form-schemas";
 import { fobbAdatok } from "./lap-fobbadatok";
 import { doktoriMu } from "./lap-doktorimu";
 import { publikaciok } from "./lap-publikaciok";
@@ -44,8 +45,15 @@ export const kerelmezoiFormDescriptor = createFormDescriptor({
                 const valueStore = kerelmezoiFormDescriptor.valueStore;
                 const content = await chooseAndLoadPdf("kerelmezo_form.json");
                 if (!content) return;
+                let parsedContent: Tree;
+                try {
+                    parsedContent = loadEmbedded(content);
+                } catch (e) {
+                    if (!(e instanceof FormDataError)) throw e;
+                    alert(e.message);
+                    return;
+                }
                 setDialogMessage("Adatlap betöltése");
-                const parsedContent = JSON.parse(content);
                 valueStore.initialize(kerelmezoiFormDescriptor);
                 setDialogMessage("Pubikációk és hivatkozások betöltése");
                 await beforeLoad(parsedContent);

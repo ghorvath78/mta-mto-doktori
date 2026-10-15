@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@repo/form-engine": "workspace:*",
+        "@repo/form-schemas": "workspace:*",
         "@repo/mtmt-tools": "workspace:*",
         "@repo/ui": "workspace:*",
         "@types/pako": "^2.0.4",

@@ -1,4 +1,5 @@
 import { getPdfDocumentStyles, getPdfSection, requestPdfSaveTarget, savePdfWithFormData, type FormDescriptor } from "@repo/form-engine";
+import { serializeEmbedded } from "@repo/form-schemas";
 import { getAuthorRecord, loadMTMTCitations, PubList, savePubListMinimal, type Scientometrics } from "@repo/mtmt-tools";
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
@@ -133,7 +134,7 @@ export const savePDF = async (formDescriptor: FormDescriptor) => {
     const mtmtData = await collectMTMTDataToSave(formDescriptor);
 
     savePdfWithFormData(saveTarget, docDefinition, "adatlap.pdf", {
-        "kerelmezo_form.json": JSON.stringify(store.toJSON(), null, 4),
+        "kerelmezo_form.json": serializeEmbedded(store.toJSON()),
         "kerelmezo_mtmt.json": JSON.stringify(mtmtData, null, 4)
     });
 };
