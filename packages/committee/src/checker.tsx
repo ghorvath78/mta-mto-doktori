@@ -5,9 +5,11 @@ import { COMMITTEE_ROLES, CommitteeFieldKey, CommitteeRoleKey, committeeArrayKey
 
 // ─── Committee Checker ───────────────────────────────────────────────────────
 
-const MTA_DEGREES = new Set(["MTA doktora", "MTA rendes tagja", "MTA levelező tagja"]);
+// A "Tudomány doktora" az "MTA doktora" címmel egyenértékű.
+const MTA_DEGREES = new Set(["MTA doktora", "Tudomány doktora", "MTA rendes tagja", "MTA levelező tagja"]);
 const PHD_DEGREES = new Set(["PhD", "Kandidátus"]);
-const VALID_DEGREES = new Set([...PHD_DEGREES, "Tudomány doktora", ...MTA_DEGREES, "MTA külső tagja"]);
+const VALID_DEGREES = new Set([...PHD_DEGREES, ...MTA_DEGREES, "MTA külső tagja"]);
+const MTA_DEGREES_TEXT = "MTA doktora, tudomány doktora, MTA levelező tagja vagy MTA rendes tagja";
 
 /**
  * Az ellenőrzés app-specifikus adatforrásai: a kérelmező MTMT-ből származó intézményei, illetve
@@ -55,6 +57,11 @@ function affiliationOverlap(a: string, b: string): string | null {
     return common.length > 0 ? common.join(" / ") : null;
 }
 
+/** Név normalizálása az összehasonlításhoz (kis-/nagybetű és többszörös szóköz nem számít). */
+function normalizeName(name: string): string {
+    return name.trim().replace(/\s+/g, " ").toLocaleLowerCase("hu");
+}
+
 type CheckLine = { text: string; status: "" | "ok" | "warn" | "error"; indent?: boolean; links?: string[] };
 
 export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor; keyPrefix: string; index: number }) => {
@@ -85,6 +92,42 @@ export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor;
             }
         }
 
+        // ── Duplicate checks ──────────────────────────────────────────────────
+        // Egy személy csak egy szerepkörben szerepelhet a bíráló bizottságban. Azonosnak
+        // tekintjük azokat, akiknek megegyezik az MTMT azonosítója vagy (normalizált) neve.
+        result.push({ text: "── Ismétlődő személyek ──", status: "" });
+        const occurrences = new Map<string, { name: string; places: string[] }>();
+        const addOccurrence = (id: string, name: string, place: string) => {
+            const entry = occurrences.get(id) ?? { name, places: [] };
+            entry.places.push(place);
+            occurrences.set(id, entry);
+        };
+        for (const role of COMMITTEE_ROLES) {
+            const key = grp(role.key);
+            const names = grpNames(store, key);
+            const mtmtIds = grpMtmtIds(store, key);
+            const n = committeeArrayLength(store, key);
+            for (let i = 0; i < n; i++) {
+                const name = (names[i] ?? "").trim();
+                const mtmtId = (mtmtIds[i] ?? "").trim();
+                const place = role.max > 1 ? `${i + 1}. ${role.shortLabel.toLocaleLowerCase("hu")}` : role.shortLabel.toLocaleLowerCase("hu");
+                if (name) addOccurrence(`name:${normalizeName(name)}`, name, place);
+                if (mtmtId) addOccurrence(`mtmt:${mtmtId}`, name || `MTMT ${mtmtId}`, place);
+            }
+        }
+        // Ugyanaz a hely-lista név és MTMT azonosító alapján is előjöhet - csak egyszer jelezzük.
+        const reported = new Set<string>();
+        for (const { name, places } of occurrences.values()) {
+            if (places.length < 2) continue;
+            const signature = places.join("\u0000");
+            if (reported.has(signature)) continue;
+            reported.add(signature);
+            result.push({ text: `${name} több helyen is szerepel: ${places.join(", ")}`, status: "error" });
+        }
+        if (reported.size === 0) {
+            result.push({ text: "Minden személy csak egy helyen szerepel ✓", status: "ok" });
+        }
+
         // ── Degree checks ─────────────────────────────────────────────────────
         result.push({ text: "── Fokozatok ──", status: "" });
 
@@ -93,12 +136,12 @@ export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor;
         const biralokMta = biralokDeg.filter((d) => MTA_DEGREES.has(d)).length;
         const biralokPhd = biralokDeg.filter((d) => PHD_DEGREES.has(d)).length;
         result.push({
-            text: `MTA doktora fokozattal rendelkezik ${biralokMta} bíráló ${biralokMta >= 2 ? "✓" : "✗"}`,
+            text: `MTA doktora vagy azzal egyenértékű fokozattal rendelkezik ${biralokMta} bíráló ${biralokMta >= 2 ? "✓" : "✗"}`,
             status: biralokMta >= 2 ? "ok" : "error"
         });
         if (biralokMta < 2) {
             result.push({
-                text: `→ Legalább 2 bírálónak MTA doktora, MTA levelező tagja vagy MTA rendes tagja fokozattal kell rendelkeznie`,
+                text: `→ Legalább 2 bírálónak ${MTA_DEGREES_TEXT} fokozattal kell rendelkeznie`,
                 status: "error",
                 indent: true
             });
@@ -118,12 +161,12 @@ export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor;
         const tarBiralokMta = tarBiralokDeg.filter((d) => MTA_DEGREES.has(d)).length;
         const tarBiralokPhd = tarBiralokDeg.filter((d) => PHD_DEGREES.has(d)).length;
         result.push({
-            text: `MTA doktora fokozattal rendelkezik ${tarBiralokMta} tartalék bíráló ${tarBiralokMta >= 2 ? "✓" : "✗"}`,
+            text: `MTA doktora vagy azzal egyenértékű fokozattal rendelkezik ${tarBiralokMta} tartalék bíráló ${tarBiralokMta >= 2 ? "✓" : "✗"}`,
             status: tarBiralokMta >= 2 ? "ok" : "error"
         });
         if (tarBiralokMta < 2) {
             result.push({
-                text: `→ Legalább 2 tartalék bírálónak MTA doktora, MTA levelező tagja vagy MTA rendes tagja fokozattal kell rendelkeznie`,
+                text: `→ Legalább 2 tartalék bírálónak ${MTA_DEGREES_TEXT} fokozattal kell rendelkeznie`,
                 status: "error",
                 indent: true
             });
@@ -147,7 +190,7 @@ export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor;
                 result.push({ text: `${label}: nincs megadva`, status: "warn" });
             } else if (!MTA_DEGREES.has(deg[0])) {
                 result.push({
-                    text: `${label}: fokozat nem megfelelő ("${deg[0] || "nincs megadva"}") — MTA doktora, MTA rendes tagja vagy MTA levelező tagja szükséges`,
+                    text: `${label}: fokozat nem megfelelő ("${deg[0] || "nincs megadva"}") — ${MTA_DEGREES_TEXT} szükséges`,
                     status: "error"
                 });
             } else {
@@ -191,7 +234,7 @@ export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor;
             const nonMta = tagokDeg.filter((d) => !MTA_DEGREES.has(d)).length;
             if (nonMta > 0) {
                 result.push({
-                    text: `Bíráló bizottság tagjai: ${nonMta} tag nem rendelkezik MTA fokozattal — minden tagnak MTA doktora, MTA levelező tagja vagy MTA rendes tagja fokozattal kell rendelkeznie`,
+                    text: `Bíráló bizottság tagjai: ${nonMta} tag nem rendelkezik MTA fokozattal — minden tagnak ${MTA_DEGREES_TEXT} fokozattal kell rendelkeznie`,
                     status: "error"
                 });
             } else {
