@@ -19,6 +19,8 @@ describe("Előterjesztői adatlap visszafelé kompatibilitása", () => {
         const dropped = store.fromJSON({ [formName]: ns });
         expect(dropped).toEqual([]);
         expect(store.getField("Előterjesztői|Előterjesztő adatai|Előterjesztő adatai|Adatok|Előterjesztő neve")).not.toBe("");
+        expect(store.getField("Előterjesztői|Illetékesség|Illetékesség|Illetékesség|Illetékesség megállapítása")).not.toBe("");
+        expect(store.getField("Előterjesztői|Alkalmasság|Alkalmasság|Alkalmasság|Formai alkalmasság megállapítása")).not.toBe("");
     });
 
     it.each(samples)("$label: a mentés aktuális verzióval, változatlanul tölthető vissza", ({ ns }) => {

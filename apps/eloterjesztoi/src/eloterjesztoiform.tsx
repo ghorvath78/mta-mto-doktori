@@ -5,6 +5,8 @@ import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
 import { createMTMTTools, loadMTMTCitations, PubList, PubListMinimal, type AuthorData, type PubItemMinimal } from "@repo/mtmt-tools";
 import { eloterjesztoAdatai } from "./lap-eloterjesztoadatai.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
+import { illetekesseg } from "./lap-illetekesseg.ts";
+import { alkalmassag } from "./lap-alkalmassag.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
 import { otPublikacio } from "./lap-otpublikacio.ts";
 import { otHivatkozas } from "./lap-othivatkozas.ts";
@@ -29,7 +31,7 @@ export const eloterjesztoiFormDescriptor = createFormDescriptor({
     formName: "Előterjesztői",
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, előterjesztői űrlap",
-    pages: [eloterjesztoAdatai, palyazoAdatai, tudomanymetria, otPublikacio, otHivatkozas, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
+    pages: [eloterjesztoAdatai, palyazoAdatai, illetekesseg, alkalmassag, tudomanymetria, otPublikacio, otHivatkozas, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
     buttons: [
         {
             label: "Adatlap mentése",

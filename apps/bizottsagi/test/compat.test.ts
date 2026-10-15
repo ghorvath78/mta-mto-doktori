@@ -19,6 +19,10 @@ describe("Bizottsági adatlap visszafelé kompatibilitása", () => {
         const dropped = store.fromJSON({ [formName]: ns });
         expect(dropped).toEqual([]);
         expect(store.getField("Bizottsági|Bizottság|Bizottság összetétele|Bizottság összetétele|Ügykezelő bizottság")).not.toBe("");
+        expect(store.getField("Bizottsági|Illetékesség|Illetékesség|A bizottság véleménye|Bizottsági megállapítás")).not.toBe("");
+        expect(store.getField("Bizottsági|Illetékesség|Illetékesség|Illetékesség szavazás eredménye|Igen szavazatok száma")).not.toBe("");
+        expect(store.getField("Bizottsági|Alkalmasság|Alkalmasság|Alkalmasság|Bizottsági vélemény")).not.toBe("");
+        expect(store.getField("Bizottsági|Alkalmasság|Alkalmasság|Alkalmasság szavazás eredménye|Igen szavazatok száma")).not.toBe("");
     });
 
     it.each(samples)("$label: a mentés aktuális verzióval, változatlanul tölthető vissza", ({ ns }) => {

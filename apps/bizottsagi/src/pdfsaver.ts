@@ -98,16 +98,16 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
             { text: "B. A szakterületi illetékesség megállapítása", style: "section" },
             ...(await getPdfSection(formDescriptor, "Bizottsági|Pályázó adatai|A pályázó személyes adatai", "A pályázó személyes adatai:")),
             ...(await getPdfSection(formDescriptor, "Bizottsági|Pályázó adatai|Aktuális munkahelyek", "Aktuális munkahelyek:")),
-            ...(await getPdfSection(formDescriptor, "Bizottsági|Pályázó adatai|A doktori mű", "A doktori mű:")),
+            ...(await getPdfSection(formDescriptor, "Bizottsági|Alkalmasság|A doktori mű", "A doktori mű:")),
             ...(await getPdfSection(
                 formDescriptor,
-                "Bizottsági|Pályázó adatai|A kérelmező által megnevezett szakterület és tudományos bizottság",
+                "Bizottsági|Illetékesség|A kérelmező által megnevezett szakterület és tudományos bizottság",
                 "A kérelmező által megnevezett szakterület és tudományos bizottság:"
             )),
-            ...(await getCommitteeSection(formDescriptor, "Bizottsági|Pályázó adatai|Illetékesség", "A bizottság döntése:")),
+            ...(await getCommitteeSection(formDescriptor, "Bizottsági|Illetékesség|Illetékesség", "A bizottság döntése:")),
 
             { text: "C. A benyújtott doktori mű formai alkalmassága", style: "section" },
-            ...(await getCommitteeSection(formDescriptor, "Bizottsági|Pályázó adatai|Alkalmasság", "A bizottság döntése:")),
+            ...(await getCommitteeSection(formDescriptor, "Bizottsági|Alkalmasság|Alkalmasság", "A bizottság döntése:")),
 
             { text: "D. A tudományos minimumkövetelmények teljesítésének ellenőrzése", style: "section" },
             ...(await getPdfSection(

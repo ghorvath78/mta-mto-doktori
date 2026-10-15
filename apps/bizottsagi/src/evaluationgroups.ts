@@ -2,6 +2,10 @@ import type { GroupDescriptor } from "@repo/form-engine";
 import { NominatorOpinions } from "./customgroups/nominatoropinions";
 import "./customgroups/votepercentage";
 
+// Az illetékességről és a formai alkalmasságról szóló szavazás tárgya (votingResultGroup helpText-je).
+export const ALLASPONT_SZAVAZAS_HELP =
+    "A fentiekben kialakult álláspontot a bizottság vita után egyszerű többségi, tartózkodásmentes nyílt szavazással az alábbi szavazati eredménnyel támasztotta alá.";
+
 // A bizottság nyílt szavazásának eredménye (igen/nem szavazatok + számított támogatottság). A
 // helpText az "Igen szavazatok száma" mezőhöz kerül, a szavazás tárgyát fogalmazza meg.
 // A PDF-ben a támogatottság sorát a pdfsaver.ts addVotePercentageRow függvénye illeszti be.

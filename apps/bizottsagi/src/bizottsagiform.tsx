@@ -7,6 +7,8 @@ import { EMBEDDED_FORM_NAME, EMBEDDED_MTMT_NAME, savePDF } from "./pdfsaver.ts";
 import { bizottsag } from "./lap-bizottsag.ts";
 import { biraloBizottsag } from "./lap-biralobizottsag.ts";
 import { palyazoAdatai } from "./lap-palyazoadatai.ts";
+import { illetekesseg } from "./lap-illetekesseg.ts";
+import { alkalmassag } from "./lap-alkalmassag.ts";
 import { tudomanymetria } from "./lap-tudomanymetria.ts";
 import { kozeletiTevekenyseg } from "./lap-kozeleti.ts";
 import { osszesites } from "./lap-osszesites.ts";
@@ -38,7 +40,7 @@ export const bizottsagiFormDescriptor = createFormDescriptor({
     formName: "Bizottsági",
     title: "MTA Műszaki Tudományok Osztálya",
     subtitle: "MTA doktori pályázat, bizottsági űrlap",
-    pages: [bizottsag, palyazoAdatai, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
+    pages: [bizottsag, palyazoAdatai, illetekesseg, alkalmassag, tudomanymetria, kozeletiTevekenyseg, osszesites, osszefoglalo, biraloBizottsag],
     buttons: [
         {
             label: "Adatlap mentése",

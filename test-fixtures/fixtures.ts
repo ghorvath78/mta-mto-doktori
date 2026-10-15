@@ -34,20 +34,38 @@ function listFixturePdfs(): string[] {
     return result.sort();
 }
 
+export type EmbeddedForm = {
+    /** pl. "v1/bizottsagi-teljes.pdf › bizottsagi_form.json" */
+    label: string;
+    /** a minta mappájának verziója (v1/ -> 1) */
+    version: number;
+    /** a PDF-be ágyazott, nyers (migrálatlan) JSON szöveg */
+    text: string;
+};
+
+/** Az összes minta PDF összes beágyazott form JSON-ja, nyersen. */
+export async function listEmbeddedForms(): Promise<EmbeddedForm[]> {
+    const forms: EmbeddedForm[] = [];
+    for (const path of listFixturePdfs()) {
+        const file = new File([readFileSync(path)], basename(path), { type: "application/pdf" });
+        const dir = basename(join(path, ".."));
+        for (const embeddedName of EMBEDDED_FORM_FILES) {
+            const text = await readJsonFromPdf(file, embeddedName);
+            if (text) {
+                forms.push({ label: `${dir}/${basename(path)} › ${embeddedName}`, version: Number(dir.slice(1)), text });
+            }
+        }
+    }
+    return forms;
+}
+
 /** Az összes minta PDF összes beágyazott form JSON-jából kigyűjti az adott fajtájú névtereket, migrálva. */
 export async function loadMigratedNamespaces(kind: FormKind): Promise<NamespaceSample[]> {
     const samples: NamespaceSample[] = [];
-    for (const path of listFixturePdfs()) {
-        const file = new File([readFileSync(path)], basename(path), { type: "application/pdf" });
-        const fileLabel = `${basename(join(path, ".."))}/${basename(path)}`;
-        for (const embeddedName of EMBEDDED_FORM_FILES) {
-            const text = await readJsonFromPdf(file, embeddedName);
-            if (!text) continue;
-            const tree = loadEmbedded(text);
-            for (const [namespace, ns] of Object.entries(tree)) {
-                if (kindOfNamespace(namespace) === kind) {
-                    samples.push({ label: `${fileLabel} › ${embeddedName} › ${namespace}`, ns: ns as Tree });
-                }
+    for (const { label, text } of await listEmbeddedForms()) {
+        for (const [namespace, ns] of Object.entries(loadEmbedded(text))) {
+            if (kindOfNamespace(namespace) === kind) {
+                samples.push({ label: `${label} › ${namespace}`, ns: ns as Tree });
             }
         }
     }

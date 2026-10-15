@@ -1,4 +1,6 @@
 import { createSchemaRegistry, type FormSchema } from "./envelope.ts";
+import { bizottsagiV1toV2 } from "./migrations/bizottsagi.ts";
+import { eloterjesztoiV1toV2 } from "./migrations/eloterjesztoi.ts";
 
 // A három adatlap sémaverziói és migrációi.
 //
@@ -12,8 +14,8 @@ import { createSchemaRegistry, type FormSchema } from "./envelope.ts";
 // a bizottsági PDF "Kérelmezői" ágán is. Egy már kiadott migrációt soha nem szabad módosítani.
 export const FORM_SCHEMAS = {
     Kérelmezői: { version: 1, migrations: {} },
-    Előterjesztői: { version: 1, migrations: {} },
-    Bizottsági: { version: 1, migrations: {} }
+    Előterjesztői: { version: 2, migrations: { 1: eloterjesztoiV1toV2 } },
+    Bizottsági: { version: 2, migrations: { 1: bizottsagiV1toV2 } }
 } satisfies Record<string, FormSchema>;
 
 export type FormKind = keyof typeof FORM_SCHEMAS;
