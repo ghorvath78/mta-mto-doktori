@@ -1,8 +1,11 @@
 import type { PageDescriptor } from "@repo/form-engine";
-import { nominatorOpinionsGroup, bizottsagiOpinionGroup } from "./evaluationgroups";
+import { nominatorOpinionsGroup, bizottsagiOpinionGroup, votingResultGroup } from "./evaluationgroups";
 
 const ELOTERJESZTOI_JAVASLAT_PREFIX = "Összefoglaló javaslat|Összefoglaló javaslat|Összefoglaló javaslat";
 const ELOTERJESZTOI_ROVID_JAVASLAT_PREFIX = "Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról|Javaslat a rövid értekezés benyújtásáról";
+
+const JAVASLAT_SZAVAZAS_HELP =
+    "A fentiekben kialakult javaslatot a bizottság vita után egyszerű többségi, tartózkodásmentes nyílt szavazással az alábbi szavazati eredménnyel támasztotta alá.";
 
 export const osszefoglalo: PageDescriptor = {
     key: "Összefoglaló javaslat",
@@ -16,8 +19,7 @@ export const osszefoglalo: PageDescriptor = {
         {
             key: "Összefoglaló javaslat",
             label: "Összefoglaló javaslat: A kérelmező doktori habitusának megítélése",
-            helpText:
-                "Az előterjesztők összefoglaló véleménye a kérelmező doktori habitusáról, valamint a bizottság saját, összegző javaslata.",
+            helpText: "Az előterjesztők összefoglaló véleménye a kérelmező doktori habitusáról, valamint a bizottság saját, összegző javaslata.",
             attribs: {
                 important: true,
                 alwaysOpen: true
@@ -34,13 +36,15 @@ export const osszefoglalo: PageDescriptor = {
                     textLabel: "A bizottsági vélemény összegző értékelése, konkrét indoklása, legfeljebb 2500 karakter terjedelemben",
                     maxLength: 2500,
                     rows: 6
-                })
+                }),
+                votingResultGroup("Habitus javaslat szavazás eredménye", JAVASLAT_SZAVAZAS_HELP)
             ]
         },
         {
             key: "Javaslat a rövid értekezés benyújtásáról",
             label: "Összefoglaló javaslat: A rövid értekezés benyújtásáról",
-            helpText: "Az előterjesztők összefoglaló véleménye, valamint a bizottság saját javaslata arról, hogy a kérelem elbírálható-e rövid értekezés benyújtásával.",
+            helpText:
+                "Az előterjesztők összefoglaló véleménye, valamint a bizottság saját javaslata arról, hogy a kérelem elbírálható-e rövid értekezés benyújtásával.",
             conditionKey: "Kérelmezői|A doktori mű adatai|Az eljárás alapjául szolgáló doktori mű|Az eljárás alapjául szolgáló doktori mű|Formája",
             conditionValue: "rövid értekezés",
             attribs: {
@@ -59,7 +63,8 @@ export const osszefoglalo: PageDescriptor = {
                     textLabel: "A bizottsági indoklás legfeljebb 2500 karakter terjedelemben",
                     maxLength: 2500,
                     rows: 6
-                })
+                }),
+                votingResultGroup("Rövid értekezés javaslat szavazás eredménye", JAVASLAT_SZAVAZAS_HELP)
             ]
         }
     ]

@@ -135,8 +135,8 @@ export const savePDF = async (formDescriptor: FormDescriptor, additionalData: Re
             ...(await getPdfSection(formDescriptor, "Bizottsági|A tudományos minimumkövetelmények teljesítésének összesítése|Összesítés", "")),
 
             { text: "E. Összefoglaló javaslat: A kérelmező doktori habitusának megítélése", style: "section" },
-            ...(await getPdfSection(formDescriptor, "Bizottsági|Összefoglaló javaslat|Összefoglaló javaslat", "")),
-            ...(await getPdfSection(formDescriptor, "Bizottsági|Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról", "")),
+            ...(await getCommitteeSection(formDescriptor, "Bizottsági|Összefoglaló javaslat|Összefoglaló javaslat", "")),
+            ...(await getCommitteeSection(formDescriptor, "Bizottsági|Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról", "")),
 
             { text: "F. Javaslat a bírálókra és a bíráló bizottság tagjaira", style: "section" },
             ...(await getBiraloBizottsagSection(formDescriptor))
@@ -228,20 +228,21 @@ function getQuorumSummary(formDescriptor: FormDescriptor): Content[] {
  * csoportoknak nincs mezőjük (csak customComponent), ezért a form-engine amúgy sem nyomtatná őket -
  * ez a függvény viszont a CSOPORT-szintű feltételeket is kiértékeli (a getPdfSection csak a
  * szakasz-szintűt nézi), hogy pl. a "Bevonandó bizottságok/osztályok" csak akkor jelenjen meg, ha
- * a bizottság döntése szerint tényleg van bevonandó bizottság.
+ * a bizottság döntése szerint tényleg van bevonandó bizottság. A szakasz-szintű feltételt is
+ * kiértékeli, és a szavazócsoportokhoz hozzáadja a számított támogatottság sorát.
  */
 async function getCommitteeSection(formDescriptor: FormDescriptor, sectionKey: string, label: string): Promise<Content[]> {
     const store = formDescriptor.valueStore;
     const parts = sectionKey.split("|");
     const page = formDescriptor.pages.find((p) => p.key === parts[1]);
     const section: SectionDescriptor | undefined = page?.sections.find((s) => s.key === parts[2]);
-    if (!section) return [];
+    if (!section || !isConditionMet(formDescriptor, section)) return [];
 
     const rows: Content[] = [];
     let labelUsed = false;
     for (const group of section.groups) {
         if (group.attribs?.noPrint) continue;
-        if (!isGroupConditionMet(formDescriptor, group)) continue;
+        if (!isConditionMet(formDescriptor, group)) continue;
         const groupKeyPrefix = group.valueSource ?? `${sectionKey}|${group.key}`;
         const groupLabel = labelUsed ? "" : label;
         const content = group.isArray
@@ -269,12 +270,12 @@ async function getArrayGroupContent(
     return rows;
 }
 
-/** Egy csoport conditionKey/conditionValue feltételének kiértékelése (csak egyszerű egyenlőség). */
-function isGroupConditionMet(formDescriptor: FormDescriptor, group: GroupDescriptor): boolean {
-    if (!group.conditionKey) return true;
-    const value = formDescriptor.valueStore.getField(group.conditionKey);
-    if (group.conditionValue === undefined) return value !== "" && value !== "false";
-    return value === group.conditionValue;
+/** Egy szakasz/csoport conditionKey/conditionValue feltételének kiértékelése (csak egyszerű egyenlőség). */
+function isConditionMet(formDescriptor: FormDescriptor, cond: GroupDescriptor | SectionDescriptor): boolean {
+    if (!cond.conditionKey) return true;
+    const value = formDescriptor.valueStore.getField(cond.conditionKey);
+    if (cond.conditionValue === undefined) return value !== "" && value !== "false";
+    return value === cond.conditionValue;
 }
 
 /**
