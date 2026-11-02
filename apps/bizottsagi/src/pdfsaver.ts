@@ -29,6 +29,7 @@ import { getNumOfAuthorsInPub, getRatingOfPub } from "./bizottsagiform";
 import { MAX_NOMINATORS, nominatorFokozatKey, nominatorLoadedKey, nominatorNameKey } from "./nominators";
 import { activityRequirementSectionKeys } from "./customgroups/publicactivitysummary";
 import { formatVotePercentage } from "./customgroups/votepercentage";
+import { computeSecretVote, SECRET_VOTE_POINTS, secretVoteFieldKey, SecretVotingResult } from "./customgroups/secretvoting";
 import { BIRALOBIZOTTSAG_SZAVAZAS_SECTION_KEY } from "./lap-biralobizottsag";
 import { kozeletiTevekenyseg } from "./lap-kozeleti";
 
@@ -260,6 +261,10 @@ async function getCommitteeSection(formDescriptor: FormDescriptor, sectionKey: s
         if (!isConditionMet(formDescriptor, group)) continue;
         const groupKeyPrefix = group.valueSource ?? `${sectionKey}|${group.key}`;
         const groupLabel = labelUsed ? "" : label;
+        if (group.customComponent === SecretVotingResult) {
+            rows.push(...getSecretVotingContent(store, groupKeyPrefix));
+            continue;
+        }
         const content = group.isArray
             ? await getArrayGroupContent(formDescriptor, group, groupKeyPrefix, groupLabel)
             : await groupToPdfDocDefinition(groupLabel, group, formDescriptor, groupKeyPrefix, {});
@@ -270,12 +275,7 @@ async function getCommitteeSection(formDescriptor: FormDescriptor, sectionKey: s
     return rows;
 }
 
-async function getArrayGroupContent(
-    formDescriptor: FormDescriptor,
-    group: GroupDescriptor,
-    groupKeyPrefix: string,
-    label: string
-): Promise<Content[]> {
+async function getArrayGroupContent(formDescriptor: FormDescriptor, group: GroupDescriptor, groupKeyPrefix: string, label: string): Promise<Content[]> {
     const store = formDescriptor.valueStore;
     const length = parseInt(store.getField(`${groupKeyPrefix}|_length`)) || 0;
     const rows: Content[] = [];
@@ -306,6 +306,60 @@ function addVotePercentageRow(store: FormDescriptor["valueStore"], group: GroupD
     const igen = cD(store.getField(`${groupKeyPrefix}|Igen szavazatok száma`));
     const nem = cD(store.getField(`${groupKeyPrefix}|Nem szavazatok száma`));
     table.table.body.push([{ text: `${field.label || field.key}:` }, { text: formatVotePercentage(igen, nem) ?? "-", bold: true }]);
+}
+
+/**
+ * A SecretVotingResult komponens PDF-megfelelője: pontértékenkénti táblázat (szavazatszám és az
+ * abból adódó pontszám), alatta az összesítés. Egy egységként, oldaltörés nélkül kerül a lapra.
+ */
+function getSecretVotingContent(store: FormDescriptor["valueStore"], groupKeyPrefix: string): Content[] {
+    const counts = SECRET_VOTE_POINTS.map((p) => cD(store.getField(`${groupKeyPrefix}|${secretVoteFieldKey(p)}`)));
+    const { totalVotes, points, maxPoints, percent } = computeSecretVote(counts);
+    const bold = (text: string) => ({ text, bold: true, alignment: "center" as const });
+    const total = (text: string) => ({ ...bold(text), fillColor: "#eeeeee" });
+
+    return [
+        {
+            unbreakable: true,
+            margin: [10, 0, 0, 0],
+            stack: [
+                {
+                    text: "A fentiekben kialakult álláspontot a bizottság vita után minősített titkos szavazással, az alábbi eredménnyel támasztotta alá:",
+                    style: "grouplabel"
+                },
+                {
+                    margin: [10, 5, 0, 0],
+                    table: {
+                        widths: ["*", ...SECRET_VOTE_POINTS.map(() => 38), 55],
+                        body: [
+                            [
+                                header("Pontérték"),
+                                ...[...SECRET_VOTE_POINTS.map((p) => `${p} pont`), "Összesen"].map((t) => ({ ...header(t), alignment: "center" }))
+                            ],
+                            [{ text: "Szavazatok száma (db)" }, ...counts.map((n) => centered(String(n))), total(String(totalVotes))]
+                            // [{ text: "Pontszám" }, ...counts.map((n, i) => centered(String(n * SECRET_VOTE_POINTS[i]))), total(String(points))]
+                        ]
+                    }
+                },
+                {
+                    margin: [10, 10, 0, 0],
+                    layout: { defaultBorder: false },
+                    table: {
+                        widths: ["*", 80],
+                        body: [
+                            // [{ text: "A leadott szavazatok száma:" }, bold(String(totalVotes))],
+                            [{ text: "A kérelmező által kapott pontszám:" }, bold(String(points))],
+                            [{ text: "A megkapható összes pontszám:" }, bold(String(maxPoints))],
+                            [
+                                { text: "A kérelmező a megkapható pontszám alábbi hányadát kapta meg:", bold: true },
+                                { ...bold(percent ? `${percent}%` : "-"), /*fontSize: 12,*/ fillColor: "#dddddd" }
+                            ]
+                        ]
+                    }
+                }
+            ]
+        }
+    ];
 }
 
 // ─── D. Tudománymetria ───────────────────────────────────────────────────────

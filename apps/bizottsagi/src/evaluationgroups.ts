@@ -1,5 +1,6 @@
 import type { GroupDescriptor } from "@repo/form-engine";
 import { NominatorOpinions } from "./customgroups/nominatoropinions";
+import { SECRET_VOTE_POINTS, SecretVotingResult, secretVoteFieldKey } from "./customgroups/secretvoting";
 import "./customgroups/votepercentage";
 
 // Az illetékességről és a formai alkalmasságról szóló szavazás tárgya (votingResultGroup helpText-je).
@@ -35,6 +36,22 @@ export function votingResultGroup(key: string, helpText: string): GroupDescripto
                 noPersist: true
             }
         ]
+    };
+}
+
+// A bizottság minősített titkos (0-5 pontos) szavazásának eredménye: pontértékenként a leadott
+// szavazatok száma (tárolt mezők), a többit a SecretVotingResult komponens számolja. A PDF-ben a
+// pdfsaver.ts getSecretVotingContent függvénye nyomtatja, a képernyővel azonos mondatos formában.
+export function secretVotingResultGroup(key: string, helpText: string): GroupDescriptor {
+    return {
+        key,
+        label: "Szavazás eredménye",
+        customComponent: SecretVotingResult,
+        attribs: {
+            important: true,
+            helpText
+        },
+        fields: SECRET_VOTE_POINTS.map((p) => ({ key: secretVoteFieldKey(p), type: "number" }))
     };
 }
 

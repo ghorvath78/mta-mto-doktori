@@ -1,8 +1,11 @@
 import type { PageDescriptor } from "@repo/form-engine";
-import { nominatorOpinionsGroup, bizottsagiOpinionGroup, votingResultGroup } from "./evaluationgroups";
+import { nominatorOpinionsGroup, bizottsagiOpinionGroup, votingResultGroup, secretVotingResultGroup } from "./evaluationgroups";
 
 const ELOTERJESZTOI_JAVASLAT_PREFIX = "Összefoglaló javaslat|Összefoglaló javaslat|Összefoglaló javaslat";
 const ELOTERJESZTOI_ROVID_JAVASLAT_PREFIX = "Összefoglaló javaslat|Javaslat a rövid értekezés benyújtásáról|Javaslat a rövid értekezés benyújtásáról";
+
+const HABITUS_SZAVAZAS_HELP =
+    "A fentiekben kialakult álláspontot a bizottság vita után minősített titkos szavazással támasztotta alá. Minden szavazó 0-5 pontot adhat; adja meg, hány szavazat érkezett az egyes pontértékekre - a szavazatok és a pontok összesítése automatikus.";
 
 const JAVASLAT_SZAVAZAS_HELP =
     "A fentiekben kialakult javaslatot a bizottság vita után egyszerű többségi, tartózkodásmentes nyílt szavazással az alábbi szavazati eredménnyel támasztotta alá.";
@@ -37,7 +40,7 @@ export const osszefoglalo: PageDescriptor = {
                     maxLength: 2500,
                     rows: 6
                 }),
-                votingResultGroup("Habitus javaslat szavazás eredménye", JAVASLAT_SZAVAZAS_HELP)
+                secretVotingResultGroup("Habitus javaslat szavazás eredménye", HABITUS_SZAVAZAS_HELP)
             ]
         },
         {
