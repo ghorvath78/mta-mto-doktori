@@ -5,6 +5,11 @@ export interface ChangeEntry {
 
 export const recentChanges: ChangeEntry[] = [
     {
+        date: "2026-10-15",
+        description:
+            "Az előterjesztői és a bizottsági űrlapon a tudományági és szakterületi illetékesség, valamint a doktori mű formai alkalmasságának megállapítása a „Pályázó adatai” lapról önálló lapra került. A korábban mentett adatlapok változtatás nélkül betölthetők, az adataik automatikusan az új helyükre kerülnek. Javítottuk a rövid értekezéssel pályázókra vonatkozó követelmények ellenőrzését: az SJR D1 cikkek összegzett szerzői aránya és a téziseket alátámasztó publikációk szerzőszáma most a teljes szerzőlista alapján számolódik. A PDF-ekben megjelenik az I-szám minimuma, a bizottsági PDF szakterületi illetékességről szóló fejezete pedig az előírt tagolást követi. Elkészültek a rövid értekezéses előterjesztői és bizottsági példák is."
+    },
+    {
         date: "2026-09-13",
         description: "Elkészült a bizottsági űrlap, tesztelhető."
     },
