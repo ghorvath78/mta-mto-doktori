@@ -2,7 +2,7 @@ import { createFormDescriptor, getFromObjectByKey, readJsonFromPdf } from "@repo
 import { FormDataError, loadEmbedded } from "@repo/form-schemas";
 import { withAuthorCountsInMtmtData, type PubItemMinimal } from "@repo/mtmt-tools";
 import { FileDown, FileUp } from "lucide-react";
-import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
+import { getCategory, getMinTotalI, getMinTotalQ } from "./requirements.tsx";
 import { MAX_NOMINATORS, nominatorLoadedKey, nominatorPrefix } from "./nominators.ts";
 import { EMBEDDED_FORM_NAME, EMBEDDED_MTMT_NAME, savePDF } from "./pdfsaver.ts";
 import { bizottsag } from "./lap-bizottsag.ts";
@@ -94,7 +94,7 @@ export const bizottsagiFormDescriptor = createFormDescriptor({
         }
     ],
     generalHelpText:
-        "Bizottsági adatlap\n\nA \"Bizottság\" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az \"Előterjesztők\" szakaszban, és töltse ki a \"Határozatképesség\" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.\n\nAz \"Adatlap mentése\" gomb egy PDF-et készít, amely egyben a bizottsági értékelés dokumentuma, és amelyből az \"Adatlap betöltése\" gombbal a kitöltés bármikor folytatható (a betöltött előterjesztői adatlapokkal együtt). Őrizze meg ezt a PDF-et: ez a szerkeszthető munkapéldány.",
+        'Bizottsági adatlap\n\nA "Bizottság" lap kitöltése után töltse fel legalább 2 előterjesztő mentett PDF adatlapját az "Előterjesztők" szakaszban, és töltse ki a "Határozatképesség" szakaszt - a további lapok csak akkor válnak láthatóvá, ha legalább 2 előterjesztő be van töltve, és a bizottsági ülés a szabályzat szerint határozatképes.\n\nAz "Adatlap mentése" gomb egy PDF-et készít, amely egyben a bizottsági értékelés dokumentuma, és amelyből az "Adatlap betöltése" gombbal a kitöltés bármikor folytatható (a betöltött előterjesztői adatlapokkal együtt). Őrizze meg ezt a PDF-et: ez a szerkeszthető munkapéldány.',
     extra: {}
 });
 
@@ -113,7 +113,7 @@ function onCategoryChange() {
     if (category) {
         valueStore.setField(
             "Bizottsági|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Q küszöbszám",
-            String(getMinPaperQ(category))
+            String(getMinTotalQ(category))
         );
         valueStore.setField(
             "Bizottsági|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|I küszöbszám",

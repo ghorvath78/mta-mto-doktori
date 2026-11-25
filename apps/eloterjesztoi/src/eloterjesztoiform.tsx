@@ -1,7 +1,7 @@
 import { createFormDescriptor, readJsonFromPdf } from "@repo/form-engine";
 import { getFromObjectByKey } from "@repo/form-engine";
 import { FormDataError, loadEmbedded, serializeEmbedded, type Tree } from "@repo/form-schemas";
-import { getCategory, getMinPaperQ, getMinTotalI } from "./requirements.tsx";
+import { getCategory, getMinTotalI, getMinTotalQ } from "./requirements.tsx";
 import {
     createMTMTTools,
     loadMTMTCitations,
@@ -131,7 +131,7 @@ function onCategoryChange() {
     if (category) {
         valueStore.setField(
             "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|Q küszöbszám",
-            String(getMinPaperQ(category))
+            String(getMinTotalQ(category))
         );
         valueStore.setField(
             "Előterjesztői|Tudományos minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|A kérelmezőre vonatkozó minimumkövetelmények|I küszöbszám",
