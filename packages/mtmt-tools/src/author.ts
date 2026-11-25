@@ -10,10 +10,31 @@ export type AuthorData = {
 
 const institutionCache: { [mtid: string]: string[] } = {};
 
+// Fallback label built from the institute snippet embedded in the referring record
+// (used when the institute record itself is not accessible, e.g. unpublished -> HTTP 403).
+const getInstitutionFallbackParts = (inst: any): string[] => {
+    const label = typeof inst?.["label"] === "string" ? (inst["label"] as string).replace(/\s*\[[^\]]*\]\s*$/, "").trim() : "";
+    const name = typeof inst?.["name"] === "string" ? (inst["name"] as string).trim() : "";
+    return [label || name];
+};
+
 const getInstitutionParts = async (inst: any): Promise<string[]> => {
     if (inst["mtid"] && institutionCache[inst["mtid"]]) {
         return institutionCache[inst["mtid"]];
     }
+    try {
+        return await fetchInstitutionParts(inst);
+    } catch (e) {
+        console.warn(`Could not load institute ${inst?.["link"] ?? inst?.["mtid"]}, using snippet label instead.`, e);
+        const parts = getInstitutionFallbackParts(inst);
+        if (inst["mtid"]) {
+            institutionCache[inst["mtid"]] = parts;
+        }
+        return parts;
+    }
+};
+
+const fetchInstitutionParts = async (inst: any): Promise<string[]> => {
     const instRecord = (await getMTMTObject(inst["link"]))["content"] as any;
     const name = (instRecord["abbreviation"] as string) ?? (instRecord["name"] as string) ?? "";
     const type = (instRecord["type"] ? ((instRecord["type"] as any)["label"] ?? "") : "") as string;
