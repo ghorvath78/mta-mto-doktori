@@ -212,33 +212,47 @@ export const CommitteeChecker = ({ group, keyPrefix }: { group: GroupDescriptor;
             }
         }
 
-        // Tagjai — normally all MTA-level; exception: if ALL bírálók are MTA-level, 1 PhD is allowed
-        const tagokDeg = grpDegrees(store, grp(CommitteeRoleKey.tagok));
-        const allBiralokMta = biralokDeg.length > 0 && biralokDeg.every((d) => MTA_DEGREES.has(d));
-        if (tagokDeg.length === 0) {
-            result.push({ text: `Bíráló bizottság tagjai: nincs megadva`, status: "warn" });
-        } else if (allBiralokMta) {
-            const tagokPhd = tagokDeg.filter((d) => PHD_DEGREES.has(d)).length;
-            const tagokInvalid = tagokDeg.filter((d) => !MTA_DEGREES.has(d) && !PHD_DEGREES.has(d) && !VALID_DEGREES.has(d)).length;
-            if (tagokPhd > 1) {
-                result.push({
-                    text: `Bíráló bizottság tagjai: ${tagokPhd} tag PhD/Kandidátus fokozattal — mivel minden bíráló MTA fokozatú, legfeljebb 1 megengedett`,
-                    status: "error"
-                });
-            } else if (tagokInvalid > 0) {
-                result.push({ text: `Bíráló bizottság tagjai: ${tagokInvalid} tag nem rendelkezik elfogadható fokozattal`, status: "error" });
-            } else {
-                result.push({ text: `Bíráló bizottság tagjai fokozatai megfelelők ✓`, status: "ok" });
+        // Tagjai és tartalék tagjai — a szabályzat szerint az 5 tagból legfeljebb 1 lehet PhD/Kandidátus
+        // fokozatú, de csak akkor, ha a bírálók ÉS a tartalék bírálók mind MTA-szintű fokozattal rendelkeznek.
+        // Egyébként minden tagnak (és tartalék tagnak) MTA-szintű fokozat kell.
+        const biralokNames = grpNames(store, grp(CommitteeRoleKey.biralok));
+        const tarBiralokNames = grpNames(store, grp(CommitteeRoleKey.tartalekBiralok));
+        const nonMtaReviewers = [
+            ...biralokDeg.map((d, i) => ({ d, who: biralokNames[i] || `${i + 1}. bíráló` })),
+            ...tarBiralokDeg.map((d, i) => ({ d, who: tarBiralokNames[i] || `${i + 1}. tartalék bíráló` }))
+        ]
+            .filter(({ d }) => !MTA_DEGREES.has(d))
+            .map(({ d, who }) => `${who} (${d || "fokozat nincs megadva"})`);
+        const allBiralokMta = biralokDeg.length > 0 && nonMtaReviewers.length === 0;
+
+        for (const roleKey of [CommitteeRoleKey.tagok, CommitteeRoleKey.tartalekTagok]) {
+            const label = roleKey;
+            const deg = grpDegrees(store, grp(roleKey));
+            if (deg.length === 0) {
+                result.push({ text: `${label}: nincs megadva`, status: "warn" });
+                continue;
             }
-        } else {
-            const nonMta = tagokDeg.filter((d) => !MTA_DEGREES.has(d)).length;
-            if (nonMta > 0) {
+            const phd = deg.filter((d) => PHD_DEGREES.has(d)).length;
+            const invalid = deg.filter((d) => !VALID_DEGREES.has(d)).length;
+            const nonMtaNonPhd = deg.filter((d) => !MTA_DEGREES.has(d) && !PHD_DEGREES.has(d)).length;
+            if (invalid > 0) {
+                result.push({ text: `${label}: ${invalid} fő nem rendelkezik elfogadható fokozattal (vagy nincs megadva)`, status: "error" });
+            } else if (nonMtaNonPhd > 0) {
+                result.push({ text: `${label}: ${nonMtaNonPhd} fő fokozata nem megfelelő — ${MTA_DEGREES_TEXT} szükséges`, status: "error" });
+            } else if (phd === 0) {
+                result.push({ text: `${label} fokozatai megfelelők ✓`, status: "ok" });
+            } else if (!allBiralokMta) {
                 result.push({
-                    text: `Bíráló bizottság tagjai: ${nonMta} tag nem rendelkezik MTA fokozattal — minden tagnak ${MTA_DEGREES_TEXT} fokozattal kell rendelkeznie`,
+                    text: `${label}: ${phd} fő PhD/Kandidátus fokozatú — ez csak akkor megengedett, ha minden bíráló és tartalék bíráló MTA-szintű fokozattal rendelkezik`,
                     status: "error"
                 });
+                if (nonMtaReviewers.length > 0) {
+                    result.push({ text: `→ Nem MTA-szintű bíráló(k): ${nonMtaReviewers.join(", ")}`, status: "error", indent: true });
+                }
+            } else if (phd > 1) {
+                result.push({ text: `${label}: ${phd} fő PhD/Kandidátus fokozatú — legfeljebb 1 megengedett`, status: "error" });
             } else {
-                result.push({ text: `Bíráló bizottság tagjai fokozatai megfelelők ✓`, status: "ok" });
+                result.push({ text: `${label} fokozatai megfelelők (1 fő PhD/Kandidátus, minden bíráló MTA-szintű) ✓`, status: "ok" });
             }
         }
 
